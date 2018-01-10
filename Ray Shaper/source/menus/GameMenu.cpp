@@ -41,11 +41,6 @@ void GameMenu::draw(sf::RenderWindow & window)
 			window.draw(j);
 }
 
-void GameMenu::gainedFocus(sf::RenderWindow & renderWindow)
-{
-	Menu::gainedFocus(renderWindow);
-}
-
 GameMenu::GameMenu(MenuStack & menuStack, const std::string &levelPath):
 	Menu(menuStack,"Ray Shaper - In Game"), m_camera(1,{0,0,128,72})
 {

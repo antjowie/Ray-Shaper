@@ -13,6 +13,7 @@
 #include <SFML\Graphics\Text.hpp>
 
 #include "Object.h"
+#include "SoundManager.h"
 
 class Button : public Object
 {
@@ -33,6 +34,7 @@ private:
 	bool m_hover{ false };
 	// Used for the sound
 	bool m_entered{ false };
+	Sound m_sound;
 	// These are the two colors used for switching outline color
 	// Because they may change, I have made them member variables
 	const sf::Color red{ 171,41,41,200 };
@@ -56,9 +58,9 @@ public:
 
 	// Return his action if hovered over
 	// else returns -1
-	const int getAction() const;
+	const int getAction();
 
 	// If textSize is 0, the text size will be adjusted to fit in the button
 	// If defaultViewSize is left uninitialized the input function will use the view size it first gets
-	Button(ObjectManager &objectManager, Meta &meta, const float textSize = 0, const sf::FloatRect &defaultViewSize = { 0,0,0,0 });
+	Button(ObjectManager &objectManager, SoundManager &soundManager, Meta &meta, const float textSize = 0, const sf::FloatRect &defaultViewSize = { 0,0,0,0 });
 };

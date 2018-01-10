@@ -24,6 +24,8 @@ public:
 	void setTimeline(const float value);
 	// Sets the rate of the timeline, 2 means twice as fast
 	void setRate(const float rate);
+	// Gets a position from a to b
+	float lerp(const float a, const float b);
 
 	// Return a percentage [0,100]
 	float getProgress() const;

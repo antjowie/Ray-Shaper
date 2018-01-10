@@ -25,6 +25,12 @@ void Timeline::setRate(const float rate)
 	m_rate = std::abs(rate);
 }
 
+float Timeline::lerp(const float a, const float b)
+{
+	const float percentage{ getProgress() / 100.f };
+	return ((1.f- percentage) * a + (percentage * b));
+}
+
 float Timeline::getProgress() const
 {
 	return m_timeline * 100.f / m_cap;

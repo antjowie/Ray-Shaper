@@ -24,6 +24,12 @@ void Button::input(sf::RenderWindow & window)
 		m_entered = false;
 	}
 
+	if (m_entered)
+	{
+		m_sound.play();
+		m_entered = false;
+	}
+
 	// Check if originalview has been initialized
 	if (m_originalView == sf::FloatRect(0, 0, 0, 0))
 		m_originalView = { window.getView().getCenter(),window.getView().getSize() };
@@ -34,17 +40,21 @@ void Button::update(const float elapsedTime)
 	m_button.setOutlineColor(m_hover ? green : red);
 }
 
-const int Button::getAction() const
+const int Button::getAction()
 {
 	if (m_hover)
+	{
+		m_sound.play();
 		return m_action;
+	}
 	return -1;
 }
 
-Button::Button(ObjectManager &objectManager, Meta & meta, const float textSize, const sf::FloatRect & defaultViewSize):
+Button::Button(ObjectManager &objectManager, SoundManager &soundManager, Meta & meta, const float textSize, const sf::FloatRect & defaultViewSize):
 	Object(objectManager),
 	m_originalView(defaultViewSize),
-	m_action(meta.action)
+	m_action(meta.action),
+	m_sound(soundManager,"button",SoundType::Sound)
 {
 	m_button.setFillColor(sf::Color(10,10,10));
 	m_button.setPosition(meta.button.left, meta.button.top);

@@ -31,6 +31,6 @@ public:
 	void update(const float elapsedTime);
 
 	Collided getCollision(Object *thisObject);
-	const std::list<Object*> &getObjects() const;
+	std::list<Object*> &getObjects();
 	~ObjectManager();
 };

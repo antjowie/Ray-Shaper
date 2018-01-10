@@ -18,7 +18,7 @@ void MainMenu::input(sf::RenderWindow & window)
 		switch (event.type)
 		{
 		case sf::Event::MouseButtonPressed:
-			for (const auto &iter : m_objectManager.getObjects())
+			for (auto &iter : m_objectManager.getObjects())
 			{
 				Button * button{ dynamic_cast<Button*>(iter) };
 				if (button == nullptr)
@@ -26,6 +26,7 @@ void MainMenu::input(sf::RenderWindow & window)
 				switch (button->getAction())
 				{
 				case NewGame:
+					m_soundManager.pause(SoundType::Music);
 					m_menuStack.push(new GameMenu(m_menuStack, "test.tmx"));
 					break;
 				case Continue:
@@ -52,12 +53,15 @@ void MainMenu::input(sf::RenderWindow & window)
 }
 
 MainMenu::MainMenu(MenuStack & menuStack):
-	Menu(menuStack,"Ray Shaper - Main Menu")
+	Menu(menuStack,"Ray Shaper - Main Menu"),
+	m_music(m_soundManager,"mainMenuMusic",SoundType::Music)
 {
 	new MenuBackground(m_objectManager);
 	new Text(m_objectManager, { 640.f,140.f}, std::string("Ray Shaper"), 100);
-	new Button(m_objectManager, Button::Meta({ 320,238,600,80 }, "new game", Action::NewGame));
-	new Button(m_objectManager, Button::Meta({ 320,356,600,80 }, "continue", Action::Continue));
-	new Button(m_objectManager, Button::Meta({ 320,474,600,80 }, "options", Action::NewGame));
-	new Button(m_objectManager, Button::Meta({ 320,592,600,80 }, "exit", Action::Exit));
+	new Button(m_objectManager,m_soundManager, Button::Meta({ 320,238,600,80 }, "new game", Action::NewGame));
+	new Button(m_objectManager,m_soundManager, Button::Meta({ 320,356,600,80 }, "continue", Action::Continue));
+	new Button(m_objectManager,m_soundManager, Button::Meta({ 320,474,600,80 }, "options", Action::Options));
+	new Button(m_objectManager,m_soundManager, Button::Meta({ 320,592,600,80 }, "exit", Action::Exit));
+
+	m_soundManager.play(SoundType::Music);
 }

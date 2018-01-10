@@ -58,7 +58,7 @@ Collided ObjectManager::getCollision(Object * thisObject)
 	return collided;
 }
 
-const std::list<Object*>& ObjectManager::getObjects() const
+std::list<Object*>& ObjectManager::getObjects()
 {
 	return m_objects;
 }

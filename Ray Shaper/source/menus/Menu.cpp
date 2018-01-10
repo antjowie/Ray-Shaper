@@ -34,6 +34,7 @@ void Menu::draw(sf::RenderWindow & window)
 void Menu::gainedFocus(sf::RenderWindow& renderWindow)
 {
 	renderWindow.setTitle(m_title);
+	m_soundManager.play(SoundType::Music);
 	returnedFocus = false;
 }
 
@@ -44,10 +45,13 @@ Menu::Menu(MenuStack &menuStack, const std::string &title):
 
 Menu::~Menu()
 {
+	m_soundManager.pause(SoundType::Music);
 }
 
 void MenuStack::push(Menu * const menu)
 {
+	if (!m_menuStack.empty())
+		m_menuStack.top()->returnedFocus = true;
 	m_menuStack.push(menu);
 }
 

@@ -13,6 +13,7 @@
 
 #include "ObjectManager.h"
 #include "DataManager.h"
+#include "SoundManager.h"
 
 class MenuStack;
 
@@ -24,7 +25,8 @@ private:
 protected:
 	MenuStack &m_menuStack;
 	ObjectManager m_objectManager;
-	
+	SoundManager m_soundManager;
+
 public:
 	// Used to call function when focus is returned to the menu
 	bool returnedFocus{ true };

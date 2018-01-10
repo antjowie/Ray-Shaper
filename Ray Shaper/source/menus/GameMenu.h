@@ -24,7 +24,5 @@ public:
 	virtual void update(const float elapsedTime) override final;
 	virtual void draw(sf::RenderWindow &window)  override final;
 
-	virtual void gainedFocus(sf::RenderWindow& renderWindow);
-
 	GameMenu(MenuStack &menuStack,const std::string &levelPath);
 };
