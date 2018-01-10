@@ -18,49 +18,25 @@
 #include <SFML\Graphics\Drawable.hpp>
 #include <SFML\Graphics\Sprite.hpp>
 #include <SFML\Graphics\RenderWindow.hpp>
-#include <map>
 
 #include "ObjectManager.h"
-#include "AnimationHandler.h"
-
-// These go in pairs
-struct Sprite
-{
-	AnimationHandler animHandler;
-	sf::Sprite sprite;
-
-	Sprite(const int frameWidth, const int frameHeight,sf::Texture &texture);
-};
 
 // Should not be instantiated
 class Object:
 	public sf::Drawable
 {
 private:
-	const int m_spriteWidth;
-	const int m_spriteHeight;
-
 	virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 
 protected:
-	// Assumes that the first sprite is the body
-	// All following sprites are other things like eyes or other cosmetics
-	std::map<std::string, Sprite> m_sprites;
-
-	// Call in constructor after all variables are loaded
-	void init();
-	
-	// Simple function to make it easier to get values
-	Sprite &getSprite(const std::string &name);
+	sf::Sprite m_sprite;
 
 	ObjectManager &m_objectManager;
 
 public:
-	// Quite bad design but used to check if the object needs to update setFocus
-	const bool m_needPlayerPos;
-	// Checks whether object should be deleted
-	bool m_isDead{ false };
-
+	// Used to check if the object deflects the laser to know if it has special functions
+	// I would normally use an enum class but there are only 2 types that are
+	// different in the way it should be handled
 	// This is used to check for input, player and button instances need this function, enemies don't
 	virtual void input(sf::RenderWindow &window);
 	
@@ -68,12 +44,12 @@ public:
 	// In that case use the input function
 	virtual void update(const float elapsedTime);
 
-	sf::FloatRect getHitbox() const;
+	// Some classes have more precise hitboxes
+	virtual sf::FloatRect getHitbox() const;
 	const sf::Vector2f &getPosition() const;
 
 	void setPosition(const sf::Vector2f &pos);
+	void move(const sf::Vector2f &movement);
 
-	// The sprite size is the width and height of the sprite, not the frame
-	// This value is used to caluculate a more precise hitbox
-	Object(const int spriteWidth, const int spriteHeight, ObjectManager &objectManager, const bool needPlayerPos = false);
+	Object(ObjectManager &objectManager);
 };

@@ -26,25 +26,25 @@ const sf::FloatRect Tile::getHitbox() const
 	return m_sprite.getGlobalBounds();
 }
 
-Tile::Tile(DataManager &dataManager, const sf::Vector2f &position, const bool shouldDraw, const bool isGreen):
+Tile::Tile(const sf::Vector2f &position, const bool shouldDraw, const bool isGreen):
 	m_shouldDraw(shouldDraw)
 {
 	if (!m_shouldDraw) return;
 
-	m_sprite.setTexture(dataManager.getData("tile").meta.texture);
+	m_sprite.setTexture(DataManager::getInstance().getData("tile").meta.texture);
 	m_sprite.setTextureRect({ 0,0,16,16 });
 	m_sprite.setPosition(position);
 	setState(isGreen);
 }
 
-Tile Tile::getTile(DataManager &dataManager, const int id, const sf::Vector2f & position)
+Tile Tile::getTile(const int id, const sf::Vector2f & position)
 {
 	if(id == 1)
-		return  Tile(dataManager, position, true, false);
-	return  Tile(dataManager, position, false, false);
+		return  Tile(position, true, false);
+	return  Tile(position, false, false);
 }
 
-int Tilemap::load(const std::string &levelPath, std::vector<std::vector<Tile>> &tilemap, DataManager &dataManager, ObjectManager &objectManager)
+int Tilemap::load(const std::string &levelPath, std::vector<std::vector<Tile>> &tilemap, ObjectManager &objectManager)
 {
 	pugi::xml_document doc;
 	pugi::xml_parse_result result = doc.load_file(std::string(levelPath).c_str());
@@ -102,7 +102,7 @@ int Tilemap::load(const std::string &levelPath, std::vector<std::vector<Tile>> &
 				id = 0;
 			}
 			// Load tile into this
-			tilemap[vertic].push_back(Tile::getTile(dataManager, id, { horiz*16.f,vertic*16.f }));
+			tilemap[vertic].push_back(Tile::getTile(id, { horiz*16.f,vertic*16.f }));
 		}
 	}
 
@@ -131,10 +131,6 @@ const std::vector<Spawn>& Tilemap::getSpawn() const
 const std::vector<Area>& Tilemap::getAreas() const
 {
 	return m_areas;
-}
-
-Tilemap::Tilemap()
-{
 }
 
 Spawn::Spawn(const int id, const sf::Vector2f & position):

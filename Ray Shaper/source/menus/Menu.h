@@ -24,8 +24,7 @@ private:
 protected:
 	MenuStack &m_menuStack;
 	ObjectManager m_objectManager;
-	DataManager m_dataManager;
-
+	
 public:
 	// Used to call function when focus is returned to the menu
 	bool returnedFocus{ true };

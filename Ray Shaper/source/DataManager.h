@@ -5,9 +5,6 @@
 // This class is used to load textures, soundbuffers and fonts for 
 // entities which uses them.
 //
-// Comments
-// This could be a singleton class because this game doesn't have many textures
-//
 //////////////////////////////////
 
 #pragma once
@@ -43,7 +40,11 @@ public:
 private:
 	std::map<const std::string,Data> m_data;
 
+	DataManager();
+
 public:
 	void pushData(const std::string &name, Data &&data);
 	Data & getData(const std::string &name);
+
+	static DataManager &getInstance();
 };

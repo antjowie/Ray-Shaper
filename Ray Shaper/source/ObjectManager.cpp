@@ -40,14 +40,6 @@ void ObjectManager::update(const float elapsedTime)
 {
 	for (auto &iter : m_objects)
 		iter->update(elapsedTime);
-	
-	m_objects.remove_if([this](Object *const object)
-	{
-		if (!object->m_isDead)
-			return false;
-		delete object;
-		return true;
-	});
 }
 
 Collided ObjectManager::getCollision(Object * thisObject)
@@ -66,8 +58,9 @@ Collided ObjectManager::getCollision(Object * thisObject)
 	return collided;
 }
 
-ObjectManager::ObjectManager()
+const std::list<Object*>& ObjectManager::getObjects() const
 {
+	return m_objects;
 }
 
 ObjectManager::~ObjectManager()

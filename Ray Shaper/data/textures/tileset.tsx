@@ -3,29 +3,29 @@
  <image source="tileset.png" width="144" height="32"/>
  <tile id="1">
   <objectgroup draworder="index">
-   <object id="3" x="0" y="0">
-    <polyline points="0,0 16,16"/>
+   <object id="4" x="0" y="0">
+    <polygon points="0,0 16,16 0,16"/>
    </object>
   </objectgroup>
  </tile>
  <tile id="2">
   <objectgroup draworder="index">
-   <object id="2" x="16" y="0">
-    <polyline points="0,0 -16,16"/>
+   <object id="3" x="16" y="0">
+    <polygon points="0,0 -16,16 -16,0"/>
    </object>
   </objectgroup>
  </tile>
  <tile id="3">
   <objectgroup draworder="index">
-   <object id="2" x="0" y="0">
-    <polyline points="0,0 16,16"/>
+   <object id="3" x="0" y="0">
+    <polygon points="0,0 16,0 16,16"/>
    </object>
   </objectgroup>
  </tile>
  <tile id="4">
   <objectgroup draworder="index">
-   <object id="5" x="16" y="0">
-    <polyline points="0,0 -16,16"/>
+   <object id="6" x="16" y="0">
+    <polygon points="0,0 -16,16 0,16"/>
    </object>
   </objectgroup>
  </tile>

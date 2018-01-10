@@ -46,9 +46,9 @@ public:
 	void setState(const bool isGreen);
 	const sf::FloatRect getHitbox() const;
 
-	Tile(DataManager &dataManager, const sf::Vector2f &position, const bool shouldDraw = false, const bool isGreen = false);
+	Tile(const sf::Vector2f &position, const bool shouldDraw = false, const bool isGreen = false);
 
-	static Tile getTile(DataManager &dataManager, const int id, const sf::Vector2f &position);
+	static Tile getTile(const int id, const sf::Vector2f &position);
 };
 
 class Tilemap
@@ -63,10 +63,8 @@ public:
 	// -2 Tile layer not found
 	// -3 Object layer not found
 	// -4 PCData not added
-	int load(const std::string &levelPath, std::vector<std::vector<Tile>> &tilemap, DataManager &dataManager, ObjectManager &objectManager);
+	int load(const std::string &levelPath, std::vector<std::vector<Tile>> &tilemap, ObjectManager &objectManager);
 
 	const std::vector<Spawn> &getSpawn() const;
 	const std::vector<Area> &getAreas() const;
-
-	Tilemap();
 };

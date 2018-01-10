@@ -1,7 +1,6 @@
-#include <SFML\Graphics\RenderWindow.hpp>
+#include <SFML\Graphics\Sprite.hpp>
 
-#include "menus\Menu.h"
-#include "menus\GameMenu.h"
+#include "menus\MainMenu.h"
 
 int main()
 {
@@ -9,11 +8,23 @@ int main()
 	MenuStack menuStack;
 	sf::Clock clock;
 	float elapsedTime;
+	
+	sf::Texture tex;
+	tex.loadFromFile("Ray Shaper/data/textures/splashscreen.png");
+	sf::Sprite splashscreen(tex);
+
+	window.create(sf::VideoMode(250,375), "Ray Shaper - Loading Data", sf::Style::Titlebar);
+	window.clear(sf::Color(5,5,5));
+	window.draw(splashscreen);
+	window.display();
+
+	DataManager::getInstance();
+	window.close();
 
 	window.create(sf::VideoMode(1280, 720), "Ray Shaper", sf::Style::Default);
 	window.setFramerateLimit(60);
 	
-	menuStack.push(new GameMenu(menuStack, "tilemap.tmx"));
+	menuStack.push(new MainMenu(menuStack));
 	clock.restart();
 
 	while (window.isOpen())
@@ -21,15 +32,15 @@ int main()
 		elapsedTime = clock.restart().asSeconds();
 
 		if (!menuStack.peek())
-			continue;
-
+			break;
+			
 		if (menuStack.peek()->returnedFocus)
 			menuStack.peek()->gainedFocus(window);
 
 		menuStack.peek()->input(window);
 		menuStack.peek()->update(elapsedTime);
 
-		window.clear();
+		window.clear(sf::Color(50,50,50));
 		menuStack.peek()->draw(window);
 		window.display();
 		
