@@ -41,10 +41,13 @@ private:
 	const sf::Color green{ 58,166,62,200 };
 
 	// This is the offset from the view center, the spawn location
-	const sf::Vector2f m_offset;
+	sf::Vector2f m_offset;
+	sf::Vector2f m_textOffset;
+
 	// This is used to keep track of resizing. When the view is resized
 	// The buttons aren't so this calculated the scale
-	sf::FloatRect m_originalView;
+	sf::View m_originalView;
+	sf::View m_currentView;
 
 	sf::RectangleShape m_button;
 	sf::Text m_text;
@@ -55,12 +58,12 @@ private:
 public:
 	virtual void input(sf::RenderWindow &window);
 	virtual void update(const float elapsedTime);
-
+	
 	// Return his action if hovered over
 	// else returns -1
 	const int getAction();
 
 	// If textSize is 0, the text size will be adjusted to fit in the button
 	// If defaultViewSize is left uninitialized the input function will use the view size it first gets
-	Button(ObjectManager &objectManager, SoundManager &soundManager, Meta &meta, const float textSize = 0, const sf::FloatRect &defaultViewSize = { 0,0,0,0 });
+	Button(ObjectManager &objectManager, SoundManager &soundManager, Meta &meta, unsigned int textSize = 0, const sf::FloatRect &defaultViewSize = { 0,0,0,0 });
 };

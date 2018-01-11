@@ -36,9 +36,12 @@ public:
 	// Volume [0,100]
 	// FadeTime Time to reach target volume in seconds
 	void setTargetVolume(const float volume, const float fadeTime, const SoundType type);
+	void update(const float elapsedTime);
 
 	void play(const SoundType type);
 	void pause(const SoundType type);
+
+	~SoundManager();
 };
 
 class Sound
@@ -51,8 +54,8 @@ private:
 
 	Timeline m_volumeTimeline;
 
-	float m_oldVolume{ 0 };
-	float m_targetVolume{ 0 };
+	float m_oldVolume;
+	float m_targetVolume;
 
 public:
 	const SoundType soundType;

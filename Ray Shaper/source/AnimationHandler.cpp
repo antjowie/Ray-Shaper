@@ -59,7 +59,8 @@ void AnimationHandler::setFrame(int frame)
 
 sf::IntRect AnimationHandler::getFrame() const
 {
-	return sf::IntRect(m_frameSize.width * m_currentFrame, m_frameSize.height * m_animationId,m_frameSize.width,m_frameSize.height);
+	return sf::IntRect(m_frameSize.width * m_currentFrame + m_spriteSize.left, 
+		m_frameSize.height * m_animationId + m_spriteSize.top,m_spriteSize.width,m_spriteSize.height);
 }
 
 const int AnimationHandler::getLastFrame() const
@@ -67,7 +68,13 @@ const int AnimationHandler::getLastFrame() const
 	return m_animation[m_animationId].frameAmount;
 }
 
-AnimationHandler::AnimationHandler(const int spriteWidth, const int spriteHeight):
-	m_frameSize(sf::IntRect(1,1,spriteWidth,spriteHeight))
+AnimationHandler::AnimationHandler(const int frameWidth, const int frameHeight, sf::IntRect spriteSize):
+	m_frameSize(sf::IntRect(1,1,frameWidth,frameHeight)),
+	m_spriteSize(spriteSize)
 {
+	if (spriteSize == sf::IntRect(0, 0, 0, 0))
+	{
+		spriteSize.width = m_frameSize.width;
+		spriteSize.height = m_frameSize.height;
+	}
 }

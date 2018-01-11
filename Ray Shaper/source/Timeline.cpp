@@ -1,11 +1,15 @@
 #include "Timeline.h"
 #include <cmath>
 
+#include <iostream>
+
 void Timeline::update(const float elapsedTime)
 {
 	m_timeline += elapsedTime * m_rate;
 	if (m_timeline > m_cap)
 		m_timeline = m_cap;
+	else if (m_timeline < 0)
+		m_timeline = 0;
 }
 
 void Timeline::setCap(const float cap)
@@ -33,7 +37,12 @@ float Timeline::lerp(const float a, const float b)
 
 float Timeline::getProgress() const
 {
-	return m_timeline * 100.f / m_cap;
+	float progress{ m_timeline * 100.f / m_cap };
+
+	// This happens when cap is 0
+	if (progress != progress)
+		progress = 100;
+	return progress;
 }
 
 const float & Timeline::getTimeline() const

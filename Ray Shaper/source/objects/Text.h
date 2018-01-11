@@ -20,5 +20,5 @@ private:
 	virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override final;
 
 public:
-	Text(ObjectManager &objectManager, const sf::Vector2f &position, std::string &text, const float characterSize = 30);
+	Text(ObjectManager &objectManager, const sf::Vector2f &position, std::string &text, const unsigned int characterSize = 30);
 };

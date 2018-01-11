@@ -63,6 +63,9 @@
     <ClCompile Include="Ray Shaper\source\SoundManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Ray Shaper\source\objects\Player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Ray Shaper\source\pugiconfig.hpp">
@@ -111,6 +114,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Ray Shaper\source\SoundManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ray Shaper\source\objects\Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

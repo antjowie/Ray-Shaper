@@ -39,6 +39,7 @@ int main()
 
 		menuStack.peek()->input(window);
 		menuStack.peek()->update(elapsedTime);
+		menuStack.peek()->updateFade(window,elapsedTime);
 
 		window.clear(sf::Color(50,50,50));
 		menuStack.peek()->draw(window);

@@ -27,7 +27,7 @@ void MainMenu::input(sf::RenderWindow & window)
 				{
 				case NewGame:
 					m_soundManager.pause(SoundType::Music);
-					m_menuStack.push(new GameMenu(m_menuStack, "test.tmx"));
+					push(new GameMenu(m_menuStack,"test.tmx"));
 					break;
 				case Continue:
 					// TODO
@@ -36,7 +36,7 @@ void MainMenu::input(sf::RenderWindow & window)
 					// TODO
 					break;
 				case Exit:
-					shouldPop = true;
+					pop();
 					break;
 				}
 			}
@@ -48,7 +48,7 @@ void MainMenu::input(sf::RenderWindow & window)
 
 		case sf::Event::KeyPressed:
 			if (event.key.code == sf::Keyboard::Key::Escape)
-				shouldPop = true;
+				pop();
 		}
 }
 
@@ -63,5 +63,8 @@ MainMenu::MainMenu(MenuStack & menuStack):
 	new Button(m_objectManager,m_soundManager, Button::Meta({ 320,474,600,80 }, "options", Action::Options));
 	new Button(m_objectManager,m_soundManager, Button::Meta({ 320,592,600,80 }, "exit", Action::Exit));
 
+	m_soundManager.setTargetVolume(0, 0.f, SoundType::Music);
+	m_soundManager.update(0);
+	m_soundManager.setTargetVolume(100.f,10.f, SoundType::Music);
 	m_soundManager.play(SoundType::Music);
 }

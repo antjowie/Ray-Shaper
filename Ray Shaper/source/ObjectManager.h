@@ -9,12 +9,6 @@ class Object;
 
 class Tilemap;
 
-struct Collided
-{
-	Object * object{ nullptr };	// A pointer to the object which had been collided with. If no collision happened, this will be a nullptr
-	sf::Vector2f point{ 0,0 };	// Collision point
-};
-
 class ObjectManager: public sf::Drawable
 {
 private:
@@ -30,7 +24,6 @@ public:
 	void input(sf::RenderWindow &window);
 	void update(const float elapsedTime);
 
-	Collided getCollision(Object *thisObject);
 	std::list<Object*> &getObjects();
 	~ObjectManager();
 };

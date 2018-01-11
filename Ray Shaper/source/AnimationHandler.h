@@ -30,6 +30,7 @@ class AnimationHandler
 private:
 	// Used to calculate all frame positions
 	const sf::IntRect m_frameSize;
+	const sf::IntRect m_spriteSize;
 
 	// Vertical
 	int m_animationId{ 0 };
@@ -56,6 +57,7 @@ public:
 	// Used for snapping animations to their latest frame
 	const int getLastFrame() const;
 
-	AnimationHandler(const int spriteWidth, const int spriteHeight);
+	// If sprite size is left uninitialized, frame sizes will be used as hitboxes
+	AnimationHandler(const int frameWidth, const int frameHeight, sf::IntRect spriteSize = { 0,0,0,0 });
 };
 

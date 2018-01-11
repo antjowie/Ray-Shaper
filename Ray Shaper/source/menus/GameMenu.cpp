@@ -4,6 +4,8 @@
 
 void GameMenu::input(sf::RenderWindow & window)
 {
+	m_objectManager.input(window);
+
 	sf::Event event;
 	while(window.pollEvent(event))
 		switch (event.type)
@@ -14,22 +16,17 @@ void GameMenu::input(sf::RenderWindow & window)
 
 		case sf::Event::KeyPressed:
 			if (event.key.code == sf::Keyboard::Escape)
-				shouldPop = true;
-
-			else if (event.key.code == sf::Keyboard::Space)
-				for (auto &i : m_tiles)
-					for (auto &j : i)
-						j.setState(true);
-			else
-				for (auto &i : m_tiles)
-					for (auto &j : i)
-						j.setState(false);
-			break;
+				pop();
 		}
 }
 
 void GameMenu::update(const float elapsedTime)
 {
+	m_objectManager.update(elapsedTime);
+	m_player->fixMovement(m_tiles);
+
+	m_camera.update(elapsedTime);
+	m_camera.setTargetPosition(m_player->getPosition());
 }
 
 void GameMenu::draw(sf::RenderWindow & window)
@@ -39,11 +36,16 @@ void GameMenu::draw(sf::RenderWindow & window)
 	for (auto &i : m_tiles)
 		for (auto&j : i)
 			window.draw(j);
+
+	window.draw(m_objectManager);
+	
+	drawFade(window);
 }
 
 GameMenu::GameMenu(MenuStack & menuStack, const std::string &levelPath):
-	Menu(menuStack,"Ray Shaper - In Game"), m_camera(1,{0,0,128,72})
+	Menu(menuStack,"Ray Shaper - In Game"), m_camera(5,{0,0,128,72})
 {
-
 	m_tilemap.load("test.tmx", m_tiles, m_objectManager);
+	m_player = new  Player(m_objectManager, { 0,0 });
+	m_camera.setCenter(m_player->getPosition());
 }

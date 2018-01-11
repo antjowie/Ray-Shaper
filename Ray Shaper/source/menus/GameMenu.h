@@ -11,6 +11,7 @@
 #include "Menu.h"
 #include "Tilemap.h"
 #include "Camera.h"
+#include "objects\Player.h"
 
 class GameMenu : public Menu
 {
@@ -18,6 +19,7 @@ private:
 	std::vector<std::vector<Tile>> m_tiles;
 	Tilemap m_tilemap;
 	Camera m_camera;
+	Player *m_player;
 
 public:
 	virtual void input(sf::RenderWindow &window) override final;

@@ -31,13 +31,22 @@ void Button::input(sf::RenderWindow & window)
 	}
 
 	// Check if originalview has been initialized
-	if (m_originalView == sf::FloatRect(0, 0, 0, 0))
+	if (m_originalView.getSize() == sf::View({ 0,0 }, { 0, 0 }).getSize())
+	{
 		m_originalView = { window.getView().getCenter(),window.getView().getSize() };
+		m_offset = m_button.getPosition() - m_originalView.getCenter();
+		m_textOffset = m_text.getPosition() - m_originalView.getCenter();
+	}
+
+	m_currentView = window.getView();
 }
 
 void Button::update(const float elapsedTime)
 {
 	m_button.setOutlineColor(m_hover ? green : red);
+
+	m_button.setPosition(m_currentView.getCenter() + m_offset);
+	m_text.setPosition(m_currentView.getCenter() + m_textOffset);
 }
 
 const int Button::getAction()
@@ -50,7 +59,7 @@ const int Button::getAction()
 	return -1;
 }
 
-Button::Button(ObjectManager &objectManager, SoundManager &soundManager, Meta & meta, const float textSize, const sf::FloatRect & defaultViewSize):
+Button::Button(ObjectManager &objectManager, SoundManager &soundManager, Meta & meta, const unsigned int textSize, const sf::FloatRect & defaultViewSize):
 	Object(objectManager),
 	m_originalView(defaultViewSize),
 	m_action(meta.action),
@@ -76,6 +85,9 @@ Button::Button(ObjectManager &objectManager, SoundManager &soundManager, Meta & 
 		m_text.setScale({ maxHeight / textHeight }, { maxHeight / textHeight });
 		m_text.scale(0.8f, 0.8f);
 	}
+
+	m_offset = m_button.getPosition()-m_originalView.getCenter();
+	m_textOffset = m_text.getPosition() - m_originalView.getCenter();
 }
 
 Button::Meta::Meta(const sf::FloatRect & button, const std::string & string, const int action):

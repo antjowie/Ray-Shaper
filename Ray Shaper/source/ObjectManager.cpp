@@ -42,22 +42,6 @@ void ObjectManager::update(const float elapsedTime)
 		iter->update(elapsedTime);
 }
 
-Collided ObjectManager::getCollision(Object * thisObject)
-{
-	Collided collided;
-	for (auto &object : m_objects)
-	{
-		if (object == thisObject)
-			continue;
-		if (thisObject->getHitbox().intersects(object->getHitbox()))
-		{
-			collided.object = object;
-			collided.point = { 0,0 };
-		}
-	}
-	return collided;
-}
-
 std::list<Object*>& ObjectManager::getObjects()
 {
 	return m_objects;

@@ -6,7 +6,7 @@ void Text::draw(sf::RenderTarget & target, sf::RenderStates states) const
 	target.draw(m_text, states);
 }
 
-Text::Text(ObjectManager &objectManager, const sf::Vector2f & position, std::string & text, const float characterSize):
+Text::Text(ObjectManager &objectManager, const sf::Vector2f & position, std::string & text, const unsigned int characterSize):
 	Object(objectManager)
 {
 	m_text.setFont(DataManager::getInstance().getData("pixeled").meta.font);
