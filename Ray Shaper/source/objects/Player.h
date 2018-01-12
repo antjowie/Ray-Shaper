@@ -27,6 +27,7 @@ private:
 	enum Movement
 	{
 		Up,
+		Down,
 		Left,
 		Right
 	};
@@ -47,16 +48,17 @@ private:
 	// The amount of pixels to travel per accelartion
 	float m_speed{ 16 };
 
+	// Temp
 	sf::RectangleShape m_hitbox;
 
 	virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override final;
 
 public:
 	// Applies the movement vector and updates animation spritesheet based on that
-	void fixMovement(const std::vector<std::vector<Tile>> &tiles);
-	
-	sf::FloatRect getHitbox() const;
-	sf::Vector2f getPosition() const;
+	void fixMovement(std::vector<std::vector<Tile>> &tiles, const float elapsedTime);
+
+	virtual void setPosition(const sf::Vector2f &pos) override final;
+	virtual void move(const sf::Vector2f &movement) override final;
 
 	virtual void input(sf::RenderWindow &window) override final;
 	virtual void update(const float elaspedTime) override final;

@@ -44,12 +44,12 @@ public:
 	// In that case use the input function
 	virtual void update(const float elapsedTime);
 
-	// Some classes have more precise hitboxes
-	virtual sf::FloatRect getHitbox() const;
+	sf::FloatRect getHitbox() const;
 	const sf::Vector2f &getPosition() const;
 
-	void setPosition(const sf::Vector2f &pos);
-	void move(const sf::Vector2f &movement);
+	// Some classes use more than one sprite
+	virtual void setPosition(const sf::Vector2f &pos);
+	virtual void move(const sf::Vector2f &movement);
 
 	Object(ObjectManager &objectManager);
 };

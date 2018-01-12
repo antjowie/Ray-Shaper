@@ -31,6 +31,10 @@ int main()
 	{
 		elapsedTime = clock.restart().asSeconds();
 
+		// Happens when below 1 fps, should actually use an average of latest values
+		if (elapsedTime > 1.f)
+			elapsedTime = 1 / 30.f;
+
 		if (!menuStack.peek())
 			break;
 			

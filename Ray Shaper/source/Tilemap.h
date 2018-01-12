@@ -65,6 +65,8 @@ public:
 	// -4 PCData not added
 	int load(const std::string &levelPath, std::vector<std::vector<Tile>> &tilemap, ObjectManager &objectManager);
 
-	const std::vector<Spawn> &getSpawn() const;
-	const std::vector<Area> &getAreas() const;
+	// id == -1 means not found
+	const Spawn getSpawn(const int id) const;
+	// id == -1 means not found
+	const Area getArea(const int id) const;
 };

@@ -1,7 +1,5 @@
 #include "Camera.h"
 
-#include <iostream>
-
 const sf::View & Camera::getView() const
 {
 	return m_view;
@@ -14,12 +12,30 @@ void Camera::shake(const float duration, const float offset, const float intensi
 	m_shakeIntensity.setCap(intensity);
 	m_shakeIntensity.setTimeline(intensity);
 	m_shakeOffset = offset;
-	std::cout << m_shakeIntensity.getProgress() << '\n';
 }
 
 void Camera::setTargetPosition(const sf::Vector2f & targetPosition)
 {
 	m_targetPos = targetPosition;
+}
+
+void Camera::setTargetSize(const float side, const bool height)
+{
+	// Use 16:9 ratio
+	// ratio = width/16 or height / 9
+	// width /16 = height / 9
+	// width = height / 9 * 16
+	// height = width / 16 * 9
+	if (height)
+	{
+		m_targetSize.y = side;
+		m_targetSize.x = side / 9.f * 16.f;
+	}
+	else
+	{
+		m_targetSize.x = side;
+		m_targetSize.y = side / 16.f * 9.f;
+	}
 }
 
 void Camera::setCenter(const sf::Vector2f & center)
@@ -38,6 +54,10 @@ void Camera::update(const float elapsedTime)
 	else
 		m_view.move(movement * elapsedTime);
 	
+	// Update size of camera over time
+	sf::Vector2f size{ m_targetSize - m_view.getSize() };
+	m_view.setSize(m_view.getSize() + size * elapsedTime);
+
 	// Shake camera if needed
 	if (m_shakeIntensity.getProgress() == 100.f)
 	{
@@ -92,4 +112,6 @@ Camera::Camera(const float speed, const sf::FloatRect view):
 	m_view(view)
 {
 	setSpeed(speed);
+	m_targetPos = m_view.getCenter();
+	m_targetSize = m_view.getSize();
 }
