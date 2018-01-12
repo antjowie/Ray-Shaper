@@ -27,7 +27,6 @@ private:
 	enum Movement
 	{
 		Up,
-		Down,
 		Left,
 		Right
 	};
@@ -47,9 +46,24 @@ private:
 	float m_maxAcceleration{ 4 };
 	// The amount of pixels to travel per accelartion
 	float m_speed{ 16 };
+	
+	// Amount of fall acceleration to increase per second
+	float m_fallAcceleration{ 10 };
+	// Max fall acceleration
+	float m_maxFallAcceleration{ 10 };
+	// The intial jump acceleration
+	float m_initialJump{ 20 };
 
-	// Temp
-	sf::RectangleShape m_hitbox;
+	// Can only jump if ground has been touched
+	// Note: these values could be stored in a vector which allows 
+	// a specified number of jumps
+	bool m_canJumpSecond{ false };
+	bool m_canJump{ false };
+	// Used so that player has a time to hold the button
+	// Also allows player to jump higer
+	float m_jumpDuration{ 0.5f };
+	float m_jumpTimeline{ 0.f };
+	bool m_wantToJump{ false };
 
 	virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override final;
 

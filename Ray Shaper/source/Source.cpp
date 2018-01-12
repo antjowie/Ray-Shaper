@@ -31,9 +31,9 @@ int main()
 	{
 		elapsedTime = clock.restart().asSeconds();
 
-		// Happens when below 1 fps, should actually use an average of latest values
-		if (elapsedTime > 1.f)
-			elapsedTime = 1 / 30.f;
+		// Happens when below 20 fps, game becomes unstable, should actually wait instead of changing the elapsedTime
+		if (elapsedTime > 1.f /20.f)
+			elapsedTime = 1.f / 20.f;
 
 		if (!menuStack.peek())
 			break;

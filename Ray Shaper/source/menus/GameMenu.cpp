@@ -43,7 +43,7 @@ void GameMenu::draw(sf::RenderWindow & window)
 }
 
 GameMenu::GameMenu(MenuStack & menuStack, const std::string &levelPath):
-	Menu(menuStack,"Ray Shaper - In Game"), m_camera(5,{0,0,128,72})
+	Menu(menuStack,"Ray Shaper - In Game"), m_camera(2,{0,0,128,72})
 {
 	m_tilemap.load("test.tmx", m_tiles, m_objectManager);
 	m_player = new  Player(m_objectManager, { 0,0 });
