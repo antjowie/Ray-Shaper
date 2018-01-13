@@ -122,10 +122,6 @@ void Player::update(const float elapsedTime)
 	oldMovement = movement = m_acceleration * m_speed * elapsedTime;
 	m_objectManager.fixMovement(this, movement);
 	
-	// Update accelerations based on collision snapping
-	if (oldMovement.x != 0 && movement.x == 0)
-		m_acceleration.x = 0;
-
 	// These can be handled with the new movement value
 	if (movement.x > 0)
 	{
@@ -150,6 +146,22 @@ void Player::update(const float elapsedTime)
 				m_idleTimeline.setTimeline(0);
 	}
 
+	// Update accelerations based on collision snapping
+	if (movement.x != oldMovement.x)
+		// This makes player move back to force him out of corners
+		m_acceleration.x = (oldMovement.x > 0 ? -m_decel - m_accel: m_accel + m_decel )* elapsedTime;
+	if (oldMovement.y != 0 && movement.y == 0)
+	{
+		m_canJumpSecond = true;
+		m_canJump = true;
+	}
+	// Head touched top
+	if (oldMovement.y < 0 && movement.y >= 0)
+	{
+		m_canJump = false;
+		m_acceleration.y = 0;
+	}		
+
 	// Update animation speed
 	if (m_animHandler.getAnimation() != AnimationId::Idle)
 	{
@@ -161,13 +173,6 @@ void Player::update(const float elapsedTime)
 
 	m_sprite.setTextureRect(m_animHandler.getFrame());
 	m_eyes.setTextureRect(m_animHandler.getFrame());
-
-	// Player touches ground
-	if (oldMovement.y != 0 && movement.y == 0)
-	{
-		m_canJumpSecond = true;
-		m_canJump = true;
-	}
 
 	m_sprite.move(movement);
 	m_eyes.move(movement);
