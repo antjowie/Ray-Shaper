@@ -23,32 +23,27 @@ void GameMenu::input(sf::RenderWindow & window)
 void GameMenu::update(const float elapsedTime)
 {
 	m_objectManager.update(elapsedTime);
-	m_player->fixMovement(m_tiles,elapsedTime);
 
 	m_camera.update(elapsedTime);
-	m_camera.setTargetPosition(m_player->getPosition());
+	m_camera.setTargetPosition({ m_player->getPosition().x,m_tilemap.getArea(m_level).area.top + m_tilemap.getArea(m_level).area.height / 2.f });
 }
 
 void GameMenu::draw(sf::RenderWindow & window)
 {
 	window.setView(m_camera.getView());
 	
-	for (auto &i : m_tiles)
-		for (auto&j : i)
-			window.draw(j);
-
 	window.draw(m_objectManager);
 	
 	drawFade(window);
 }
 
 GameMenu::GameMenu(MenuStack & menuStack, const std::string &levelPath):
-	Menu(menuStack,"Ray Shaper - In Game"), m_camera(2,{0,0,128,72})
+	Menu(menuStack,"Ray Shaper - In Game"), m_camera(2,{0,0,128,72}),
+	m_music(m_soundManager,"gameMusic",SoundType::Music)
 {
-	m_tilemap.load("test.tmx", m_tiles, m_objectManager);
+	m_tilemap.load("test.tmx", m_objectManager.getTileVector(), m_objectManager);
 	m_player = new  Player(m_objectManager, { 0,0 });
-	m_player->setPosition(m_tilemap.getSpawn(1).spawn);
+	m_player->setPosition(m_tilemap.getSpawn(m_level).spawn);
 	m_camera.setCenter(m_player->getPosition());
-	m_camera.setTargetSize(m_tilemap.getArea(1).area.height, true);
-	
+	m_camera.setTargetSize(m_tilemap.getArea(m_level).area.height, true);
 }

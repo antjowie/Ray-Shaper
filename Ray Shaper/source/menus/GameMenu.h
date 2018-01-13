@@ -16,10 +16,13 @@
 class GameMenu : public Menu
 {
 private:
-	std::vector<std::vector<Tile>> m_tiles;
 	Tilemap m_tilemap;
 	Camera m_camera;
 	Player *m_player;
+	Sound m_music;
+
+	// Used to get correct spawn and level area
+	int m_level{ 1 };
 
 public:
 	virtual void input(sf::RenderWindow &window) override final;

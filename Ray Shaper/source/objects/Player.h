@@ -37,22 +37,22 @@ private:
 	sf::Sprite m_eyes;
 
 	// The movement per frame
-	sf::Vector2f m_movement{ 0,0 };
+	sf::Vector2f m_acceleration{ 0,0 };
 	// The at which speed increases per second
-	float m_acceleration{ 4 };
+	float m_accel;
 	// The rate at which speed decreases per second
-	float m_deceleration{ 8 };
+	float m_decel;
 	// The max acceleration
-	float m_maxAcceleration{ 4 };
+	float m_maxAcceleration;
 	// The amount of pixels to travel per accelartion
-	float m_speed{ 16 };
+	float m_speed;
 	
 	// Amount of fall acceleration to increase per second
-	float m_fallAcceleration{ 10 };
+	float m_fallAcceleration;
 	// Max fall acceleration
-	float m_maxFallAcceleration{ 10 };
+	float m_maxFallAcceleration;
 	// The intial jump acceleration
-	float m_initialJump{ 20 };
+	float m_initialJump;
 
 	// Can only jump if ground has been touched
 	// Note: these values could be stored in a vector which allows 
@@ -61,16 +61,13 @@ private:
 	bool m_canJump{ false };
 	// Used so that player has a time to hold the button
 	// Also allows player to jump higer
-	float m_jumpDuration{ 0.5f };
+	float m_jumpDuration;
 	float m_jumpTimeline{ 0.f };
 	bool m_wantToJump{ false };
 
 	virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override final;
 
 public:
-	// Applies the movement vector and updates animation spritesheet based on that
-	void fixMovement(std::vector<std::vector<Tile>> &tiles, const float elapsedTime);
-
 	virtual void setPosition(const sf::Vector2f &pos) override final;
 	virtual void move(const sf::Vector2f &movement) override final;
 

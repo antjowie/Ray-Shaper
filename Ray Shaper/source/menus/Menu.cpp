@@ -29,8 +29,14 @@ void Menu::updateFade(sf::RenderWindow &window, const float elapsedTime)
 	sf::Uint8 newColor{ static_cast<sf::Uint8>(255.f / 100.f * m_fade.getProgress()) };
 	m_darkOverlay.setFillColor({ newColor,newColor,newColor });
 
+	m_soundManager.setTargetVolume(m_fade.getProgress(),0,SoundType::Music);
+	m_soundManager.update(0);
+
 	if (m_wantToPush && m_fade.getProgress() == 0.f)
+	{
+		m_soundManager.pause(SoundType::Music);
 		m_menuStack.push(m_newMenu);
+	}
 }
 
 void Menu::drawFade(sf::RenderWindow & window)
@@ -87,7 +93,12 @@ Menu::Menu(MenuStack &menuStack, const std::string &title):
 	m_title(title),m_menuStack(menuStack)
 {
 	m_darkOverlay.setFillColor({ 0,0,0 });
-	m_fade.setCap(1);
+	m_fade.setCap(0.1f);
+
+	// Makes sound fade in
+	m_soundManager.setTargetVolume(0, 0, SoundType::Music);
+	m_soundManager.update(0);
+	m_soundManager.play(SoundType::Music);
 }
 
 Menu::~Menu()

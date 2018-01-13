@@ -4,6 +4,7 @@
 #include "Tilemap.h"
 #include "pugixml.hpp"
 #include "DataManager.h"
+#include "ObjectManager.h"
 
 void Tile::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {

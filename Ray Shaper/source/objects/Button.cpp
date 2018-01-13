@@ -3,6 +3,8 @@
 #include "Button.h"
 #include "DataManager.h"
 
+#include <iostream>
+
 void Button::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
 	target.draw(m_button, states);

@@ -11,98 +11,6 @@ void Player::draw(sf::RenderTarget & target, sf::RenderStates states) const
 	target.draw(m_eyes, states);
 }
 
-void Player::fixMovement(std::vector<std::vector<Tile>>& tiles, const float elapsedTime)
-{
-	// Potential errors
-	// This function slows the hitbox down rather then snapping it into place
-
-	// Note:
-	// If I have enough time to implement object movement this function will be put into 
-	// the objectManager. Then, every object can check if it's movements are not illegal.
-	// I'm not sure if I have enough time to finish it all, but if I do, some variables 
-	// should be changed and the whole section that manages animation and jump state.
-	sf::FloatRect hitbox { getHitbox() };
-	sf::Vector2f oldMovement{ m_movement };
-
-	// This section updates the hitbox, the hitbox is a rectangle which contains the whole movement
-	// This rectangle is used to check nearby tiles whether or not they will collide with the hitbox
-	if (m_movement.x > 0)
-	{
-		if (m_movement.y < 0)
-			hitbox = { m_sprite.getGlobalBounds().left,m_sprite.getGlobalBounds().top + m_movement.y, m_sprite.getGlobalBounds().width + m_movement.x,m_sprite.getGlobalBounds().height - m_movement.y };
-		else
-			hitbox = { m_sprite.getGlobalBounds().left,m_sprite.getGlobalBounds().top,m_sprite.getGlobalBounds().width + m_movement.x,m_sprite.getGlobalBounds().height + m_movement.y };
-	}
-	else if (m_movement.x < 0)
-	{
-		if (m_movement.y < 0)
-			hitbox = { m_sprite.getGlobalBounds().left + m_movement.x, m_sprite.getGlobalBounds().top + m_movement.y, m_sprite.getGlobalBounds().width - m_movement.x,m_sprite.getGlobalBounds().height - m_movement.y };
-		else
-			hitbox = { m_sprite.getGlobalBounds().left + m_movement.x, m_sprite.getGlobalBounds().top,m_sprite.getGlobalBounds().width - m_movement.x,m_sprite.getGlobalBounds().height + m_movement.y };
-	}
-	if (m_movement.y > 0)
-	{
-		if (m_movement.x > 0)
-			hitbox = { m_sprite.getGlobalBounds().left, m_sprite.getGlobalBounds().top,m_sprite.getGlobalBounds().width + m_movement.x, m_sprite.getGlobalBounds().height + m_movement.y };
-		else
-			hitbox = { m_sprite.getGlobalBounds().left + m_movement.x, m_sprite.getGlobalBounds().top, m_sprite.getGlobalBounds().width - m_movement.x, m_sprite.getGlobalBounds().height + m_movement.y };
-	}
-	else if (m_movement.y < 0)
-	{
-		if (m_movement.x > 0)
-			hitbox = { m_sprite.getGlobalBounds().left, m_sprite.getGlobalBounds().top + m_movement.y,m_sprite.getGlobalBounds().width + m_movement.x, m_sprite.getGlobalBounds().height - m_movement.y };
-		else
-			hitbox = { m_sprite.getGlobalBounds().left + m_movement.x, m_sprite.getGlobalBounds().top + m_movement.y, m_sprite.getGlobalBounds().width - m_movement.x, m_sprite.getGlobalBounds().height - m_movement.y };
-	}
-
-	// Iterate though all tiles and check whether or not they collided
-	for (auto &i: tiles)
-		for(auto &j:i)
-		{
-			const sf::FloatRect &b{ j.getHitbox() };
-
-			// We first check the horizontal movement of the hitbox and see if it collided or not
-			// By doing this, the snapping will only happen when the appropiate tiles are touched.
-			// If we do not do this. Tiles on the bottom of the hitbox may be confused as tiles on the horizontal
-			// movement. That will give incorrect snapping of position
-			if (hitbox.intersects(b))
-			{
-				if (sf::FloatRect(hitbox.left, getHitbox().top, hitbox.width, getHitbox().height).intersects(b))
-				{
-					if (m_movement.x > 0)
-						m_movement.x = b.left - (getHitbox().left + getHitbox().width);
-					else if (m_movement.x < 0)
-						m_movement.x = (b.left + b.width) - getHitbox().left;
-				}
-				if(sf::FloatRect(getHitbox().left,hitbox.top,getHitbox().width,hitbox.height).intersects(b))
-				{
-					if (m_movement.y > 0)
-						m_movement.y = b.top - (getHitbox().top + getHitbox().height);
-					else if (m_movement.y < 0)
-						m_movement.y = b.top + b.height - getHitbox().top;
-				}
-				j.setState(true);
-			}
-			else 
-				j.setState(false);
-		}			
-	
-	//if (static_cast<int>(oldMovement.y) >= 0 && static_cast<int>(m_movement.y) <= 0 && m_potentialJump)
-	//	m_canJump = true;
-	//else
-	//	m_potentialJump = false;
-
-	m_sprite.move(m_movement * m_speed * elapsedTime);
-	m_eyes.move(m_movement * m_speed * elapsedTime);
-
-	// The snapping back of movement is not always 0, so we round it down
-	if (static_cast<int>(m_movement.y) <= 0 && static_cast<int>(oldMovement.y) > 0.f)
-	{
-		m_canJumpSecond = true;
-		m_canJump = true;
-	}
-}
-
 void Player::setPosition(const sf::Vector2f & pos)
 {
 	m_sprite.setPosition(pos);
@@ -121,7 +29,7 @@ void Player::input(sf::RenderWindow & window)
 		iter = false;
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-		m_direction[Movement::Up] = true;	
+		m_direction[Movement::Up] = true;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 		m_direction[Movement::Left] = true;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
@@ -130,13 +38,16 @@ void Player::input(sf::RenderWindow & window)
 
 void Player::update(const float elapsedTime)
 {
+	sf::Vector2f movement{ 0,0 };
+	sf::Vector2f oldMovement{ 0,0 };
+	
 	m_animHandler.update(elapsedTime);
 	m_jumpTimeline -= elapsedTime;
 	if (m_jumpTimeline < 0)
 		m_jumpTimeline = 0;
 
 	// Gravity 
-	m_movement.y += m_fallAcceleration * elapsedTime;
+	m_acceleration.y += m_fallAcceleration * elapsedTime;
 
 	// Used to check if horizontal axis has to be decelerated
 	bool moveHoriz{ false };
@@ -160,73 +71,119 @@ void Player::update(const float elapsedTime)
 
 		// Update jump
 		if (m_jumpTimeline != 0)
-			m_movement.y = -m_initialJump;
+			m_acceleration.y = -m_initialJump;
 		m_wantToJump = true;
 	}
 	else
 		m_wantToJump = false;
+	
 	if (m_direction[Movement::Left])
 	{
-		if (m_movement.x > 0)
-			m_movement.x -= m_deceleration * elapsedTime;
-		m_movement.x -= m_acceleration * elapsedTime;
+		if (m_acceleration.x > 0)
+			m_acceleration.x -= m_decel * elapsedTime;
+		m_acceleration.x -= m_accel * elapsedTime;
 		moveHoriz = true;
 	}
 
 	if (m_direction[Movement::Right])
 	{
-		if (m_movement.x < 0)
-			m_movement.x += m_deceleration * elapsedTime;
-		m_movement.x += m_acceleration * elapsedTime;
+		if (m_acceleration.x < 0)
+			m_acceleration.x += m_decel * elapsedTime;
+		m_acceleration.x += m_accel * elapsedTime;
 		moveHoriz = true;
 	}
 
 	// Update deceleration values
 	if (!moveHoriz)
 	{
-		if (m_movement.x > 0)
+		if (m_acceleration.x > 0)
 		{
-			m_movement.x -= m_deceleration * elapsedTime;
-			if (m_movement.x < 0)
-				m_movement.x = 0;
+			m_acceleration.x -= m_decel * elapsedTime;
+			if (m_acceleration.x < 0)
+				m_acceleration.x = 0;
 		}
-		else if (m_movement.x < 0)
+		else if (m_acceleration.x < 0)
 		{
-			m_movement.x += m_deceleration * elapsedTime;
-			if (m_movement.x > 0)
-				m_movement.x = 0;
+			m_acceleration.x += m_decel * elapsedTime;
+			if (m_acceleration.x > 0)
+				m_acceleration.x = 0;
 		}
 	}
 
 	// Check movement bounds
-	if (m_movement.y > m_maxAcceleration)
-		m_movement.y = m_maxFallAcceleration;
-	if (m_movement.x > m_maxAcceleration)
-		m_movement.x = m_maxAcceleration;
-	else if (m_movement.x < -m_maxAcceleration)
-		m_movement.x = -m_maxAcceleration;
+	if (m_acceleration.y > m_maxAcceleration)
+		m_acceleration.y = m_maxFallAcceleration;
+	if (m_acceleration.x > m_maxAcceleration)
+		m_acceleration.x = m_maxAcceleration;
+	else if (m_acceleration.x < -m_maxAcceleration)
+		m_acceleration.x = -m_maxAcceleration;
 	
-	// These can be handles with the new movement value,
-	// but I like the slow walk into the wall
-	if (m_movement.x > 0)
+	// Fix movement to not collide
+	oldMovement = movement = m_acceleration * m_speed * elapsedTime;
+	m_objectManager.fixMovement(this, movement);
+	
+	// Update accelerations based on collision snapping
+	if (oldMovement.x != 0 && movement.x == 0)
+		m_acceleration.x = 0;
+
+	// These can be handled with the new movement value
+	if (movement.x > 0)
+	{
+		m_idleTimeline.setTimeline(0);
 		m_animHandler.setAnimation(AnimationId::fRight);
-	else if (m_movement.x < 0)
+	}
+	else if (movement.x < 0)
+	{
+		m_idleTimeline.setTimeline(0);
 		m_animHandler.setAnimation(AnimationId::fLeft);
+	}
 	else
+	{
 		m_animHandler.setAnimation(AnimationId::Idle);
+			m_idleTimeline.update(elapsedTime);
+			if (m_idleTimeline.getProgress() != 100)
+			{
+				m_animHandler.setTimeline(0);
+				m_animHandler.setFrame(0);
+			}
+			if (m_direction[Movement::Up])
+				m_idleTimeline.setTimeline(0);
+	}
 
 	// Update animation speed
-	float m_rate{ std::fabs(m_movement.x) / m_maxAcceleration };
-	if (m_rate != 0 && m_rate < 0.25f)
-		m_rate = 0.25f;
-	m_animHandler.setRate(m_rate);
+	if (m_animHandler.getAnimation() != AnimationId::Idle)
+	{
+		float m_rate{ std::fabs(movement.x) / m_maxAcceleration };
+		if (m_rate != 0 && m_rate < 0.25f)
+			m_rate = 0.25f;
+		m_animHandler.setRate(m_rate);
+	}
 
 	m_sprite.setTextureRect(m_animHandler.getFrame());
 	m_eyes.setTextureRect(m_animHandler.getFrame());
+
+	// Player touches ground
+	if (oldMovement.y != 0 && movement.y == 0)
+	{
+		m_canJumpSecond = true;
+		m_canJump = true;
+	}
+
+	m_sprite.move(movement);
+	m_eyes.move(movement);
 }
 
 Player::Player(ObjectManager & objectManager, const sf::Vector2f & pos):
-	Object(objectManager), m_animHandler(16, 16, { 3,0,10,15 })
+	Object(objectManager), m_animHandler(16, 16, { 3,0,10,15 }),
+	// Changing these values in the header file doesn't rebuild the porgram
+	m_accel{ 4 },
+	m_decel{ 8 },
+	m_maxAcceleration{ 4 },
+	m_speed{ 16 },
+	m_fallAcceleration{ 20 },
+	m_maxFallAcceleration{ 10 },
+	m_initialJump{ 6 },
+	m_jumpDuration{ 0.3f }
 {
 	m_sprite.setTexture(DataManager::getInstance().getData("playerBody").meta.texture);
 	m_eyes.setTexture(DataManager::getInstance().getData("playerEyes").meta.texture);
@@ -248,4 +205,6 @@ Player::Player(ObjectManager & objectManager, const sf::Vector2f & pos):
 
 	for (int i{ 0 }; i < 3; i++)
 		m_direction.push_back(false);
+
+	m_idleTimeline.setCap(5);
 }

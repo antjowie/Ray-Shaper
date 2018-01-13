@@ -41,7 +41,8 @@ int main()
 		if (menuStack.peek()->returnedFocus)
 			menuStack.peek()->gainedFocus(window);
 
-		menuStack.peek()->input(window);
+		if(window.hasFocus())
+			menuStack.peek()->input(window);
 		menuStack.peek()->update(elapsedTime);
 		menuStack.peek()->updateFade(window,elapsedTime);
 

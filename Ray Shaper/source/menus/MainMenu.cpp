@@ -26,7 +26,6 @@ void MainMenu::input(sf::RenderWindow & window)
 				switch (button->getAction())
 				{
 				case NewGame:
-					m_soundManager.pause(SoundType::Music);
 					push(new GameMenu(m_menuStack,"test.tmx"));
 					break;
 				case Continue:
@@ -62,9 +61,4 @@ MainMenu::MainMenu(MenuStack & menuStack):
 	new Button(m_objectManager,m_soundManager, Button::Meta({ 320,356,600,80 }, "continue", Action::Continue));
 	new Button(m_objectManager,m_soundManager, Button::Meta({ 320,474,600,80 }, "options", Action::Options));
 	new Button(m_objectManager,m_soundManager, Button::Meta({ 320,592,600,80 }, "exit", Action::Exit));
-
-	m_soundManager.setTargetVolume(0, 0.f, SoundType::Music);
-	m_soundManager.update(0);
-	m_soundManager.setTargetVolume(100.f,10.f, SoundType::Music);
-	m_soundManager.play(SoundType::Music);
 }

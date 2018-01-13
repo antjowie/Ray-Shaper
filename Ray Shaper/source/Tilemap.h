@@ -13,7 +13,6 @@
 #include <SFML\Graphics\Sprite.hpp>
 
 #include "DataManager.h"
-#include "ObjectManager.h"
 
 struct Spawn
 {
@@ -50,6 +49,8 @@ public:
 
 	static Tile getTile(const int id, const sf::Vector2f &position);
 };
+
+class ObjectManager;
 
 class Tilemap
 {

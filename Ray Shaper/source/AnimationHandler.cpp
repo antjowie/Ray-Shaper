@@ -57,10 +57,20 @@ void AnimationHandler::setFrame(int frame)
 	m_currentFrame = frame;
 }
 
+void AnimationHandler::setTimeline(float time)
+{
+	m_timeline = time;
+}
+
 sf::IntRect AnimationHandler::getFrame() const
 {
 	return sf::IntRect(m_frameSize.width * m_currentFrame + m_spriteSize.left, 
 		m_frameSize.height * m_animationId + m_spriteSize.top,m_spriteSize.width,m_spriteSize.height);
+}
+
+const int AnimationHandler::getAnimation() const
+{
+	return m_animationId;
 }
 
 const int AnimationHandler::getLastFrame() const

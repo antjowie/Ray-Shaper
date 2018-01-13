@@ -52,8 +52,10 @@ public:
 	// Sets the rate of the timeline, 2 means twice as fast
 	void setRate(const float rate);
 	void setFrame(int frame);
+	void setTimeline(float time);
 
 	sf::IntRect getFrame() const;
+	const int getAnimation() const;
 	// Used for snapping animations to their latest frame
 	const int getLastFrame() const;
 
