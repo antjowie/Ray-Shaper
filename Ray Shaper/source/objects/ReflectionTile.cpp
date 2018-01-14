@@ -11,7 +11,8 @@ void ReflectionTile::move(const sf::Vector2f & movement)
 {
 	sf::Vector2f movementCheck(movement);
 	m_objectManager.fixMovement<Player*>(this, movementCheck,true,true);
-	if (movementCheck != movement)
+	// If player jumps or walks into objects that the tile can't pass
+	if (movementCheck != movement || movement.y != 0)
 	{
 		m_sprite.move(movementCheck.x, 0);
 		isGrabbed = false;

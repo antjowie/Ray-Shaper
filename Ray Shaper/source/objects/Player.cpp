@@ -118,7 +118,7 @@ void Player::update(const float elapsedTime)
 	}
 
 	// Check movement bounds
-	if (m_acceleration.y > m_maxAcceleration)
+	if (m_acceleration.y > m_maxFallAcceleration)
 		m_acceleration.y = m_maxFallAcceleration;
 	if (m_acceleration.x > m_maxAcceleration)
 		m_acceleration.x = m_maxAcceleration;
@@ -216,22 +216,13 @@ void Player::update(const float elapsedTime)
 				}
 		}
 	}
-	// If player jumps, let go of the object
-	else if (m_direction[Direction::Up])
-	{
-		if (m_grabbed)
-		{
-			m_grabbed->isGrabbed = false;
-			m_grabbed = nullptr;
-		}
-	}
 	// If tile makes illegal movement and wants to be dropped, drop it
 	else if (m_grabbed && !m_grabbed->isGrabbed)
 	{
 		m_grabbed = nullptr;
 	}
 	if (m_grabbed)
-		m_grabbed->move({ movement.x, 0 });
+		m_grabbed->move({ movement.x, movement.y });
 }
 
 Player::Player(ObjectManager & objectManager, const sf::Vector2f & pos):
@@ -241,10 +232,10 @@ Player::Player(ObjectManager & objectManager, const sf::Vector2f & pos):
 	m_decel{ 8 },
 	m_maxAcceleration{ 4 },
 	m_speed{ 16 },
-	m_fallAcceleration{ 20 },
-	m_maxFallAcceleration{ 10 },
-	m_initialJump{ 6 },
-	m_jumpDuration{ 0.3f }
+	m_fallAcceleration{ 30 },
+	m_maxFallAcceleration{ 15 },
+	m_initialJump{ 8 },
+	m_jumpDuration{ 0.2f }
 {
 	m_sprite.setTexture(DataManager::getInstance().getData("playerBody").meta.texture);
 	m_eyes.setTexture(DataManager::getInstance().getData("playerEyes").meta.texture);
