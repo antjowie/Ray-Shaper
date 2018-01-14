@@ -21,7 +21,7 @@ ReflectionTile::ReflectionTile(ObjectManager &objectManager, const int id, const
 	m_direction(static_cast<Direction>(id))
 {
 	m_sprite.setTexture(DataManager::getInstance().getData("reflectionTile").meta.texture);
-	m_sprite.setTextureRect({ 0,16 * (id - 2), 16,16 });
+	m_sprite.setTextureRect({ 0,16 * (id - Direction::RightUp), 16,16 });
 	m_sprite.setPosition(position + sf::Vector2f{8, 8});
 	m_sprite.setOrigin(8, 8);
 }
