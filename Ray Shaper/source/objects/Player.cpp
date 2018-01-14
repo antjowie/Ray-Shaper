@@ -127,7 +127,8 @@ void Player::update(const float elapsedTime)
 
 	// Fix movement to not collide
 	oldMovement = movement = m_acceleration * m_speed * elapsedTime;
-	m_objectManager.fixMovement(this, movement);
+	sf::Vector2f tileMovement{ oldMovement };
+	m_objectManager.fixMovement<ReflectionTile*>(this, movement,true,true);
 
 	// These can be handled with the new movement value
 	if (m_direction[Direction::Right])
@@ -205,6 +206,7 @@ void Player::update(const float elapsedTime)
 			m_grabbed = nullptr;
 		}
 		else
+		{
 			for(auto &iter:m_objectManager.getObjects<ReflectionTile*>())
 				if (iter->getHitbox().intersects(getHitbox()))
 				{
@@ -212,6 +214,7 @@ void Player::update(const float elapsedTime)
 					m_grabbed = iter;
 					break;
 				}
+		}
 	}
 	// If player jumps, let go of the object
 	else if (m_direction[Direction::Up])
@@ -265,5 +268,5 @@ Player::Player(ObjectManager & objectManager, const sf::Vector2f & pos):
 		m_direction.push_back(false);
 
 	m_idleTimeline.setCap(5);
-	m_grabCooldown.setCap(1);
+	m_grabCooldown.setCap(0.2f);
 }

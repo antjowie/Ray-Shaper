@@ -1,5 +1,6 @@
 #include "ObjectManager.h"
 #include "objects\Object.h"
+#include "objects\Player.h"
 
 #define SHOW_HITBOX false
 #include <SFML\Graphics\RectangleShape.hpp>
@@ -60,55 +61,6 @@ void ObjectManager::update(const float elapsedTime)
 {
 	for (auto &iter : m_objects)
 		iter->update(elapsedTime);
-}
-
-void ObjectManager::fixMovement(const Object * const thisObject, sf::Vector2f & movement)
-{
-	// TODO
-	// Fix corner collision
-
-	sf::FloatRect h{ thisObject->getHitbox() };
-	sf::FloatRect hh{ h };
-	sf::FloatRect vh{ h };
-	sf::Vector2f &m{ movement };
-
-
-	// This section updates the hitbox, the hitbox is a rectangle which contains the whole movement from last to next frame
-	// This rectangle is used to check nearby tiles whether or not they will collide with the hitbox
-	if (m.x > 0)
-		hh = { hh.left,hh.top,hh.width + m.x, hh.height };
-
-	else if (m.x < 0)
-		hh = { hh.left + m.x,hh.top,hh.width - m.x, hh.height };
-
-	if (m.y > 0)
-		vh = { vh.left,vh.top, vh.width, vh.height + m.y };
-
-	else if (m.y < 0)
-		vh = { vh.left, vh.top + m.y, vh.width, vh.height - m.y };
-
-	// Iterate though all tiles and check whether or not they collided
-	for (auto &i : m_tiles)
-		for (auto &j : i)
-		{
-			const sf::FloatRect &b{ j.getHitbox() };
-
-			if (hh.intersects(b))
-			{
-				if (m.x > 0)
-					m.x = b.left - (h.left + h.width);
-				else if (m.x < 0)
-					m.x = (b.left + b.width) - h.left;
-			}
-
-			if (vh.intersects(b))
-			{
-				if (m.y > 0)
-					m.y = b.top - (h.top + h.height);
-				else if (m.y < 0)
-					m.y = b.top + b.height - h.top;
-			}
-		}
 }
 
 std::vector<std::vector<Tile>>& ObjectManager::getTileVector()

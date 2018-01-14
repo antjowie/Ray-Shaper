@@ -1,5 +1,6 @@
-#include "ReflectionTile.h"
 #include "DataManager.h"
+
+#include "Player.h"
 
 void ReflectionTile::update(const float elapsedTime)
 {
@@ -9,11 +10,14 @@ void ReflectionTile::update(const float elapsedTime)
 void ReflectionTile::move(const sf::Vector2f & movement)
 {
 	sf::Vector2f movementCheck(movement);
-	m_objectManager.fixMovement(this, movementCheck);
+	m_objectManager.fixMovement<Player*>(this, movementCheck,true,true);
 	if (movementCheck != movement)
+	{
+		m_sprite.move(movementCheck.x, 0);
 		isGrabbed = false;
+	}
 	else
-		m_sprite.move(movement);
+	m_sprite.move(movement.x, 0);
 }
 
 ReflectionTile::ReflectionTile(ObjectManager &objectManager, const int id, const sf::Vector2f & position) :
