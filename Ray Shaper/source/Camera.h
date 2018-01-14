@@ -20,6 +20,10 @@ private:
 	sf::Vector2f m_targetSize;
 	float m_speed;
 	
+	// The bounds are used to not let the camera go out of the playing area
+	// If left at 0, bounds will have no effect
+	sf::FloatRect m_bounds{ 0,0,0,0 };
+
 	// Shake function member variables
 	Timeline m_shakeTimeline;
 	// This timeline decides how fast the shake changes direction
@@ -41,6 +45,8 @@ public:
 	void setCenter(const sf::Vector2f &center);
 	// The speed value affects how long it will take to get to target position
 	void setSpeed(const float speed);
+	// If {0,0,0,0} bounds will not be checked
+	void setBounds(const sf::FloatRect &bounds);
 
 	const sf::View &getView() const;
 

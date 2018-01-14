@@ -21,10 +21,10 @@ private:
 	Player *m_player;
 	Sound m_music;
 
-
-
-	// Used to get correct spawn and level area
+	// Highest level, the same as progress
 	int m_level{ 1 };
+	// Level the player is in right now, used for camera
+	int m_currentLevel{ 0 };
 
 public:
 	virtual void input(sf::RenderWindow &window) override final;

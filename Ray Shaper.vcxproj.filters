@@ -72,6 +72,9 @@
     <ClCompile Include="Ray Shaper\source\objects\Emitter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Ray Shaper\source\objects\Gate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Ray Shaper\source\pugiconfig.hpp">
@@ -129,6 +132,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Ray Shaper\source\objects\Emitter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ray Shaper\source\objects\Gate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

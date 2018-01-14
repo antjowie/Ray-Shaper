@@ -3,7 +3,10 @@
  <objecttype name="spawn" color="#ffffff">
   <property name="id" type="int" default="-1"/>
  </objecttype>
- <objecttype name="area" color="#a0a0a4">
+ <objecttype name="area" color="#00ff00">
+  <property name="id" type="int" default="-1"/>
+ </objecttype>
+ <objecttype name="gate" color="#aa0000">
   <property name="id" type="int" default="-1"/>
  </objecttype>
 </objecttypes>

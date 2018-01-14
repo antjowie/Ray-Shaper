@@ -8,6 +8,7 @@
 
 #include "objects\ReflectionTile.h"
 #include "objects\Emitter.h"
+#include "objects\Gate.h"
 
 void Tile::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
@@ -118,9 +119,11 @@ int Tilemap::load(const std::string &levelPath, std::vector<std::vector<Tile>> &
 	{
 		const std::string type{ object.attribute("type").as_string() };
 		if (type == "spawn")
-			m_spawns.push_back(Spawn(object.first_child().first_child().attribute("value").as_int(),{ object.attribute("x").as_float(), object.attribute("y").as_float() }));
+			m_spawns.push_back(Spawn(object.first_child().first_child().attribute("value").as_int(), { object.attribute("x").as_float(), object.attribute("y").as_float() }));
 		else if (type == "area")
 			m_areas.push_back(Area(object.first_child().first_child().attribute("value").as_int(), { object.attribute("x").as_float() ,object.attribute("y").as_float() ,object.attribute("width").as_float() ,object.attribute("height").as_float() }));
+		else if (type == "gate")
+			new Gate(objectManager, object.first_child().first_child().attribute("value").as_int(), sf::Vector2f{ object.attribute("x").as_float(), object.attribute("y").as_float() });
 	}
 
 	return 0;
@@ -138,6 +141,14 @@ const Area Tilemap::getArea(const int id) const
 {
 	for (auto &iter : m_areas)
 		if (iter.id == id)
+			return iter;
+	return Area(-1, { 0,0 ,0,0 });
+}
+
+const Area Tilemap::getCurrentArea(const sf::FloatRect &hitbox) const
+{
+	for (auto &iter : m_areas)
+		if (iter.area.intersects(hitbox))
 			return iter;
 	return Area(-1, { 0,0 ,0,0});
 }

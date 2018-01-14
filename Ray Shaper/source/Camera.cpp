@@ -46,6 +46,15 @@ void Camera::setCenter(const sf::Vector2f & center)
 
 void Camera::update(const float elapsedTime)
 {
+	// Check bounds
+	if (m_bounds != sf::FloatRect{ 0, 0, 0, 0 })
+	{
+		if (m_targetPos.x - m_view.getSize().x / 2.f < m_bounds.left)
+			m_targetPos = { m_bounds.left + m_view.getSize().x / 2.f, m_targetPos.y };
+		else if (m_targetPos.x + m_view.getSize().x / 2.f > m_bounds.left + m_bounds.width)
+			m_targetPos = {m_bounds.left + m_bounds.width - m_view.getSize().x / 2.f, m_targetPos.y };
+	}
+
 	sf::Vector2f movement{ (m_targetPos - m_view.getCenter()) * m_speed};
 	
 	// If it's inbetween one pixel of target pos
@@ -106,6 +115,11 @@ void Camera::setSpeed(const float speed)
 	m_speed = speed;
 	if (m_speed < 0)
 		m_speed = 0;
+}
+
+void Camera::setBounds(const sf::FloatRect & bounds)
+{
+	m_bounds = bounds;
 }
 
 Camera::Camera(const float speed, const sf::FloatRect view):

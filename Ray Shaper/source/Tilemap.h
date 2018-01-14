@@ -70,4 +70,5 @@ public:
 	const Spawn getSpawn(const int id) const;
 	// id == -1 means not found
 	const Area getArea(const int id) const;
+	const Area getCurrentArea(const sf::FloatRect &hitbox) const;
 };
