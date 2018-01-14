@@ -6,6 +6,8 @@
 #include "DataManager.h"
 #include "ObjectManager.h"
 
+#include "objects\ReflectionTile.h"
+
 void Tile::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
 	if(m_shouldDraw)
@@ -95,11 +97,8 @@ int Tilemap::load(const std::string &levelPath, std::vector<std::vector<Tile>> &
 			// Load into object 
 			if (id > 1)
 			{
-				switch (id)
-				{
-				default:
-					break;
-				}
+				if (id >= 2 && id <= 9)
+					new ReflectionTile(objectManager, id, { horiz*16.f, vertic*16.f });
 				id = 0;
 			}
 			// Load tile into this

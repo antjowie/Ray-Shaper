@@ -44,7 +44,8 @@ public:
 	// In that case use the input function
 	virtual void update(const float elapsedTime);
 
-	sf::FloatRect getHitbox() const;
+	// If a shape doesn't have a rectangular hitbox
+	virtual sf::FloatRect getHitbox() const;
 	const sf::Vector2f &getPosition() const;
 
 	// Some classes use more than one sprite

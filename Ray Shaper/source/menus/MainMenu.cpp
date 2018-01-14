@@ -18,12 +18,9 @@ void MainMenu::input(sf::RenderWindow & window)
 		switch (event.type)
 		{
 		case sf::Event::MouseButtonPressed:
-			for (auto &iter : m_objectManager.getObjects())
+			for (auto &iter : m_objectManager.getObjects<Button*>())
 			{
-				Button * button{ dynamic_cast<Button*>(iter) };
-				if (button == nullptr)
-					continue;
-				switch (button->getAction())
+				switch (iter->getAction())
 				{
 				case NewGame:
 					push(new GameMenu(m_menuStack,"test.tmx"));

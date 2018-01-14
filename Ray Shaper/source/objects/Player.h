@@ -4,6 +4,8 @@
 #include "Timeline.h"
 #include "Tilemap.h"
 
+#include "objects\ReflectionTile.h"
+
 #include <SFML\Graphics\RectangleShape.hpp>
 
 class Player : public Object
@@ -11,7 +13,7 @@ class Player : public Object
 private:
 	// If this timeline is completed the player will enter idle state
 	Timeline m_idleTimeline;
-
+	
 	// This enumerator is used to keep track of the animation sheet
 	enum AnimationId
 	{
@@ -24,7 +26,7 @@ private:
 	};
 
 	// Used for direction vector
-	enum Movement
+	enum Direction
 	{
 		Up,
 		Left,
@@ -64,6 +66,11 @@ private:
 	float m_jumpDuration;
 	float m_jumpTimeline{ 0.f };
 	bool m_wantToJump{ false };
+
+	// Block movement logic
+	Timeline m_grabCooldown;
+	bool m_wantToGrab{ false };
+	ReflectionTile * m_grabbed{ nullptr };
 
 	virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override final;
 

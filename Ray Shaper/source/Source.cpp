@@ -41,8 +41,10 @@ int main()
 		if (menuStack.peek()->returnedFocus)
 			menuStack.peek()->gainedFocus(window);
 
-		if(window.hasFocus())
-			menuStack.peek()->input(window);
+		// Unsure but apperantly this line has a bug where the buttons in the main menu wont appear
+		// if the window does not have focus
+		//if(window.hasFocus())
+		menuStack.peek()->input(window);
 		menuStack.peek()->update(elapsedTime);
 		menuStack.peek()->updateFade(window,elapsedTime);
 

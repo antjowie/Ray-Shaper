@@ -7,6 +7,7 @@ void GameMenu::input(sf::RenderWindow & window)
 	m_objectManager.input(window);
 
 	sf::Event event;
+
 	while(window.pollEvent(event))
 		switch (event.type)
 		{
@@ -23,6 +24,13 @@ void GameMenu::input(sf::RenderWindow & window)
 void GameMenu::update(const float elapsedTime)
 {
 	m_objectManager.update(elapsedTime);
+
+	// Give surrounding tiles a green color
+	sf::FloatRect surrTiles{ m_player->getHitbox() };
+	surrTiles = { surrTiles.left - 16, surrTiles.top - 16, surrTiles.width + 32, surrTiles.height + 32 };
+	for (auto &i : m_objectManager.getTileVector())
+		for (auto &j : i)
+			j.setState(j.getHitbox().intersects(surrTiles));
 
 	m_camera.update(elapsedTime);
 	m_camera.setTargetPosition({ m_player->getPosition().x,m_tilemap.getArea(m_level).area.top + m_tilemap.getArea(m_level).area.height / 2.f });

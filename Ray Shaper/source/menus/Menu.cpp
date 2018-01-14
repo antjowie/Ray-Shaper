@@ -93,7 +93,7 @@ Menu::Menu(MenuStack &menuStack, const std::string &title):
 	m_title(title),m_menuStack(menuStack)
 {
 	m_darkOverlay.setFillColor({ 0,0,0 });
-	m_fade.setCap(0.1f);
+	m_fade.setCap(1.f);
 
 	// Makes sound fade in
 	m_soundManager.setTargetVolume(0, 0, SoundType::Music);

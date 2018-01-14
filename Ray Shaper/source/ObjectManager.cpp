@@ -13,8 +13,8 @@ void ObjectManager::draw(sf::RenderTarget & target, sf::RenderStates states) con
 			if (sf::FloatRect(target.getView().getCenter() - target.getView().getSize() / 2.f, target.getView().getSize()).intersects(j.getHitbox()))
 				target.draw(j,states);
 		
-			if (!SHOW_HITBOX)
-				continue;
+			//if (!SHOW_HITBOX)
+			continue;
 
 			sf::RectangleShape pHit;
 			pHit.setSize(sf::Vector2f(j.getHitbox().width, j.getHitbox().height));
@@ -114,11 +114,6 @@ void ObjectManager::fixMovement(const Object * const thisObject, sf::Vector2f & 
 std::vector<std::vector<Tile>>& ObjectManager::getTileVector()
 {
 	return m_tiles;
-}
-
-std::list<Object*>& ObjectManager::getObjects()
-{
-	return m_objects;
 }
 
 ObjectManager::~ObjectManager()

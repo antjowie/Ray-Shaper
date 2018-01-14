@@ -1,7 +1,7 @@
 #pragma once
 #include <SFML\Graphics\Drawable.hpp>
 #include <SFML\Graphics\RenderWindow.hpp>
-#include <list>
+#include <vector>
 
 #include "Tilemap.h" 
 
@@ -12,7 +12,7 @@ class Object;
 class ObjectManager: public sf::Drawable
 {
 private:
-	std::list<Object *> m_objects;
+	std::vector<Object *> m_objects;
 	std::vector<std::vector<Tile>> m_tiles;
 	
 	virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
@@ -29,6 +29,17 @@ public:
 
 	// Used to load tilemap
 	std::vector<std::vector<Tile>> &getTileVector();
-	std::list<Object*> &getObjects();
+	template <class T = Object*> std::vector<T> getObjects();
 	~ObjectManager();
 };
+
+template<class T>
+inline std::vector<T> ObjectManager::getObjects()
+{
+	std::vector<T> returner;
+	for (auto &iter : m_objects)
+		if (dynamic_cast<T>(iter))
+			returner.push_back(static_cast<T>(iter));
+
+	return returner;
+}

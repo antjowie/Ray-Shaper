@@ -29,18 +29,25 @@ void Player::input(sf::RenderWindow & window)
 		iter = false;
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-		m_direction[Movement::Up] = true;
+		m_direction[Direction::Up] = true;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-		m_direction[Movement::Left] = true;
+		m_direction[Direction::Left] = true;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-		m_direction[Movement::Right] = true;
+		m_direction[Direction::Right] = true;
+
+	m_wantToGrab = false;
+	if (m_grabCooldown.getProgress() == 100 && sf::Keyboard::isKeyPressed(sf::Keyboard::F))
+	{
+		m_grabCooldown.setTimeline(0);
+		m_wantToGrab = true;
+	}
 }
 
 void Player::update(const float elapsedTime)
 {
 	sf::Vector2f movement{ 0,0 };
 	sf::Vector2f oldMovement{ 0,0 };
-	
+
 	m_animHandler.update(elapsedTime);
 	m_jumpTimeline -= elapsedTime;
 	if (m_jumpTimeline < 0)
@@ -53,7 +60,7 @@ void Player::update(const float elapsedTime)
 	bool moveHoriz{ false };
 
 	// Update movement
-	if (m_direction[Movement::Up] && m_canJumpSecond)
+	if (m_direction[Direction::Up] && m_canJumpSecond)
 	{
 		// We first update jump conditions
 		// Allows double jump
@@ -76,8 +83,8 @@ void Player::update(const float elapsedTime)
 	}
 	else
 		m_wantToJump = false;
-	
-	if (m_direction[Movement::Left])
+
+	if (m_direction[Direction::Left])
 	{
 		if (m_acceleration.x > 0)
 			m_acceleration.x -= m_decel * elapsedTime;
@@ -85,7 +92,7 @@ void Player::update(const float elapsedTime)
 		moveHoriz = true;
 	}
 
-	if (m_direction[Movement::Right])
+	if (m_direction[Direction::Right])
 	{
 		if (m_acceleration.x < 0)
 			m_acceleration.x += m_decel * elapsedTime;
@@ -117,18 +124,18 @@ void Player::update(const float elapsedTime)
 		m_acceleration.x = m_maxAcceleration;
 	else if (m_acceleration.x < -m_maxAcceleration)
 		m_acceleration.x = -m_maxAcceleration;
-	
+
 	// Fix movement to not collide
 	oldMovement = movement = m_acceleration * m_speed * elapsedTime;
 	m_objectManager.fixMovement(this, movement);
-	
+
 	// These can be handled with the new movement value
-	if (movement.x > 0)
+	if (m_direction[Direction::Right])
 	{
 		m_idleTimeline.setTimeline(0);
 		m_animHandler.setAnimation(AnimationId::fRight);
 	}
-	else if (movement.x < 0)
+	else if (m_direction[Direction::Left])
 	{
 		m_idleTimeline.setTimeline(0);
 		m_animHandler.setAnimation(AnimationId::fLeft);
@@ -136,20 +143,25 @@ void Player::update(const float elapsedTime)
 	else
 	{
 		m_animHandler.setAnimation(AnimationId::Idle);
-			m_idleTimeline.update(elapsedTime);
-			if (m_idleTimeline.getProgress() != 100)
-			{
-				m_animHandler.setTimeline(0);
-				m_animHandler.setFrame(0);
-			}
-			if (m_direction[Movement::Up])
-				m_idleTimeline.setTimeline(0);
+		m_idleTimeline.update(elapsedTime);
+		if (m_idleTimeline.getProgress() != 100)
+		{
+			m_animHandler.setTimeline(0);
+			m_animHandler.setFrame(0);
+		}
+		else
+		{
+			m_animHandler.setRate(1);
+		}
+		if (m_direction[Direction::Up])
+			m_idleTimeline.setTimeline(0);
 	}
 
 	// Update accelerations based on collision snapping
 	if (movement.x != oldMovement.x)
 		// This makes player move back to force him out of corners
-		m_acceleration.x = (oldMovement.x > 0 ? -m_decel - m_accel: m_accel + m_decel )* elapsedTime;
+		m_acceleration.x = (oldMovement.x > 0 ? -m_decel - m_accel : m_accel + m_decel)* elapsedTime;
+	// Player is on ground
 	if (oldMovement.y != 0 && movement.y == 0)
 	{
 		m_canJumpSecond = true;
@@ -160,12 +172,17 @@ void Player::update(const float elapsedTime)
 	{
 		m_canJump = false;
 		m_acceleration.y = 0;
-	}		
+	}
+	// Player is falling
+	if (movement.y != 0)
+	{
+		m_canJump = false;
+	}
 
 	// Update animation speed
 	if (m_animHandler.getAnimation() != AnimationId::Idle)
 	{
-		float m_rate{ std::fabs(movement.x) / m_maxAcceleration };
+		float m_rate{ std::fabs(m_acceleration.x) / m_maxAcceleration };
 		if (m_rate != 0 && m_rate < 0.25f)
 			m_rate = 0.25f;
 		m_animHandler.setRate(m_rate);
@@ -176,6 +193,42 @@ void Player::update(const float elapsedTime)
 
 	m_sprite.move(movement);
 	m_eyes.move(movement);
+
+	// Manage block holding mechanics
+	m_grabCooldown.update(elapsedTime);
+	if (m_wantToGrab)
+	{
+		// If player already grabbed, let go of it
+		if (m_grabbed)
+		{
+			m_grabbed->isGrabbed = false;
+			m_grabbed = nullptr;
+		}
+		else
+			for(auto &iter:m_objectManager.getObjects<ReflectionTile*>())
+				if (iter->getHitbox().intersects(getHitbox()))
+				{
+					iter->isGrabbed = true;
+					m_grabbed = iter;
+					break;
+				}
+	}
+	// If player jumps, let go of the object
+	else if (m_direction[Direction::Up])
+	{
+		if (m_grabbed)
+		{
+			m_grabbed->isGrabbed = false;
+			m_grabbed = nullptr;
+		}
+	}
+	// If tile makes illegal movement and wants to be dropped, drop it
+	else if (m_grabbed && !m_grabbed->isGrabbed)
+	{
+		m_grabbed = nullptr;
+	}
+	if (m_grabbed)
+		m_grabbed->move({ movement.x, 0 });
 }
 
 Player::Player(ObjectManager & objectManager, const sf::Vector2f & pos):
@@ -212,4 +265,5 @@ Player::Player(ObjectManager & objectManager, const sf::Vector2f & pos):
 		m_direction.push_back(false);
 
 	m_idleTimeline.setCap(5);
+	m_grabCooldown.setCap(1);
 }
