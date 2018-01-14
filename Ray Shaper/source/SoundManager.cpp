@@ -1,5 +1,6 @@
 #include "SoundManager.h"
 #include "DataManager.h"
+#include "Config.h"
 
 void SoundManager::push(Sound & sound)
 {
@@ -74,7 +75,9 @@ Sound::Sound(SoundManager & soundManager, const std::string soundName, const Sou
 {
 	m_soundManager.push(*this);
 
-	m_targetVolume = m_oldVolume = 100.f; // Has to be changed to config
+	m_targetVolume = m_oldVolume = (soundType == SoundType::Sound ? Config::getInstance().getData("soundVolume").code : Config::getInstance().getData("musicVolume").code);
+	m_sound.setVolume(m_targetVolume);
+	m_music.setVolume(m_targetVolume);
 	if (soundType == SoundType::Sound)
 	{
 		m_sound.setBuffer(DataManager::getInstance().getData(soundName).meta.sound);

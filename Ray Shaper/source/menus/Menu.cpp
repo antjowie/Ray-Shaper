@@ -1,6 +1,7 @@
 #include <SFML\Window\Event.hpp>
 
 #include "Menu.h"
+#include "Config.h"
 
 void Menu::push(Menu * const menu)
 {
@@ -29,7 +30,7 @@ void Menu::updateFade(sf::RenderWindow &window, const float elapsedTime)
 	sf::Uint8 newColor{ static_cast<sf::Uint8>(255.f / 100.f * m_fade.getProgress()) };
 	m_darkOverlay.setFillColor({ newColor,newColor,newColor });
 
-	m_soundManager.setTargetVolume(m_fade.getProgress(),0,SoundType::Music);
+	m_soundManager.setTargetVolume(static_cast<float>(Config::getInstance().getData("musicVolume").code) / 100.f *  m_fade.getProgress(),0,SoundType::Music);
 	m_soundManager.update(0);
 
 	if (m_wantToPush && m_fade.getProgress() == 0.f)

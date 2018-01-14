@@ -1,6 +1,7 @@
 #include <SFML\Graphics\Sprite.hpp>
 
 #include "menus\MainMenu.h"
+#include "Config.h"
 
 int main()
 {
@@ -19,6 +20,7 @@ int main()
 	window.display();
 
 	DataManager::getInstance();
+	Config::getInstance();
 	window.close();
 
 	window.create(sf::VideoMode(1280, 720), "Ray Shaper", sf::Style::Default);
