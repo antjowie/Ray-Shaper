@@ -28,6 +28,9 @@ private:
 		Tile* tile;
 	};
 	
+	// Checks if the two ranges intersect eachother
+	bool intersects(const double left1, const double right1, const double left2, const double right2) const;
+
 public:
 	virtual void update(const float elapsedTime)override final;
 

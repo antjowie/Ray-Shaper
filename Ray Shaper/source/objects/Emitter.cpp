@@ -5,6 +5,19 @@
 
 #include <iostream>
 
+bool Emitter::intersects(const double l1, const double r1, const double l2, const double r2) const
+{
+	return 
+		(
+			(l1 >= l2 && l1 <= r2) ||
+			(l1 <= l2 && r1 >= r2) ||
+			(r1 >= l2 && r1 <= r2) ||
+			(l2 >= l1 && l2 <= r1) ||
+			(l2 <= l1 && r2 >= r1) ||
+			(r2 >= l1 && r2 <= r1)
+		);
+}
+
 void Emitter::update(const float elapsedTime)
 {
 	// When emitter is inactive, lasers will not be casted, so we can return out of this function early
@@ -41,8 +54,9 @@ void Emitter::update(const float elapsedTime)
 		return;
 
 	// Postion is top left
-	sf::Vector2f spawnPos{ getPosition() };
+	sf::Vector2f spawnPos{ getPosition()};
 	sf::Vector2f direction{ 0,0 };
+	// Lookup initial direction
 	switch (m_direction)
 	{
 	case Up:
@@ -66,20 +80,38 @@ void Emitter::update(const float elapsedTime)
 	m_vertices.clear();
 	m_vertices.append(sf::Vertex(spawnPos, sf::Color(58, 166, 62)));
 
-	// Check in a radius of 100 tiles, its assuming that the nearest collision is in this size, but I'm going to make sure that it is in the bounds
-	// by game design. Else, I could make it a loop and add until a collision is met but that would repeat the loop plenty of times.
-	// The cost won't be too high, but I don't think it will be neccessary to implement a loop for it
-	Object * returned{this};
+	ReflectionTile * previousReflection{ nullptr };
+	ReflectionTile * reflection{ nullptr };
 	do
 	{
-	sf::Vector2f movement{ direction * 16.f*100.f };
-	returned = m_objectManager.fixMovement<Player*>(returned, movement,true);
-	spawnPos += movement;
-	if (dynamic_cast<ReflectionTile*>(returned))
+	reflection = nullptr;
+	sf::Vector2f movement{ direction * 16.f *100.f };
+	// We check for intersections using the SAT theorem
+	// Because all objects are normal to the grid, we only have to check one of the tiles
+	for (auto &iter : m_objectManager.getObjects<ReflectionTile*>())
 	{
-		spawnPos = { returned->getHitbox().left + returned->getHitbox().width / 2.f, returned->getHitbox().top + returned->getHitbox().height / 2.f };
-		// This is not refleciton maths but will be used as a temporary solution
-		switch (dynamic_cast<ReflectionTile*>(returned)->m_direction)
+		if (iter == previousReflection)
+			continue;
+		// See if laser collides with reflection tile
+		if (intersects(m_vertices[m_vertices.getVertexCount() -1].position.x, m_vertices[m_vertices.getVertexCount() - 1].position.x + movement.x, iter->getHitbox().left, iter->getHitbox().left + iter->getHitbox().width) &&
+			intersects(m_vertices[m_vertices.getVertexCount() - 1].position.y, m_vertices[m_vertices.getVertexCount() - 1].position.y + movement.y, iter->getHitbox().top, iter->getHitbox().top + iter->getHitbox().height))
+			if (!reflection)
+				reflection = iter;
+			// Check if tile is closer
+			else if(std::powf((iter->getHitbox().left + iter->getHitbox().width * 0.5f) - spawnPos.x, 2.f) +
+					std::powf((iter->getHitbox().top + iter->getHitbox().height * 0.5f) - spawnPos.y, 2.f) <
+					std::powf((reflection->getHitbox().left + reflection->getHitbox().width * 0.5f) - spawnPos.x, 2.f) +
+					std::powf((reflection->getHitbox().top + reflection->getHitbox().height * 0.5f) - spawnPos.y, 2.f))
+				reflection = iter;
+	}
+	previousReflection = reflection;
+	// Recalculate laser direction
+	// TODO
+	// Calculate correct reflection
+	// Use point of collision instead of center
+	if (reflection)
+	{
+		switch (reflection->m_direction)
 		{
 		case ReflectionTile::Direction::RightUp:
 			if (direction.x < 0)
@@ -117,21 +149,16 @@ void Emitter::update(const float elapsedTime)
 		case ReflectionTile::Direction::Right:
 			break;
 		}
+			m_vertices.append(sf::Vertex(reflection->getPosition(), sf::Color(58, 166, 62)));
 	}
+	// Calculate distance till first tile
+	// TODO
+	// Get calculation to first tile
 	else
 	{
-		if (direction.x > 0)
-			spawnPos += {8, 0};
-		else if (direction.x < 0)
-			spawnPos += {-8, 0};
-		else if (direction.y > 0)
-			spawnPos += {0, 8};
-		else if (direction.y < 0)
-			spawnPos += {0, -8};
+		m_vertices.append(sf::Vertex(m_vertices[m_vertices.getVertexCount() -1].position + movement, sf::Color(58, 166, 62)));
 	}
-	m_vertices.append(sf::Vertex(spawnPos, sf::Color(58, 166, 62)));
-
-	} while (dynamic_cast<ReflectionTile*>(returned));
+	} while (reflection);
 }
 
 sf::VertexArray & Emitter::getVertices()
