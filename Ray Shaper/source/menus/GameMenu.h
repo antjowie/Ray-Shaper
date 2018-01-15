@@ -20,6 +20,7 @@ private:
 	Camera m_camera;
 	Player *m_player;
 	Sound m_music;
+	std::vector<std::reference_wrapper<sf::VertexArray>> m_vertices;
 
 	// Highest level, the same as progress
 	int m_level{ 1 };

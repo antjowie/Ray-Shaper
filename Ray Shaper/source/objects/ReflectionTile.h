@@ -3,7 +3,7 @@
 
 class ReflectionTile : public Object
 {
-private:
+public:
 	const enum Direction
 	{
 		RightUp = 2,
@@ -16,10 +16,6 @@ private:
 		Right
 	}m_direction;
 
-	// Offset puts its value inside of this, when its higher then the offset value,
-	// This value will be used to fill the position in the tile because it was behind
-	float offsetBuffer{ 0 };
-public:
 	bool isGrabbed{ false };
 
 	virtual void update(const float elapsedTime) override final;

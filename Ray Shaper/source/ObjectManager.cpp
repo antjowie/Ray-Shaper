@@ -1,5 +1,4 @@
 #include "ObjectManager.h"
-#include "objects\Object.h"
 #include "objects\Player.h"
 
 #define SHOW_HITBOX false
@@ -63,7 +62,7 @@ void ObjectManager::update(const float elapsedTime)
 		iter->update(elapsedTime);
 }
 
-std::vector<std::vector<Tile>>& ObjectManager::getTileVector()
+std::vector<std::vector<Tile>>& ObjectManager::getTiles()
 {
 	return m_tiles;
 }

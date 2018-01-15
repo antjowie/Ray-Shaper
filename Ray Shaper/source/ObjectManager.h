@@ -7,10 +7,12 @@
 // The object class needs the CollisionManager class to be created so we declare that 
 // because object also needs CollisionManager
 class Object;
+struct HitboxObject;
 
 class ObjectManager: public sf::Drawable
 {
 private:
+
 	std::vector<Object *> m_objects;
 	std::vector<std::vector<Tile>> m_tiles;
 	
@@ -26,10 +28,10 @@ public:
 
 	// Leaving the template uninitialize will check all objects
 	// Blacklist means do not check for this
-	template <class T = Object*> void fixMovement(const Object *const thisObject, sf::Vector2f &movement, const bool blacklist = false, const bool checkTiles = true);
-
+	template <class T = Object*> Object* fixMovement(const Object *const thisObject, sf::Vector2f &movement, const bool blacklist = false, const bool checkTiles = true);
+	
 	// Used to load tilemap
-	std::vector<std::vector<Tile>> &getTileVector();
+	std::vector<std::vector<Tile>> &getTiles();
 	
 	// Template is used to get certain type, leave empty if you want all objects
 	template <class T = Object*> std::vector<T> getObjects();
@@ -37,12 +39,13 @@ public:
 };
 
 template<class T>
-inline void ObjectManager::fixMovement(const Object *const thisObject, sf::Vector2f & movement, const bool blacklist, const bool checkTiles)
+inline Object* ObjectManager::fixMovement(const Object *const thisObject, sf::Vector2f & movement, const bool blacklist, const bool checkTiles)
 {
 	sf::FloatRect h{ thisObject->getHitbox() };
 	sf::FloatRect hh{ h };
 	sf::FloatRect vh{ h };
 	sf::Vector2f &m{ movement };
+	Object* returner{ nullptr };
 
 	// This section updates the hitbox, the hitbox is a rectangle which contains the whole movement from last to next frame
 	// This rectangle is used to check nearby tiles whether or not they will collide with the hitbox
@@ -67,17 +70,17 @@ inline void ObjectManager::fixMovement(const Object *const thisObject, sf::Vecto
 
 				if (hh.intersects(b))
 				{
-					if (m.x > 0)
+					if (m.x > 0 && b.left - (h.left + h.width) < m.x)
 						m.x = b.left - (h.left + h.width);
-					else if (m.x < 0)
+					else if (m.x < 0 && (b.left + b.width) - h.left > m.x)
 						m.x = (b.left + b.width) - h.left;
 				}
 
 				if (vh.intersects(b))
 				{
-					if (m.y > 0)
+					if (m.y > 0 && b.top - (h.top + h.height) < m.y)
 						m.y = b.top - (h.top + h.height);
-					else if (m.y < 0)
+					else if (m.y < 0 && b.top + b.height - h.top > m.y)
 						m.y = b.top + b.height - h.top;
 				}
 			}
@@ -92,28 +95,54 @@ inline void ObjectManager::fixMovement(const Object *const thisObject, sf::Vecto
 
 	for (auto iter: objects)
 	{
-		if (iter == thisObject)
+		if (iter == thisObject || !iter->isSolid)
 			continue;
 		if (blacklist && dynamic_cast<T>(iter))
 			continue;
 		const sf::FloatRect b{ iter->getHitbox() };
 
+		bool intersect{ false };
 		if (hh.intersects(b))
 		{
-			if (m.x > 0)
+			if (m.x > 0 && b.left - (h.left + h.width) < m.x)
+			{
 				m.x = b.left - (h.left + h.width);
-			else if (m.x < 0)
-				m.x = (b.left + b.width) - h.left;
+			intersect = true;
+			}
+		else if (m.x < 0 && (b.left + b.width) - h.left > m.x)
+			{
+			m.x = (b.left + b.width) - h.left;
+			intersect = true;
+			}
 		}
 
 		if (vh.intersects(b))
 		{
-			if (m.y > 0)
+			if (m.y > 0 && b.top - (h.top + h.height) < m.y)
+			{
 				m.y = b.top - (h.top + h.height);
-			else if (m.y < 0)
+				intersect = true;
+			}
+		else if (m.y < 0 && b.top + b.height - h.top > m.y)
+			{
 				m.y = b.top + b.height - h.top;
+				intersect = true;
+			}
+		}
+
+		if (intersect)
+		{
+			if (!returner)
+				returner = iter;
+			// Check which one is closet
+			else if (std::powf((thisObject->getHitbox().left + thisObject->getHitbox().width / 2.f)	- (iter->getHitbox().left + iter->getHitbox().width / 2.f), 2.f) +
+					 std::powf((thisObject->getHitbox().top + thisObject->getHitbox().height / 2.f)	- (iter->getHitbox().top + iter->getHitbox().height / 2.f), 2.f) <
+					 std::powf((returner->getHitbox().left + returner->getHitbox().width / 2.f)		- (iter->getHitbox().left + iter->getHitbox().width / 2.f), 2.f) +
+					 std::powf((returner->getHitbox().top + returner->getHitbox().height / 2.f)		- (iter->getHitbox().top + iter->getHitbox().height / 2.f), 2.f))
+						returner = iter;
 		}
 	}
+	return returner;
 }
 
 template<class T>

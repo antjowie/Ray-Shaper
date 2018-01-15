@@ -25,6 +25,11 @@ void Gate::update(const float elapsedTime)
 	sf::IntRect newSize{ isCollided ? 16 : 0,16 - static_cast<int>(height),16, static_cast<int>(height) + 2 };
 	m_upperSprite.setTextureRect(newSize);
 	m_lowerSprite.setTextureRect(newSize);
+
+	if (newSize.height < 5)
+		isSolid = false;
+	else
+		isSolid = true;
 }
 
 sf::FloatRect Gate::getHitbox() const

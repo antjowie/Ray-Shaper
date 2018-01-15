@@ -34,6 +34,8 @@ protected:
 	ObjectManager &m_objectManager;
 
 public:
+	// Checks whether object should be checked for collision
+	bool isSolid{ true };
 	// Used to check if the object deflects the laser to know if it has special functions
 	// I would normally use an enum class but there are only 2 types that are
 	// different in the way it should be handled
