@@ -20,6 +20,6 @@ public:
 
 	virtual void update(const float elapsedTime) override final;
 	virtual void move(const sf::Vector2f &movement) override final;
-
+	
 	ReflectionTile(ObjectManager &objectManager, const int id, const sf::Vector2f &position);
 };

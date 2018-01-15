@@ -22,7 +22,7 @@ void ObjectManager::draw(sf::RenderTarget & target, sf::RenderStates states) con
 			pHit.setPosition(j.getHitbox().left, j.getHitbox().top);
 			pHit.setFillColor(sf::Color(255, 255, 255, 100));
 			pHit.setOutlineThickness(1);
-			pHit.setOutlineColor(sf::Color::Red);
+			pHit.setOutlineColor(sf::Color::Yellow);
 			target.draw(pHit, states);
 		}
 

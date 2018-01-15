@@ -4,7 +4,10 @@
 
 void ReflectionTile::update(const float elapsedTime)
 {
-	m_sprite.setTextureRect(isGrabbed ? sf::IntRect{16, 16 * (m_direction - 2), 16, 16} : sf::IntRect{ 0,16 * (m_direction - 2),16,16 });
+	int left = isGrabbed ? 16 : 0;
+	sf::IntRect textureRect{ m_sprite.getTextureRect() };
+	textureRect.left = left;
+	m_sprite.setTextureRect(textureRect);
 }
 
 void ReflectionTile::move(const sf::Vector2f & movement)
@@ -26,7 +29,7 @@ ReflectionTile::ReflectionTile(ObjectManager &objectManager, const int id, const
 	m_direction(static_cast<Direction>(id))
 {
 	m_sprite.setTexture(DataManager::getInstance().getData("reflectionTile").meta.texture);
-	m_sprite.setTextureRect({ 0,16 * (id - Direction::RightUp), 16,16 });
+	m_sprite.setTextureRect({ 0,17 * (id - Direction::RightUp), 16,16 });
 	m_sprite.setPosition(position + sf::Vector2f{8, 8});
 	m_sprite.setOrigin(8, 8);
 }
