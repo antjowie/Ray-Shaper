@@ -4,7 +4,7 @@
 
 void ReflectionTile::update(const float elapsedTime)
 {
-	int left = isGrabbed ? 16 : 0;
+	int left = isGrabbed ? 17 : 0;
 	sf::IntRect textureRect{ m_sprite.getTextureRect() };
 	textureRect.left = left;
 	m_sprite.setTextureRect(textureRect);
