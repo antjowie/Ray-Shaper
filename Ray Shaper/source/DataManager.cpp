@@ -22,7 +22,6 @@ DataManager::DataManager()
 	pushData("tile", DataManager::Data("Ray Shaper/data/textures/tile.png", DataManager::Type::Texture));
 	pushData("reflectionTile", DataManager::Data("Ray Shaper/data/textures/reflectionTile.png", DataManager::Type::Texture));
 	pushData("emitter", DataManager::Data("Ray Shaper/data/textures/emitter.png", DataManager::Type::Texture));
-	pushData("laser", DataManager::Data("Ray Shaper/data/textures/laser.png", DataManager::Type::Texture));
 	pushData("gate", DataManager::Data("Ray Shaper/data/textures/gate.png", DataManager::Type::Texture));
 	pushData("background", DataManager::Data("Ray Shaper/data/textures/background.png", DataManager::Type::Texture));
 	getData("background").meta.texture.setRepeated(true);

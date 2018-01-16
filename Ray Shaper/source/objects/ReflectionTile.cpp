@@ -24,6 +24,63 @@ void ReflectionTile::move(const sf::Vector2f & movement)
 	m_sprite.move(movement.x, 0);
 }
 
+const std::vector<sf::Vector2f> ReflectionTile::getVertices() const
+{
+	std::vector<sf::Vector2f> returner;
+	switch (m_direction)
+	{
+	case ReflectionTile::Direction::RightUp:
+		returner.push_back({ getHitbox().left , getHitbox().top});
+		returner.push_back({ getHitbox().left + getHitbox().width, getHitbox().top + getHitbox().height });
+		returner.push_back({ getHitbox().left, getHitbox().top + getHitbox().height });
+		break;
+
+	case ReflectionTile::Direction::RightDown:
+		returner.push_back({ getHitbox().left , getHitbox().top });
+		returner.push_back({ getHitbox().left + getHitbox().width, getHitbox().top});
+		returner.push_back({ getHitbox().left, getHitbox().top + getHitbox().height });
+		break;
+
+	case ReflectionTile::Direction::LeftDown:
+		returner.push_back({ getHitbox().left , getHitbox().top });
+		returner.push_back({ getHitbox().left + getHitbox().width, getHitbox().top});
+		returner.push_back({ getHitbox().left + getHitbox().width, getHitbox().top + getHitbox().height });
+		break;
+
+	case ReflectionTile::Direction::LeftUp:
+		returner.push_back({ getHitbox().left + getHitbox().width , getHitbox().top });
+		returner.push_back({ getHitbox().left + getHitbox().width, getHitbox().top + getHitbox().height });
+		returner.push_back({ getHitbox().left, getHitbox().top + getHitbox().height });
+		break;
+	case ReflectionTile::Direction::Up:
+		returner.push_back({ getHitbox().left , getHitbox().top });
+		returner.push_back({ getHitbox().left + getHitbox().width, getHitbox().top });
+		returner.push_back({ getHitbox().left + getHitbox().width, getHitbox().top + getHitbox().height });
+		returner.push_back({ getHitbox().left, getHitbox().top + getHitbox().height }); 
+		break;
+	case ReflectionTile::Direction::Down:
+		returner.push_back({ getHitbox().left , getHitbox().top });
+		returner.push_back({ getHitbox().left + getHitbox().width, getHitbox().top });
+		returner.push_back({ getHitbox().left + getHitbox().width, getHitbox().top + getHitbox().height });
+		returner.push_back({ getHitbox().left, getHitbox().top + getHitbox().height }); 
+		break;
+	case ReflectionTile::Direction::Left:
+		returner.push_back({ getHitbox().left , getHitbox().top });
+		returner.push_back({ getHitbox().left + getHitbox().width, getHitbox().top });
+		returner.push_back({ getHitbox().left + getHitbox().width, getHitbox().top + getHitbox().height });
+		returner.push_back({ getHitbox().left, getHitbox().top + getHitbox().height }); 
+		break;
+	case ReflectionTile::Direction::Right:
+		returner.push_back({ getHitbox().left , getHitbox().top });
+		returner.push_back({ getHitbox().left + getHitbox().width, getHitbox().top });
+		returner.push_back({ getHitbox().left + getHitbox().width, getHitbox().top + getHitbox().height });
+		returner.push_back({ getHitbox().left, getHitbox().top + getHitbox().height });		
+		break;
+	}
+
+	return returner;
+}
+
 ReflectionTile::ReflectionTile(ObjectManager &objectManager, const int id, const sf::Vector2f & position) :
 	Object(objectManager),
 	m_direction(static_cast<Direction>(id))

@@ -2,8 +2,10 @@
 #include "DataManager.h"
 
 #include "objects\Player.h"
+#include "objects\Gate.h"
 
 #include <iostream>
+
 
 bool Emitter::intersects(const double l1, const double r1, const double l2, const double r2) const
 {
@@ -80,85 +82,78 @@ void Emitter::update(const float elapsedTime)
 	m_vertices.clear();
 	m_vertices.append(sf::Vertex(spawnPos, sf::Color(58, 166, 62)));
 
-	ReflectionTile * previousReflection{ nullptr };
-	ReflectionTile * reflection{ nullptr };
+	Collided collided;
 	do
 	{
-	reflection = nullptr;
-	sf::Vector2f movement{ direction * 16.f *100.f };
-	// We check for intersections using the SAT theorem
-	// Because all objects are normal to the grid, we only have to check one of the tiles
-	for (auto &iter : m_objectManager.getObjects<ReflectionTile*>())
-	{
-		if (iter == previousReflection)
-			continue;
-		// See if laser collides with reflection tile
-		if (intersects(m_vertices[m_vertices.getVertexCount() -1].position.x, m_vertices[m_vertices.getVertexCount() - 1].position.x + movement.x, iter->getHitbox().left, iter->getHitbox().left + iter->getHitbox().width) &&
-			intersects(m_vertices[m_vertices.getVertexCount() - 1].position.y, m_vertices[m_vertices.getVertexCount() - 1].position.y + movement.y, iter->getHitbox().top, iter->getHitbox().top + iter->getHitbox().height))
-			if (!reflection)
-				reflection = iter;
-			// Check if tile is closer
-			else if(std::powf((iter->getHitbox().left + iter->getHitbox().width * 0.5f) - spawnPos.x, 2.f) +
-					std::powf((iter->getHitbox().top + iter->getHitbox().height * 0.5f) - spawnPos.y, 2.f) <
-					std::powf((reflection->getHitbox().left + reflection->getHitbox().width * 0.5f) - spawnPos.x, 2.f) +
-					std::powf((reflection->getHitbox().top + reflection->getHitbox().height * 0.5f) - spawnPos.y, 2.f))
-				reflection = iter;
-	}
-	previousReflection = reflection;
-	// Recalculate laser direction
-	// TODO
-	// Calculate correct reflection
-	// Use point of collision instead of center
-	if (reflection)
-	{
-		switch (reflection->m_direction)
+		const sf::Vector2f movement{ direction * 100.f * 16.f };
+		// Check for reflectionTile collision
+		collided = raycastIntersection<ReflectionTile*>(spawnPos, spawnPos + movement,false,true);
+		// If no collision with reflectionTile is met, check for tile collision
+		if (!collided.object)
 		{
-		case ReflectionTile::Direction::RightUp:
-			if (direction.x < 0)
-				direction = { 0,-1 };
+			collided = raycastIntersection<>(spawnPos, spawnPos + movement, true, false);
+			// If no collision with tile is met, check for gate collision
+			// If no gate collision is met, level design is bad, because the ray had a larger distance then the max length, 
+			if (!collided.tile)
+			{
+				collided = raycastIntersection<Gate*>(spawnPos, spawnPos + movement, false, true);
+				if (!collided.object)
+					spawnPos += movement;
+				else
+				{
+					spawnPos = collided.point;
+					collided.object = nullptr;
+				}
+			}
 			else
-				direction = { 1,0 };
-			break;
-
-		case ReflectionTile::Direction::RightDown:
-			if (direction.x < 0)
-				direction = { 0,1 };
-			else
-				direction = { 1,0 };
-			break;
-
-		case ReflectionTile::Direction::LeftDown:
-			if (direction.x > 0)
-				direction = { 0,1 };
-			else
-				direction = { -1,0 };
-			break;
-
-		case ReflectionTile::Direction::LeftUp:
-			if (direction.x > 0)
-				direction = { 0,-1 };
-			else
-				direction = { -1,0 };
-			break;
-		case ReflectionTile::Direction::Up:
-			break;
-		case ReflectionTile::Direction::Down:
-			break;
-		case ReflectionTile::Direction::Left:
-			break;
-		case ReflectionTile::Direction::Right:
-			break;
+				spawnPos = collided.point;
 		}
-			m_vertices.append(sf::Vertex(reflection->getPosition(), sf::Color(58, 166, 62)));
-	}
-	// Calculate distance till first tile
-	// TODO
-	// Get calculation to first tile
-	else
-	{
-		m_vertices.append(sf::Vertex(m_vertices[m_vertices.getVertexCount() -1].position + movement, sf::Color(58, 166, 62)));
-	}
-	} while (reflection);
+		else
+		{
+			spawnPos = collided.point;
+			// Update direction
+			// TODO, update correctly
+			switch (dynamic_cast<ReflectionTile*>(collided.object)->m_direction)
+			{
+			case ReflectionTile::Direction::RightUp:
+				if (direction.x < 0)
+					direction = { 0,-1 };
+				else
+					direction = { 1,0 };
+				break;
+
+			case ReflectionTile::Direction::RightDown:
+				if (direction.x < 0)
+					direction = { 0,1 };
+				else
+					direction = { 1,0 };
+				break;
+
+			case ReflectionTile::Direction::LeftDown:
+				if (direction.x > 0)
+					direction = { 0,1 };
+				else
+					direction = { -1,0 };
+				break;
+
+			case ReflectionTile::Direction::LeftUp:
+				if (direction.x > 0)
+					direction = { 0,-1 };
+				else
+					direction = { -1,0 };
+				break;
+			case ReflectionTile::Direction::Up:
+				break;
+			case ReflectionTile::Direction::Down:
+				break;
+			case ReflectionTile::Direction::Left:
+				break;
+			case ReflectionTile::Direction::Right:
+				break;
+			}
+		}
+		m_vertices.append(sf::Vertex(spawnPos, sf::Color(58, 166, 62)));
+	} while (collided.object);
 }
 
 sf::VertexArray & Emitter::getVertices()
