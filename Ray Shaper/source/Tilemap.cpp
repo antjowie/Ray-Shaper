@@ -49,7 +49,7 @@ Tile Tile::getTile(const int id, const sf::Vector2f & position)
 	return  Tile(position, false, false);
 }
 
-int Tilemap::load(const std::string &levelPath, std::vector<std::vector<Tile>> &tilemap, ObjectManager &objectManager)
+int Tilemap::load(const std::string &levelPath, std::vector<std::vector<Tile>> &tilemap, ObjectManager &objectManager, SoundManager &soundManager)
 {
 	pugi::xml_document doc;
 	pugi::xml_parse_result result = doc.load_file(std::string(levelPath).c_str());
@@ -123,7 +123,7 @@ int Tilemap::load(const std::string &levelPath, std::vector<std::vector<Tile>> &
 		else if (type == "area")
 			m_areas.push_back(Area(object.first_child().first_child().attribute("value").as_int(), { object.attribute("x").as_float() ,object.attribute("y").as_float() ,object.attribute("width").as_float() ,object.attribute("height").as_float() }));
 		else if (type == "gate")
-			new Gate(objectManager, object.first_child().first_child().attribute("value").as_int(), sf::Vector2f{ object.attribute("x").as_float(), object.attribute("y").as_float() });
+			new Gate(objectManager,soundManager, object.first_child().first_child().attribute("value").as_int(), sf::Vector2f{ object.attribute("x").as_float(), object.attribute("y").as_float() });
 	}
 
 	return 0;

@@ -31,6 +31,7 @@ void GameMenu::update(const float elapsedTime)
 		iter->laserHit = false;
 
 	m_objectManager.update(elapsedTime);
+	m_soundManager.update(elapsedTime);
 
 	// Give surrounding tiles a green color
 	sf::FloatRect surrTiles{ m_player->getHitbox() };
@@ -84,7 +85,7 @@ GameMenu::GameMenu(MenuStack & menuStack, const std::string &levelPath):
 	Menu(menuStack,"Ray Shaper - In Game"), m_camera(2,{0,0,128,72}),
 	m_music(m_soundManager,"gameMusic",SoundType::Music)
 {
-	m_tilemap.load("test.tmx", m_objectManager.getTiles(), m_objectManager);
+	m_tilemap.load("test.tmx", m_objectManager.getTiles(), m_objectManager,m_soundManager);
 	m_player = new  Player(m_objectManager, { 0,0 });
 
 	m_level = m_tilemap.getCurrentArea(m_player->getHitbox()).id;

@@ -1,5 +1,8 @@
 #include "Gate.h"
 #include "DataManager.h"
+#include "Config.h"
+
+#include <iostream>
 
 void Gate::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
@@ -10,6 +13,29 @@ void Gate::draw(sf::RenderTarget & target, sf::RenderStates states) const
 void Gate::update(const float elapsedTime)
 {
 	float height{ m_upperSprite.getGlobalBounds().height };
+		if(laserHit && !m_isPlayed)
+		{
+			if (!m_soundIsPlayed)
+			{
+				m_sound.play();
+				m_soundIsPlayed = true;
+			}
+			if (m_soundTimeline.getProgress() == 0)
+			{
+				m_soundManager.setTargetVolume(0, 0.5f, SoundType::Sound);
+				m_soundManager.setTargetVolume(0, 0.5f, SoundType::Music);
+				m_sound.setTargetVolume(Config::getInstance().getData("soundVolume").code,0);
+			}
+			else
+			{
+				m_soundManager.setTargetVolume(Config::getInstance().getData("soundVolume").code, 5.f, SoundType::Sound);
+				m_soundManager.setTargetVolume(Config::getInstance().getData("musicVolume").code, 5.f, SoundType::Music);
+			}
+			m_soundTimeline.update(elapsedTime);
+			if (m_soundTimeline.getProgress() == 100)
+				m_isPlayed = true;
+		}
+
 	if (isCollided && laserHit)
 		height -= 16.f * elapsedTime;
 	else
@@ -37,8 +63,9 @@ sf::FloatRect Gate::getHitbox() const
 	return sf::FloatRect(m_upperSprite.getGlobalBounds().left, m_upperSprite.getGlobalBounds().top ,16.f,32.f);
 }
 
-Gate::Gate(ObjectManager & objectManager, const int id, sf::Vector2f & position):
-	Object(objectManager),m_id(id), laserHit(false)
+Gate::Gate(ObjectManager & objectManager, SoundManager &soundManager, const int id, sf::Vector2f & position):
+	Object(objectManager),m_id(id), laserHit(false),m_sound(soundManager,"sectionFinished",SoundType::Sound,{position.x + 8.f,position.y,0}),
+	m_soundManager(soundManager), m_isPlayed(false)
 {
 	m_upperSprite.setTexture(&DataManager::getInstance().getData("gate").meta.texture);
 	m_lowerSprite.setTexture(&DataManager::getInstance().getData("gate").meta.texture);
@@ -52,4 +79,9 @@ Gate::Gate(ObjectManager & objectManager, const int id, sf::Vector2f & position)
 	m_lowerSprite.setPosition(position + sf::Vector2f{ 0, 16 });
 	m_lowerSprite.rotate(180);
 	m_lowerSprite.move(16, -16);
+
+
+	m_soundTimeline.setCap(5);
+	m_sound.getSound().setAttenuation(0.05f);
+	m_sound.getSound().setMinDistance(2.f);
 }

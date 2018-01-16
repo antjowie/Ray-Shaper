@@ -51,9 +51,8 @@ void Sound::setTargetVolume(const float volume, const float fadeTime)
 void Sound::update(const float elapsedTime)
 {
 	m_volumeTimeline.update(elapsedTime);
-	float vol{ m_music.getVolume() };
 	const float newVolume{ m_volumeTimeline.lerp(m_oldVolume, m_targetVolume) };
-	
+
 	if(soundType == SoundType::Sound ? m_sound.getVolume() : m_music.getVolume() != m_targetVolume)
 		soundType == SoundType::Sound ?
 			m_sound.setVolume(newVolume): m_music.setVolume(newVolume);
@@ -67,6 +66,11 @@ void Sound::play()
 void Sound::pause()
 {
 	soundType == SoundType::Sound ? m_sound.pause() : m_music.pause();
+}
+
+sf::Sound & Sound::getSound()
+{
+	return m_sound;
 }
 
 Sound::Sound(SoundManager & soundManager, const std::string soundName, const SoundType & soundType, const sf::Vector3f position):

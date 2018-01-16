@@ -65,7 +65,9 @@ public:
 	void update(const float elapsedTime);
 	void play();
 	void pause();
-	
+
+	// Used to specify specific values for spatialization
+	sf::Sound &getSound();
 	// If position is uninitialized, it will not be spatialized
 	Sound(SoundManager &soundManager, const std::string soundName, const SoundType &soundType, const sf::Vector3f position = { 0,0,0 });
 };

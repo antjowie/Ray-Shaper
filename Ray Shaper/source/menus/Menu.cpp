@@ -25,7 +25,11 @@ void Menu::updateFade(sf::RenderWindow &window, const float elapsedTime)
 	if(m_wantToPop || m_wantToPush)
 		m_fade.update(-elapsedTime);
 	else
+	{
+		if (m_fade.getProgress() == 100)
+			return;
 		m_fade.update(elapsedTime);
+	}
 
 	sf::Uint8 newColor{ static_cast<sf::Uint8>(255.f / 100.f * m_fade.getProgress()) };
 	m_darkOverlay.setFillColor({ newColor,newColor,newColor });

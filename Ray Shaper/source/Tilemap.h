@@ -13,6 +13,7 @@
 #include <SFML\Graphics\Sprite.hpp>
 
 #include "DataManager.h"
+#include "SoundManager.h"
 
 struct Spawn
 {
@@ -64,7 +65,7 @@ public:
 	// -2 Tile layer not found
 	// -3 Object layer not found
 	// -4 PCData not added
-	int load(const std::string &levelPath, std::vector<std::vector<Tile>> &tilemap, ObjectManager &objectManager);
+	int load(const std::string &levelPath, std::vector<std::vector<Tile>> &tilemap, ObjectManager &objectManager, SoundManager &soundManager);
 
 	// id == -1 means not found
 	const Spawn getSpawn(const int id) const;

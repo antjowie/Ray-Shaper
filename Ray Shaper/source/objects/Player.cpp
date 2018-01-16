@@ -1,4 +1,5 @@
 #include <SFML\Window\Keyboard.hpp>
+#include <SFML\Audio\Listener.hpp>
 
 #include "Player.h"
 #include "DataManager.h"
@@ -195,6 +196,8 @@ void Player::update(const float elapsedTime)
 	m_sprite.move(movement);
 	m_eyes.move(movement);
 
+	sf::Listener::setPosition({ getPosition().x,getPosition().y,0 });
+	
 	// Manage block holding mechanics
 	m_grabCooldown.update(elapsedTime);
 	if (m_wantToGrab)

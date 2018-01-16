@@ -38,7 +38,6 @@ void Emitter::update(const float elapsedTime)
 			}
 		return;
 	}
-	Collided collided;
 
 	// Check if reflection tiles have been moved, if they have, recalculate laser
 	const std::vector<ReflectionTile*> &newTiles{ m_objectManager.getObjects<ReflectionTile*>() };
@@ -55,6 +54,7 @@ void Emitter::update(const float elapsedTime)
 			}
 	if (same)
 	{
+		Collided collided;
 		// Update laser if needed
 		sf::Vector2f movement{ m_vertices[m_vertices.getVertexCount() - 1].position - m_vertices[m_vertices.getVertexCount() - 2].position };
 		movement /= std::sqrtf(std::powf(movement.x, 2.f) + std::powf(movement.y, 2.f)); // Make unit vector and add onto the end position (fake collision)
@@ -89,40 +89,39 @@ void Emitter::update(const float elapsedTime)
 	}
 
 	m_vertices.clear();
-	m_vertices.append(sf::Vertex(spawnPos, sf::Color(58, 166, 62)));
+	m_vertices.append(sf::Vertex(spawnPos, sf::Color(58, 166, 62,0)));
+	Collided * closestCollision{ nullptr };
 
 	do
 	{
+		// Used for last fade
+		bool gateHit{ false };
 		const sf::Vector2f movement{ direction * 100.f * 16.f };
-		// Check for reflectionTile collision
-		collided = raycastIntersection<ReflectionTile*>(spawnPos, spawnPos + movement,false,true);
-		// If no collision with reflectionTile is met, check for tile collision
-		if (!collided.object)
+
+		// Calculate closest of the three tiles
+		Collided rtile(raycastIntersection<ReflectionTile*>(spawnPos, spawnPos + movement,false,true));
+		Collided tile(raycastIntersection<>(spawnPos, spawnPos + movement, true, false));
+		Collided gate(raycastIntersection<Gate*>(spawnPos, spawnPos + movement, false, true));
+
+		closestCollision = rtile.percentage < tile.percentage ? &rtile : &tile;
+		closestCollision = closestCollision->percentage < gate.percentage ? closestCollision : &gate;
+	
+		// If it is gate
+		if (dynamic_cast<Gate*>(closestCollision->object))
 		{
-			collided = raycastIntersection<>(spawnPos, spawnPos + movement, true, false);
-			// If no collision with tile is met, check for gate collision
-			// If no gate collision is met, level design is bad, because the ray had a larger distance then the max length, 
-			if (!collided.tile)
-			{
-				collided = raycastIntersection<Gate*>(spawnPos, spawnPos + movement, false, true);
-				if (!collided.object)
-					spawnPos += movement;
-				else
-				{
-					spawnPos = collided.point;
-					static_cast<Gate*>(collided.object)->laserHit = true;
-					collided.object = nullptr;
-				}
-			}
-			else
-				spawnPos = collided.point;
+			// If gate immediatly is hit
+			if (m_vertices.getVertexCount() == 1)
+				m_vertices.append({ spawnPos + ((closestCollision->point - spawnPos) *0.5f), sf::Color(58, 166, 62)});
+			static_cast<Gate*>(closestCollision->object)->laserHit = true;
+			gateHit = true;
+			closestCollision->object = nullptr;
 		}
-		else
+		// If it is reflection tile
+		else if(!closestCollision->tile)
 		{
-			spawnPos = collided.point;
 			// Update direction
 			// TODO, update correctly
-			switch (dynamic_cast<ReflectionTile*>(collided.object)->m_direction)
+			switch (dynamic_cast<ReflectionTile*>(closestCollision->object)->m_direction)
 			{
 			case ReflectionTile::Direction::RightUp:
 				if (direction.x < 0)
@@ -161,8 +160,9 @@ void Emitter::update(const float elapsedTime)
 				break;
 			}
 		}
-		m_vertices.append(sf::Vertex(spawnPos, sf::Color(58, 166, 62)));
-	} while (collided.object);
+		spawnPos = closestCollision->point;
+		m_vertices.append(sf::Vertex(spawnPos, sf::Color(58, 166, 62,gateHit?0:255)));
+	} while (closestCollision->object);
 }
 
 sf::VertexArray & Emitter::getVertices()
