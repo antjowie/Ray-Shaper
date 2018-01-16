@@ -3,7 +3,7 @@
 Config::Config()
 {
 	pushData("soundVolume", Config::Data(100, Config::Data::Type::Integer));
-	pushData("musicVolume", Config::Data(50, Config::Data::Type::Integer));
+	pushData("musicVolume", Config::Data(10, Config::Data::Type::Integer));
 }
 
 void Config::pushData(const std::string & key, Data & data)

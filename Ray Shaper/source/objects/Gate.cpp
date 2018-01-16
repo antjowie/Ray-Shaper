@@ -10,7 +10,7 @@ void Gate::draw(sf::RenderTarget & target, sf::RenderStates states) const
 void Gate::update(const float elapsedTime)
 {
 	float height{ m_upperSprite.getGlobalBounds().height };
-	if (isCollided)
+	if (isCollided && laserHit)
 		height -= 16.f * elapsedTime;
 	else
 		height += 16.f * elapsedTime;
@@ -22,7 +22,7 @@ void Gate::update(const float elapsedTime)
 	m_upperSprite.setSize({ 16.f,height });
 	m_lowerSprite.setSize({ 16.f,height });
 
-	sf::IntRect newSize{ isCollided ? 16 : 0,16 - static_cast<int>(height),16, static_cast<int>(height) + 2 };
+	sf::IntRect newSize{ laserHit ? 16 : 0,16 - static_cast<int>(height),16, static_cast<int>(height) + 2 };
 	m_upperSprite.setTextureRect(newSize);
 	m_lowerSprite.setTextureRect(newSize);
 
@@ -38,7 +38,7 @@ sf::FloatRect Gate::getHitbox() const
 }
 
 Gate::Gate(ObjectManager & objectManager, const int id, sf::Vector2f & position):
-	Object(objectManager),m_id(id)
+	Object(objectManager),m_id(id), laserHit(false)
 {
 	m_upperSprite.setTexture(&DataManager::getInstance().getData("gate").meta.texture);
 	m_lowerSprite.setTexture(&DataManager::getInstance().getData("gate").meta.texture);

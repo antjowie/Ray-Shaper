@@ -13,8 +13,12 @@ private:
 	virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override final;
 
 public:
+	// Used when player is near
 	bool isCollided{ false };
-
+	bool laserHit{ false };
+	
+	// Used when laser hits
+	
 	virtual void update(const float elapsedTime) override final;
 
 	virtual sf::FloatRect getHitbox() const override final;

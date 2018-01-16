@@ -38,6 +38,7 @@ void Emitter::update(const float elapsedTime)
 			}
 		return;
 	}
+	Collided collided;
 
 	// Check if reflection tiles have been moved, if they have, recalculate laser
 	const std::vector<ReflectionTile*> &newTiles{ m_objectManager.getObjects<ReflectionTile*>() };
@@ -53,7 +54,15 @@ void Emitter::update(const float elapsedTime)
 				m_oldTiles[i] = newTiles[i]->getHitbox().left;
 			}
 	if (same)
+	{
+		// Update laser if needed
+		sf::Vector2f movement{ m_vertices[m_vertices.getVertexCount() - 1].position - m_vertices[m_vertices.getVertexCount() - 2].position };
+		movement /= std::sqrtf(std::powf(movement.x, 2.f) + std::powf(movement.y, 2.f)); // Make unit vector and add onto the end position (fake collision)
+		collided = raycastIntersection<Gate*>(m_vertices[m_vertices.getVertexCount()-2].position, m_vertices[m_vertices.getVertexCount() - 1].position + movement, false, true);
+		if (collided.object)
+			static_cast<Gate*>(collided.object)->laserHit = true;
 		return;
+	}
 
 	// Postion is top left
 	sf::Vector2f spawnPos{ getPosition()};
@@ -82,7 +91,6 @@ void Emitter::update(const float elapsedTime)
 	m_vertices.clear();
 	m_vertices.append(sf::Vertex(spawnPos, sf::Color(58, 166, 62)));
 
-	Collided collided;
 	do
 	{
 		const sf::Vector2f movement{ direction * 100.f * 16.f };
@@ -102,6 +110,7 @@ void Emitter::update(const float elapsedTime)
 				else
 				{
 					spawnPos = collided.point;
+					static_cast<Gate*>(collided.object)->laserHit = true;
 					collided.object = nullptr;
 				}
 			}

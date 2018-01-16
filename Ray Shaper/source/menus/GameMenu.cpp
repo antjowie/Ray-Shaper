@@ -26,6 +26,10 @@ void GameMenu::input(sf::RenderWindow & window)
 
 void GameMenu::update(const float elapsedTime)
 {
+	// Reset laserHit, this value is updates in object manager update
+	for (auto &iter : m_objectManager.getObjects<Gate*>())
+		iter->laserHit = false;
+
 	m_objectManager.update(elapsedTime);
 
 	// Give surrounding tiles a green color
@@ -37,7 +41,7 @@ void GameMenu::update(const float elapsedTime)
 
 	m_camera.update(elapsedTime);
 
-	// Temp gate open condition
+	// If gates is hit with laser, this will open them when they are near
 	sf::FloatRect playerHitbox{ m_player->getHitbox() };
 	playerHitbox = { playerHitbox.left - 1, playerHitbox.top, playerHitbox.width + 2, playerHitbox.height };
 	for (auto &iter : m_objectManager.getObjects<Gate*>())
@@ -48,6 +52,7 @@ void GameMenu::update(const float elapsedTime)
 			iter->isCollided = false;
 	}
 
+	// Camera
 	// If player is not in a playing area
 	m_currentLevel = m_tilemap.getCurrentArea(m_player->getHitbox()).id;
 	if (m_currentLevel == -1)
