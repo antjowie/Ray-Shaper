@@ -163,7 +163,7 @@ void Player::update(const float elapsedTime)
 		// This makes player move back to force him out of corners
 		m_acceleration.x = (oldMovement.x > 0 ? -m_decel - m_accel : m_accel + m_decel)* elapsedTime;
 	// Player is on ground
-	if (oldMovement.y != 0 && movement.y == 0)
+	if (oldMovement.y > 0 && movement.y == 0)
 	{
 		m_canJumpSecond = true;
 		m_canJump = true;
