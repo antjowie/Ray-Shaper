@@ -143,5 +143,8 @@
     <ClInclude Include="Ray Shaper\source\Config.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Ray Shaper\source\objects\MathHelper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

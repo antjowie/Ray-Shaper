@@ -39,6 +39,7 @@ void Emitter::update(const float elapsedTime)
 		return;
 	}
 
+	/*
 	// Check if reflection tiles have been moved, if they have, recalculate laser
 	const std::vector<ReflectionTile*> &newTiles{ m_objectManager.getObjects<ReflectionTile*>() };
 	bool same{ newTiles.size() == m_oldTiles.size() };
@@ -63,6 +64,7 @@ void Emitter::update(const float elapsedTime)
 			static_cast<Gate*>(collided.object)->laserHit = true;
 		return;
 	}
+	*/
 
 	// Postion is top left
 	sf::Vector2f spawnPos{ getPosition()};
@@ -121,45 +123,21 @@ void Emitter::update(const float elapsedTime)
 		else if (dynamic_cast<ReflectionTile*>(closestCollision->object))
 		{
 			// Update direction
-			// TODO, update correctly
-			switch (static_cast<ReflectionTile*>(closestCollision->object)->m_direction)
-			{
-			case ReflectionTile::Direction::RightUp:
-				if (direction.x < 0)
-					direction = { 0,-1 };
-				else
-					direction = { 1,0 };
-				break;
+			// Get vectors relative to collision point
+			sf::Vector2f b{ closestCollision->endVertex - closestCollision->point };
+			sf::Vector2f a{ spawnPos - closestCollision->point };
+			sf::Vector2f ra{ closestCollision->point - spawnPos };
 
-			case ReflectionTile::Direction::RightDown:
-				if (direction.x < 0)
-					direction = { 0,1 };
-				else
-					direction = { 1,0 };
-				break;
+			sf::Vector2f normal{ Math::projectionUnit(a, closestCollision->normal1) };
+			if (normal == sf::Vector2f{ 0, 0 })
+				normal = Math::projectionUnit(a, closestCollision->normal2);
 
-			case ReflectionTile::Direction::LeftDown:
-				if (direction.x > 0)
-					direction = { 0,1 };
-				else
-					direction = { -1,0 };
-				break;
+			normal *= 2.f;
 
-			case ReflectionTile::Direction::LeftUp:
-				if (direction.x > 0)
-					direction = { 0,-1 };
-				else
-					direction = { -1,0 };
-				break;
-			case ReflectionTile::Direction::Up:
-				break;
-			case ReflectionTile::Direction::Down:
-				break;
-			case ReflectionTile::Direction::Left:
-				break;
-			case ReflectionTile::Direction::Right:
-				break;
-			}
+			spawnPos = normal + closestCollision->point + ra;
+
+			direction = spawnPos - closestCollision->point;
+			Math::normalizeVector(direction);
 		}
 		else if(!closestCollision->tile)
 		{

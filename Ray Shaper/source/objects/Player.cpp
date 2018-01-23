@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "DataManager.h"
 #include "Config.h"
+#include "MathHelper.h"
 
 #include <SFML\Graphics.hpp>
 
@@ -280,14 +281,7 @@ Player::Player(ObjectManager & objectManager, const sf::Vector2f & pos) :
 void Player::Reflector::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
 	if (m_shouldDraw)
-	{
 		target.draw(m_sprite, states);
-		sf::VertexArray temp(sf::LineStrip);
-		for (const auto &iter : getVertices())
-			temp.append({ iter,sf::Color::Red });
-		temp.append({ getVertices()[0],sf::Color::Red });
-		target.draw(temp, states);
-	}
 }
 
 const std::vector<sf::Vector2f> Player::Reflector::getVertices() const
@@ -302,19 +296,9 @@ const std::vector<sf::Vector2f> Player::Reflector::getVertices() const
 	returner.push_back({ getPosition().x + 8.f, getPosition().y + 1.f });
 	returner.push_back({ getPosition().x - 8.f, getPosition().y + 1.f });
 
-	float rotation{ m_sprite.getRotation() /180.f * 3.14f};
+	// Rotate points
 	for (auto &iter : returner)
-	{
-		float tempX{ iter.x - getPosition().x };
-		float tempY{ iter.y - getPosition().y };
-
-		//https://gamedev.stackexchange.com/questions/86755/how-to-calculate-corner-positions-marks-of-a-rotated-tilted-rectangle
-		float rotatedX = tempX * std::cos(rotation) - tempY * std::sin(rotation);
-		float rotatedY = tempX * std::sin(rotation) + tempY * std::cos(rotation);
-	
-		iter.x = rotatedX + getPosition().x;
-		iter.y = rotatedY + getPosition().y;
-	}
+		iter = Math::rotateAroundOrigin(getPosition(), iter, m_sprite.getRotation());
 
 	return returner;
 }
@@ -333,7 +317,7 @@ void Player::Reflector::input(sf::RenderWindow & window)
 void Player::Reflector::update(const float elapsedTime)
 {
 	m_toggleCooldown.update(elapsedTime);
-	m_sprite.setRotation(angle(getPosition(), m_mousePos, getPosition() + sf::Vector2f{0, -1}));
+	m_sprite.setRotation(Math::getAngle(getPosition(), m_mousePos, getPosition() + sf::Vector2f{0, -1}));
 }
 
 Player::Reflector::Reflector(ObjectManager & objectManager):
@@ -344,21 +328,4 @@ Player::Reflector::Reflector(ObjectManager & objectManager):
 	m_sprite.setTextureRect({ 0,0,16,16 });
 	m_sprite.setOrigin(m_sprite.getLocalBounds().width / 2.f, m_sprite.getLocalBounds().height / 2.f);
 	m_toggleCooldown.setCap(0.2f);
-}
-
-double angle(const sf::Vector2f & origin, const sf::Vector2f & a, const sf::Vector2f & b)
-{
-	const sf::Vector2f A{ a - origin };
-	const sf::Vector2f B{ b - origin };
-	const double magA{ std::sqrt(std::powf(A.x,2) + std::powf(A.y,2)) };
-	const double magB{ std::sqrt(std::powf(B.x,2) + std::powf(B.y,2)) };
-
-	double dotProduct{ A.x * B.x + A.y * B.y };
-	dotProduct /= (magA*magB);
-	double angle{ acos(dotProduct) * 180. / 3.14 };
-
-	// Not sure if this is legit
-	if (A.x < 0)
-		angle = 360 - angle;
-	return angle;
 }

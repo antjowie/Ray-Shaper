@@ -6,13 +6,9 @@
 
 #include "objects\ReflectionTile.h"
 
-// Calculates clock-wise angle between vectors
-// a and b are points not relative to the origin
-double angle(const sf::Vector2f &origin, const sf::Vector2f &a, const sf::Vector2f &b);
-
 class Player : public Object
 {
-private:
+public:
 	// This class represents the reflector
 	class Reflector : public ReflectionTile
 	{
@@ -30,7 +26,10 @@ private:
 		virtual void update(const float elapsedTime) override final;
 
 		Reflector(ObjectManager &objectManager);
-	}m_reflector;
+	};
+private:
+	Reflector m_reflector;
+
 	// If this timeline is completed the player will enter idle state
 	Timeline m_idleTimeline;
 	

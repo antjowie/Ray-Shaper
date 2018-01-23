@@ -3,6 +3,7 @@
 
 #include "Object.h"
 #include "ReflectionTile.h"
+#include "MathHelper.h"
 
 #include <iostream>
 
@@ -29,6 +30,13 @@ private:
 		const Tile * tile{ nullptr };
 		double percentage{ 1 };
 		sf::Vector2f point{ 0,0 };
+		// Relative to point
+		sf::Vector2f normal1;
+		// Relative to point
+		sf::Vector2f normal2;
+		// Global coordinates
+		sf::Vector2f begVertex;
+		sf::Vector2f endVertex;
 	};
 	// Used to get the precise position of intersection, also used to check if collision really happened (if 1 > t > 0)
 	// Template defines which type of object to check
@@ -74,6 +82,18 @@ inline Emitter::Collided Emitter::raycastIntersection(const sf::Vector2f & begin
 			const sf::Vector2f end2{ vertices[(i + 1) % vertices.size()]}; // Movement of the line
 			const sf::Vector2f movement2{ end2 - begin2 };
 
+			struct DoubleVector
+			{
+				double x, y;
+			};
+
+			DoubleVector b1{ begin.x,begin.y };
+			DoubleVector e1{ end.x,end.y };
+			DoubleVector m1{ movement.x,movement.y };
+			DoubleVector b2{ begin2.x, begin2.y };
+			DoubleVector e2{ end2.x, end2.y};
+			DoubleVector m2{ movement2.x, movement2.y };
+
 			// Calculating collision
 			// A: object starting point
 			// B: object vector 
@@ -98,19 +118,29 @@ inline Emitter::Collided Emitter::raycastIntersection(const sf::Vector2f & begin
 
 			// The float data type has some precision issues
 			// This should fix that
-			const double t2{ (movement.x*(begin2.y - begin.y) + movement.y*(begin.x - begin2.x)) / (movement2.x*movement.y - movement2.y*movement.x) };
-			double t1{ (begin2.x + movement2.x*t2 - begin.x) / movement.x };
+			const double t2{ (m1.x*(b2.y - b1.y) + m1.y*(b1.x - b2.x)) / (m2.x*m1.y - m2.y*m1.x) };
+			double t1{ (b2.x + m2.x*t2 - b1.x) / m1.x };
 
 			// If the x component doesn't change, the equation will divide by zero, so we use the second equation
 			if (t1 != t1)
-				t1 = (begin2.y + movement2.y*t2 - begin.y) / movement.y;
+				t1 = (b2.y + m2.y*t2 - b1.y) / m1.y;
 
 			// Because off float not being accurate, we use rounded values, values cant be out of these bounds by level design
-			if ((t1 > 0.001 && t2 > 0.001 && t2 < 0.999 && t1 < collided.percentage))
+			// Offset is needed because else ray will calculate in itself
+			if (t1 > 0.01 && t2 > 0. && t2 < 1. && t1 < collided.percentage)
 			{
 				collided.percentage = t1;
 				collided.object = object;
-				collided.point = sf::Vector2f(begin.x + movement.x * static_cast<float>(t1), begin.y + movement.y * static_cast<float>(t1));
+				collided.point = sf::Vector2f(b1.x + m1.x * t1, b1.y + m1.y * t1);
+				
+				// Calculate the two normal vectors
+				collided.normal1 = Math::rotateAroundOrigin(collided.point,begin2,90) - collided.point;
+				collided.normal2 = Math::rotateAroundOrigin(collided.point,begin2,-90) - collided.point;
+				Math::normalizeVector(collided.normal1);
+				Math::normalizeVector(collided.normal2);
+				
+				collided.begVertex = begin2;
+				collided.endVertex= end2;
 			}
 		}
 	}

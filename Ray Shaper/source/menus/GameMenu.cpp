@@ -4,6 +4,7 @@
 
 #include "objects\Gate.h"
 #include "objects\Emitter.h"
+#include "objects\Player.h"
 
 void GameMenu::input(sf::RenderWindow & window)
 {
@@ -74,10 +75,13 @@ void GameMenu::draw(sf::RenderWindow & window)
 {
 	window.setView(m_camera.getView());
 	
+	window.draw(m_objectManager);
+	for (const auto &iter : m_objectManager.getObjects<ReflectionTile*>())
+		if(!dynamic_cast<Player::Reflector*>(iter))
+			window.draw(*iter);
 	for(const auto &iter:m_vertices)
 		window.draw(iter);
-	window.draw(m_objectManager);
-	
+
 	drawFade(window);
 }
 
