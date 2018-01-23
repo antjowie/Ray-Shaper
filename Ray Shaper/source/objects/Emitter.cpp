@@ -117,11 +117,12 @@ void Emitter::update(const float elapsedTime)
 			closestCollision->object = nullptr;
 		}
 		// If it is reflection tile
-		else if(!closestCollision->tile)
+		//else if(!closestCollision->tile)
+		else if (dynamic_cast<ReflectionTile*>(closestCollision->object))
 		{
 			// Update direction
 			// TODO, update correctly
-			switch (dynamic_cast<ReflectionTile*>(closestCollision->object)->m_direction)
+			switch (static_cast<ReflectionTile*>(closestCollision->object)->m_direction)
 			{
 			case ReflectionTile::Direction::RightUp:
 				if (direction.x < 0)
@@ -159,6 +160,10 @@ void Emitter::update(const float elapsedTime)
 			case ReflectionTile::Direction::Right:
 				break;
 			}
+		}
+		else if(!closestCollision->tile)
+		{
+			closestCollision->point = spawnPos;
 		}
 		spawnPos = closestCollision->point;
 		m_vertices.append(sf::Vertex(spawnPos, sf::Color(58, 166, 62,gateHit?0:255)));

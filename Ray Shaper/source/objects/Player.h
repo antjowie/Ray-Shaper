@@ -6,11 +6,31 @@
 
 #include "objects\ReflectionTile.h"
 
-#include <SFML\Graphics\RectangleShape.hpp>
+// Calculates clock-wise angle between vectors
+// a and b are points not relative to the origin
+double angle(const sf::Vector2f &origin, const sf::Vector2f &a, const sf::Vector2f &b);
 
 class Player : public Object
 {
 private:
+	// This class represents the reflector
+	class Reflector : public ReflectionTile
+	{
+	private:
+		sf::Vector2f m_mousePos;
+		Timeline m_toggleCooldown;
+		bool m_shouldDraw{ false };
+
+		virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override final;
+
+	public:
+		virtual const std::vector<sf::Vector2f> getVertices() const override final;
+
+		virtual void input(sf::RenderWindow &window) override final;
+		virtual void update(const float elapsedTime) override final;
+
+		Reflector(ObjectManager &objectManager);
+	}m_reflector;
 	// If this timeline is completed the player will enter idle state
 	Timeline m_idleTimeline;
 	

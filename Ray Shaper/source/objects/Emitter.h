@@ -58,7 +58,6 @@ inline Emitter::Collided Emitter::raycastIntersection(const sf::Vector2f & begin
 		std::vector<sf::Vector2f> vertices;
 			if (dynamic_cast<ReflectionTile*>(object))
 			{
-
 				for (const auto &iter : dynamic_cast<ReflectionTile*>(object)->getVertices())
 				vertices.push_back(iter);
 			}

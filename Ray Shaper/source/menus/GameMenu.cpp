@@ -86,7 +86,7 @@ GameMenu::GameMenu(MenuStack & menuStack, const std::string &levelPath):
 	m_music(m_soundManager,"gameMusic",SoundType::Music)
 {
 	m_tilemap.load("test.tmx", m_objectManager.getTiles(), m_objectManager,m_soundManager);
-	m_player = new  Player(m_objectManager, { 0,0 });
+	m_player = new  Player(m_objectManager, m_tilemap.getSpawn(1).spawn);
 
 	m_level = m_tilemap.getCurrentArea(m_player->getHitbox()).id;
 	m_currentLevel = m_tilemap.getCurrentArea(m_player->getHitbox()).id;

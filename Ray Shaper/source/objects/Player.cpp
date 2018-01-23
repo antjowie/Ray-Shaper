@@ -1,15 +1,18 @@
 #include <SFML\Window\Keyboard.hpp>
+#include <SFML\Window\Mouse.hpp>
 #include <SFML\Audio\Listener.hpp>
 
 #include "Player.h"
 #include "DataManager.h"
+#include "Config.h"
 
-#include <iostream>
+#include <SFML\Graphics.hpp>
 
 void Player::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
 	target.draw(m_sprite, states);
 	target.draw(m_eyes, states);
+	target.draw(m_reflector, states);
 }
 
 void Player::setPosition(const sf::Vector2f & pos)
@@ -29,19 +32,21 @@ void Player::input(sf::RenderWindow & window)
 	for (auto &iter : m_direction)
 		iter = false;
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+	if (sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Key>(Config::getInstance().getData("jump").code)))
 		m_direction[Direction::Up] = true;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+	if (sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Key>(Config::getInstance().getData("left").code)))
 		m_direction[Direction::Left] = true;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	if (sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Key>(Config::getInstance().getData("right").code)))
 		m_direction[Direction::Right] = true;
 
 	m_wantToGrab = false;
-	if (m_grabCooldown.getProgress() == 100 && sf::Keyboard::isKeyPressed(sf::Keyboard::F))
+	if (m_grabCooldown.getProgress() == 100 && sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Key>(Config::getInstance().getData("grab").code)))
 	{
 		m_grabCooldown.setTimeline(0);
 		m_wantToGrab = true;
 	}
+
+	m_reflector.input(window);
 }
 
 void Player::update(const float elapsedTime)
@@ -213,6 +218,8 @@ void Player::update(const float elapsedTime)
 			for(auto &iter:m_objectManager.getObjects<ReflectionTile*>())
 				if (iter->getHitbox().intersects(getHitbox()))
 				{
+					if (iter == &m_reflector)
+						continue;
 					iter->isGrabbed = true;
 					m_grabbed = iter;
 					break;
@@ -226,10 +233,14 @@ void Player::update(const float elapsedTime)
 	}
 	if (m_grabbed)
 		m_grabbed->move({ movement.x, movement.y });
+
+	// Update reflector
+	m_reflector.setPosition(getPosition());
 }
 
-Player::Player(ObjectManager & objectManager, const sf::Vector2f & pos):
+Player::Player(ObjectManager & objectManager, const sf::Vector2f & pos) :
 	Object(objectManager), m_animHandler(16, 16, { 3,0,10,15 }),
+	m_reflector(objectManager),
 	// Changing these values in the header file doesn't rebuild the porgram
 	m_accel{ 4 },
 	m_decel{ 8 },
@@ -249,11 +260,12 @@ Player::Player(ObjectManager & objectManager, const sf::Vector2f & pos):
 		m_animHandler.pushAnimation(Animation(4, 1 / 8.f, true, true));
 
 	m_animHandler.setAnimation(0);
-	m_sprite.setOrigin(8, 8);
-	m_eyes.setOrigin(8, 8);
 
 	m_sprite.setTextureRect(m_animHandler.getFrame());
 	m_eyes.setTextureRect(m_animHandler.getFrame());
+	
+	m_sprite.setOrigin(m_sprite.getLocalBounds().width/2.f, m_sprite.getLocalBounds().height/2.f);
+	m_eyes.setOrigin(m_eyes.getLocalBounds().width/2.f, m_eyes.getLocalBounds().height/2.f);
 	
 	m_sprite.setPosition(pos);
 	m_eyes.setPosition(pos);
@@ -263,4 +275,90 @@ Player::Player(ObjectManager & objectManager, const sf::Vector2f & pos):
 
 	m_idleTimeline.setCap(5);
 	m_grabCooldown.setCap(0.2f);
+}
+
+void Player::Reflector::draw(sf::RenderTarget & target, sf::RenderStates states) const
+{
+	if (m_shouldDraw)
+	{
+		target.draw(m_sprite, states);
+		sf::VertexArray temp(sf::LineStrip);
+		for (const auto &iter : getVertices())
+			temp.append({ iter,sf::Color::Red });
+		temp.append({ getVertices()[0],sf::Color::Red });
+		target.draw(temp, states);
+	}
+}
+
+const std::vector<sf::Vector2f> Player::Reflector::getVertices() const
+{
+	std::vector<sf::Vector2f> returner;
+
+	if (!m_shouldDraw)
+		return returner;
+
+	returner.push_back({ getPosition().x - 8.f, getPosition().y - 1.f});
+	returner.push_back({ getPosition().x + 8.f, getPosition().y - 1.f});
+	returner.push_back({ getPosition().x + 8.f, getPosition().y + 1.f });
+	returner.push_back({ getPosition().x - 8.f, getPosition().y + 1.f });
+
+	float rotation{ m_sprite.getRotation() /180.f * 3.14f};
+	for (auto &iter : returner)
+	{
+		float tempX{ iter.x - getPosition().x };
+		float tempY{ iter.y - getPosition().y };
+
+		//https://gamedev.stackexchange.com/questions/86755/how-to-calculate-corner-positions-marks-of-a-rotated-tilted-rectangle
+		float rotatedX = tempX * std::cos(rotation) - tempY * std::sin(rotation);
+		float rotatedY = tempX * std::sin(rotation) + tempY * std::cos(rotation);
+	
+		iter.x = rotatedX + getPosition().x;
+		iter.y = rotatedY + getPosition().y;
+	}
+
+	return returner;
+}
+
+void Player::Reflector::input(sf::RenderWindow & window)
+{
+	if (m_toggleCooldown.getProgress() == 100 && sf::Mouse::isButtonPressed(static_cast<sf::Mouse::Button>(Config::getInstance().getData("toggleReflector").code)))
+	{
+		m_toggleCooldown.setTimeline(0);
+		m_shouldDraw = m_shouldDraw ? false : true;
+	}
+
+	m_mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+}
+
+void Player::Reflector::update(const float elapsedTime)
+{
+	m_toggleCooldown.update(elapsedTime);
+	m_sprite.setRotation(angle(getPosition(), m_mousePos, getPosition() + sf::Vector2f{0, -1}));
+}
+
+Player::Reflector::Reflector(ObjectManager & objectManager):
+	ReflectionTile(objectManager, 5, { 0,0 })
+{
+	isSolid = false;
+	m_sprite.setTexture(DataManager::getInstance().getData("playerReflector").meta.texture);
+	m_sprite.setTextureRect({ 0,0,16,16 });
+	m_sprite.setOrigin(m_sprite.getLocalBounds().width / 2.f, m_sprite.getLocalBounds().height / 2.f);
+	m_toggleCooldown.setCap(0.2f);
+}
+
+double angle(const sf::Vector2f & origin, const sf::Vector2f & a, const sf::Vector2f & b)
+{
+	const sf::Vector2f A{ a - origin };
+	const sf::Vector2f B{ b - origin };
+	const double magA{ std::sqrt(std::powf(A.x,2) + std::powf(A.y,2)) };
+	const double magB{ std::sqrt(std::powf(B.x,2) + std::powf(B.y,2)) };
+
+	double dotProduct{ A.x * B.x + A.y * B.y };
+	dotProduct /= (magA*magB);
+	double angle{ acos(dotProduct) * 180. / 3.14 };
+
+	// Not sure if this is legit
+	if (A.x < 0)
+		angle = 360 - angle;
+	return angle;
 }

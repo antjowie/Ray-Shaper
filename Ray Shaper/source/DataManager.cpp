@@ -27,7 +27,7 @@ DataManager::DataManager()
 	getData("background").meta.texture.setRepeated(true);
 	pushData("playerBody", DataManager::Data("Ray Shaper/data/textures/player/body.png", DataManager::Type::Texture));
 	pushData("playerEyes", DataManager::Data("Ray Shaper/data/textures/player/eyes.png", DataManager::Type::Texture));
-
+	pushData("playerReflector", DataManager::Data("Ray Shaper/data/textures/player/reflector.png", DataManager::Type::Texture));
 
 	pushData("button", DataManager::Data("Ray Shaper/data/sounds/buttonHover.wav", DataManager::Type::Sound));
 	pushData("hit1", DataManager::Data("Ray Shaper/data/sounds/hit1.wav", DataManager::Type::Sound));
