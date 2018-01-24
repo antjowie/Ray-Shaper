@@ -239,6 +239,14 @@ void Player::update(const float elapsedTime)
 	m_reflector->setPosition(getPosition());
 }
 
+std::map<std::string, std::string> Player::getSaveData() const
+{
+	std::map<std::string, std::string> returner(Object::getSaveData());
+	returner["x"] = std::to_string(getPosition().x);
+	returner["y"] = std::to_string(getPosition().y);
+	return returner;
+}
+
 Player::Player(ObjectManager & objectManager, const sf::Vector2f & pos) :
 	Object(objectManager), m_animHandler(16, 16, { 3,0,10,15 }),
 	// Changing these values in the header file doesn't rebuild the porgram

@@ -90,7 +90,6 @@ int Tilemap::load(const std::string &levelName, std::vector<std::vector<Tile>> &
 	objectManager.setLevelName(levelName);
 	bool save{ objectManager.loadObjects(soundManager) };
 
-
 	// Some tiles are loaded as objects, this map converts them
 	tilemap.resize(tilemapHeight);
 	for (int vertic{ 0 }; vertic < tilemapHeight; vertic++)

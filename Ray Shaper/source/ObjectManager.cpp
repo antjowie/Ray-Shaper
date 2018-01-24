@@ -64,6 +64,7 @@ void ObjectManager::saveObjects()
 	pugi::xml_node xmlRTile{ xmlObjects.append_child("reflectionTiles") };
 	pugi::xml_node xmlGate{ xmlObjects.append_child("gates") };
 	pugi::xml_node xmlEmitter{ xmlObjects.append_child("emitters") };
+	pugi::xml_node xmlPlayer{ xmlObjects.append_child("players") };
 
 	for (const auto &iter : getObjects<ReflectionTile*>())
 	{
@@ -90,6 +91,13 @@ void ObjectManager::saveObjects()
 		object.append_attribute("state") = std::stoi(iter->getSaveData()["state"]);
 		object.append_attribute("id") = std::stoi(iter->getSaveData()["id"]);
 	}
+	// There only is one player but maybe more will be added probably not
+	for (const auto &iter : getObjects<Player*>())
+	{
+		pugi::xml_node object{ xmlPlayer.append_child("player") };
+		object.append_attribute("x") = std::stoi(iter->getSaveData()["x"]);
+		object.append_attribute("y") = std::stoi(iter->getSaveData()["y"]);
+	}
 
 	xmlHead.save_file(std::string(m_levelName + ".xml").c_str());
 }
@@ -108,6 +116,8 @@ bool ObjectManager::loadObjects(SoundManager &soundManager)
 	{	return std::string(node.name()) == "gates";}));
 	pugi::xml_node xmlEmitter(xmlObject.find_node([&](pugi::xml_node &node)
 	{	return std::string(node.name()) == "emitters"; }));
+	pugi::xml_node xmlPlayer(xmlObject.find_node([&](pugi::xml_node &node)
+	{	return std::string(node.name()) == "players"; }));
 
 	for (pugi::xml_node rTile = xmlRTile.first_child(); rTile; rTile = rTile.next_sibling())
 		// If it is the reflector
@@ -117,6 +127,8 @@ bool ObjectManager::loadObjects(SoundManager &soundManager)
 		new Gate(*this,soundManager, gate.attribute("id").as_int(), sf::Vector2f{ gate.attribute("x").as_float(),gate.attribute("y").as_float() }, gate.attribute("state").as_bool());
 	for (pugi::xml_node emitter = xmlEmitter.first_child(); emitter; emitter = emitter.next_sibling())
 		new Emitter(*this, emitter.attribute("id").as_int(), { emitter.attribute("x").as_float(),emitter.attribute("y").as_float() }, emitter.attribute("state").as_bool());
+	for (pugi::xml_node player = xmlPlayer.first_child(); player; player = player.next_sibling())
+		new Player(*this, { player.attribute("x").as_float(),player.attribute("y").as_float() });
 
 	return true;
 }

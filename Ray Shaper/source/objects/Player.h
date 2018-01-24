@@ -100,5 +100,7 @@ public:
 	virtual void input(sf::RenderWindow &window) override final;
 	virtual void update(const float elaspedTime) override final;
 
+	virtual std::map<std::string,std::string> getSaveData() const override final;
+
 	Player(ObjectManager &objectManager,const sf::Vector2f &pos);
 };

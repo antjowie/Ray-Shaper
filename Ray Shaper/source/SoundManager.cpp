@@ -25,7 +25,7 @@ void SoundManager::play(const SoundType type)
 	for (auto &iter : m_sounds)
 		if (iter.get().soundType == type)
 			iter.get().play();
-}
+} 
 
 void SoundManager::pause(const SoundType type)
 {
@@ -36,8 +36,8 @@ void SoundManager::pause(const SoundType type)
 
 SoundManager::~SoundManager()
 {
-	pause(SoundType::Music);
-	pause(SoundType::Sound);
+//	pause(SoundType::Music);
+//	pause(SoundType::Sound);
 }
 
 void Sound::setTargetVolume(const float volume, const float fadeTime)

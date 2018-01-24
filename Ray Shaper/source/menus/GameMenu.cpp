@@ -6,6 +6,8 @@
 #include "objects\Emitter.h"
 #include "objects\Player.h"
 
+#include <iostream>
+
 void GameMenu::input(sf::RenderWindow & window)
 {
 	m_objectManager.input(window);
@@ -96,13 +98,14 @@ GameMenu::GameMenu(MenuStack & menuStack, const std::string &levelPath):
 	m_music(m_soundManager,"gameMusic",SoundType::Music)
 {
 	m_tilemap.load("test", m_objectManager.getTiles(), m_objectManager,m_soundManager);
-	m_player = new  Player(m_objectManager, m_tilemap.getSpawn(1).spawn);
-
+	if (!m_objectManager.getObjects<Player*>().empty())
+		m_player = m_objectManager.getObjects<Player*>().front();
+	else
+		m_player = new Player(m_objectManager, m_tilemap.getSpawn(1).spawn);
+	
 	m_level = m_tilemap.getCurrentArea(m_player->getHitbox()).id;
 	m_currentLevel = m_tilemap.getCurrentArea(m_player->getHitbox()).id;
-
-	m_player->setPosition(m_tilemap.getSpawn(m_level).spawn);
-
+	
 	m_camera.setCenter(m_player->getPosition());
 	m_camera.setTargetSize(m_tilemap.getArea(m_currentLevel).area.height, true);
 	m_camera.setBounds(m_tilemap.getArea(m_currentLevel).area);
@@ -110,4 +113,9 @@ GameMenu::GameMenu(MenuStack & menuStack, const std::string &levelPath):
 	// Load all emitter vertices into global vertices
 	for (auto &iter : m_objectManager.getObjects<Emitter*>())
 		m_vertices.push_back(iter->getVertices());
+}
+
+GameMenu::~GameMenu()
+{
+	m_objectManager.saveObjects();
 }

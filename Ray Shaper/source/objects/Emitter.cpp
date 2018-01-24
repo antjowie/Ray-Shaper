@@ -105,8 +105,6 @@ void Emitter::update(const float elapsedTime)
 		Collided tile(raycastIntersection<>(spawnPos, spawnPos + movement, true, false));
 		Collided gate(raycastIntersection<Gate*>(spawnPos, spawnPos + movement, false, true));
 
-		std::cout << rtile.percentage << '\n';
-
 		closestCollision = rtile.percentage < tile.percentage ? &rtile : &tile;
 		closestCollision = closestCollision->percentage < gate.percentage ? closestCollision : &gate;
 

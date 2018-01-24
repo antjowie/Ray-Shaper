@@ -3,12 +3,16 @@
 	<reflectionTiles>
 		<rtile x="272" y="64" id="3" />
 		<rtile x="544" y="64" id="4" />
-		<rtile x="275" y="224" id="5" />
+		<rtile x="304" y="224" id="5" />
+		<rtile x="544" y="224" id="2" />
 	</reflectionTiles>
 	<gates>
-		<gate x="752" y="160" state="0" id="1" />
+		<gate x="144" y="176" state="1" id="1" />
 	</gates>
 	<emitters>
 		<emitter x="144" y="224" state="1" id="13" />
 	</emitters>
+	<players>
+		<player x="233" y="232" />
+	</players>
 </objects>

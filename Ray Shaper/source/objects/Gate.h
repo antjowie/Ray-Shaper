@@ -24,15 +24,21 @@ private:
 public:
 	// Used when player is near
 	bool isCollided{ false };
-	bool laserHit{ false };
-	
 	// Used when laser hits
+	bool laserHit{ false };
 	
 	virtual void update(const float elapsedTime) override final;
 
 	virtual sf::FloatRect getHitbox() const override final;
 
 	virtual std::map<std::string, std::string> getSaveData() const;
+	// Returns bool whether gate has ever been hit or not
+	struct Meta
+	{
+		int id;
+		bool hasBeenHit;
+	}; 
+	Meta hasBeenHit() const;
 
 	Gate(ObjectManager &objectManager, SoundManager &soundManager, const int id, sf::Vector2f &position, bool isOpened = false );
 };
