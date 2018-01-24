@@ -40,7 +40,7 @@ public:
 
 	void play(const SoundType type);
 	void pause(const SoundType type);
-
+	
 	~SoundManager();
 };
 

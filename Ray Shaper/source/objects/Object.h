@@ -27,7 +27,7 @@ class Object:
 {
 private:
 	virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
-
+	
 protected:
 	sf::Sprite m_sprite;
 
@@ -53,6 +53,9 @@ public:
 	// Some classes use more than one sprite
 	virtual void setPosition(const sf::Vector2f &pos);
 	virtual void move(const sf::Vector2f &movement);
+
+	// This function returns the data used to save it
+	virtual std::map<std::string, std::string> getSaveData() const;
 
 	Object(ObjectManager &objectManager);
 };

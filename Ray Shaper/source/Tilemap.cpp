@@ -49,10 +49,10 @@ Tile Tile::getTile(const int id, const sf::Vector2f & position)
 	return  Tile(position, false, false);
 }
 
-int Tilemap::load(const std::string &levelPath, std::vector<std::vector<Tile>> &tilemap, ObjectManager &objectManager, SoundManager &soundManager)
+int Tilemap::load(const std::string &levelName, std::vector<std::vector<Tile>> &tilemap, ObjectManager &objectManager, SoundManager &soundManager)
 {
 	pugi::xml_document doc;
-	pugi::xml_parse_result result = doc.load_file(std::string(levelPath).c_str());
+	pugi::xml_parse_result result = doc.load_file(std::string(levelName + ".tmx").c_str());
 
 	if (!doc)
 		return -1;
@@ -86,6 +86,11 @@ int Tilemap::load(const std::string &levelPath, std::vector<std::vector<Tile>> &
 		fixedBuffer.push(std::stoi(value));
 	}
 	
+	// Check if there exists an object save data
+	objectManager.setLevelName(levelName);
+	bool save{ objectManager.loadObjects(soundManager) };
+
+
 	// Some tiles are loaded as objects, this map converts them
 	tilemap.resize(tilemapHeight);
 	for (int vertic{ 0 }; vertic < tilemapHeight; vertic++)
@@ -99,10 +104,14 @@ int Tilemap::load(const std::string &levelPath, std::vector<std::vector<Tile>> &
 			// Load into object 
 			if (id > 1)
 			{
-				if (id >= 2 && id <= 9)
-					new ReflectionTile(objectManager, id, { horiz*16.f, vertic*16.f });
-				else if (id >= 9 && id <= 13)
-					new Emitter(objectManager, id, { horiz*16.f,vertic*16.f });
+				// If objects were already loaded by objectManager
+				if (!save)
+				{
+					if (id >= 2 && id <= 9)
+						new ReflectionTile(objectManager, id, { horiz*16.f, vertic*16.f });
+					else if (id >= 9 && id <= 13)
+						new Emitter(objectManager, id, { horiz*16.f,vertic*16.f });
+				}
 				id = 0;
 			}
 			// Load tile into this
@@ -122,7 +131,8 @@ int Tilemap::load(const std::string &levelPath, std::vector<std::vector<Tile>> &
 			m_spawns.push_back(Spawn(object.first_child().first_child().attribute("value").as_int(), { object.attribute("x").as_float(), object.attribute("y").as_float() }));
 		else if (type == "area")
 			m_areas.push_back(Area(object.first_child().first_child().attribute("value").as_int(), { object.attribute("x").as_float() ,object.attribute("y").as_float() ,object.attribute("width").as_float() ,object.attribute("height").as_float() }));
-		else if (type == "gate")
+		// If objects were already loaded by objectManager
+		else if (!save && type == "gate")
 			new Gate(objectManager,soundManager, object.first_child().first_child().attribute("value").as_int(), sf::Vector2f{ object.attribute("x").as_float(), object.attribute("y").as_float() });
 	}
 

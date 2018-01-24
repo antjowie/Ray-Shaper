@@ -13,7 +13,7 @@ void Player::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
 	target.draw(m_sprite, states);
 	target.draw(m_eyes, states);
-	target.draw(m_reflector, states);
+	target.draw(*m_reflector, states);
 }
 
 void Player::setPosition(const sf::Vector2f & pos)
@@ -47,7 +47,7 @@ void Player::input(sf::RenderWindow & window)
 		m_wantToGrab = true;
 	}
 
-	m_reflector.input(window);
+	m_reflector->input(window);
 }
 
 void Player::update(const float elapsedTime)
@@ -219,7 +219,7 @@ void Player::update(const float elapsedTime)
 			for(auto &iter:m_objectManager.getObjects<ReflectionTile*>())
 				if (iter->getHitbox().intersects(getHitbox()))
 				{
-					if (iter == &m_reflector)
+					if (iter == m_reflector)
 						continue;
 					iter->isGrabbed = true;
 					m_grabbed = iter;
@@ -236,12 +236,11 @@ void Player::update(const float elapsedTime)
 		m_grabbed->move({ movement.x, movement.y });
 
 	// Update reflector
-	m_reflector.setPosition(getPosition());
+	m_reflector->setPosition(getPosition());
 }
 
 Player::Player(ObjectManager & objectManager, const sf::Vector2f & pos) :
 	Object(objectManager), m_animHandler(16, 16, { 3,0,10,15 }),
-	m_reflector(objectManager),
 	// Changing these values in the header file doesn't rebuild the porgram
 	m_accel{ 4 },
 	m_decel{ 8 },
@@ -252,6 +251,8 @@ Player::Player(ObjectManager & objectManager, const sf::Vector2f & pos) :
 	m_initialJump{ 8 },
 	m_jumpDuration{ 0.2f }
 {
+	m_reflector = new Reflector(objectManager);
+
 	m_sprite.setTexture(DataManager::getInstance().getData("playerBody").meta.texture);
 	m_eyes.setTexture(DataManager::getInstance().getData("playerEyes").meta.texture);
 	
@@ -321,7 +322,7 @@ void Player::Reflector::update(const float elapsedTime)
 }
 
 Player::Reflector::Reflector(ObjectManager & objectManager):
-	ReflectionTile(objectManager, 5, { 0,0 })
+	ReflectionTile(objectManager, 0, { 0,0 })
 {
 	isSolid = false;
 	m_sprite.setTexture(DataManager::getInstance().getData("playerReflector").meta.texture);

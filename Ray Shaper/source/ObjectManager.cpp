@@ -1,5 +1,8 @@
 #include "ObjectManager.h"
 #include "objects\Player.h"
+#include "objects\Gate.h"
+#include "objects\Emitter.h"
+#include "pugixml.hpp"
 
 #define SHOW_HITBOX false
 #include <SFML\Graphics\RectangleShape.hpp>
@@ -45,9 +48,94 @@ void ObjectManager::draw(sf::RenderTarget & target, sf::RenderStates states) con
 	}
 }
 
+void ObjectManager::saveObjects()
+{
+	// The head of the xml tree
+	pugi::xml_document xmlHead;
+
+	// Add xml decleration
+	pugi::xml_node xmlDecleration{ xmlHead.append_child(pugi::node_declaration) };
+	xmlDecleration.append_attribute("version")	= "1.0";
+	xmlDecleration.append_attribute("encoding") = "UTF-8";
+
+	pugi::xml_node xmlObjects{ xmlHead.append_child("objects") };
+	// Make a node for all data types
+	// This made me notice that I should use type instead of casting with dynamic cast
+	pugi::xml_node xmlRTile{ xmlObjects.append_child("reflectionTiles") };
+	pugi::xml_node xmlGate{ xmlObjects.append_child("gates") };
+	pugi::xml_node xmlEmitter{ xmlObjects.append_child("emitters") };
+
+	for (const auto &iter : getObjects<ReflectionTile*>())
+	{
+		if (dynamic_cast<Player::Reflector*>(iter))
+			continue;
+		pugi::xml_node object{ xmlRTile.append_child("rtile") };
+		object.append_attribute("x") = std::stoi(iter->getSaveData()["x"]);
+		object.append_attribute("y") = std::stoi(iter->getSaveData()["y"]);
+		object.append_attribute("id") = std::stoi(iter->getSaveData()["id"]);
+	}
+	for (const auto &iter : getObjects<Gate*>())
+	{
+		pugi::xml_node object{ xmlGate.append_child("gate") };
+		object.append_attribute("x") = std::stoi(iter->getSaveData()["x"]);
+		object.append_attribute("y") = std::stoi(iter->getSaveData()["y"]);
+		object.append_attribute("state") = std::stoi(iter->getSaveData()["state"]);
+		object.append_attribute("id") = std::stoi(iter->getSaveData()["id"]);
+	}
+	for (const auto &iter : getObjects<Emitter*>())
+	{
+		pugi::xml_node object{ xmlEmitter.append_child("emitter") };
+		object.append_attribute("x") = std::stoi(iter->getSaveData()["x"]);
+		object.append_attribute("y") = std::stoi(iter->getSaveData()["y"]);
+		object.append_attribute("state") = std::stoi(iter->getSaveData()["state"]);
+		object.append_attribute("id") = std::stoi(iter->getSaveData()["id"]);
+	}
+
+	xmlHead.save_file(std::string(m_levelName + ".xml").c_str());
+}
+
+bool ObjectManager::loadObjects(SoundManager &soundManager)
+{
+	// Check if file exists, else load normal object position and states
+	pugi::xml_document xmlHead;
+	if (!xmlHead.load_file(std::string(m_levelName + ".xml").c_str()))
+		return false;
+
+	pugi::xml_node xmlObject{xmlHead.first_child()};
+	pugi::xml_node xmlRTile(xmlObject.find_node([&](pugi::xml_node &node)
+	{	return std::string(node.name()) == "reflectionTiles";}));
+	pugi::xml_node xmlGate(xmlObject.find_node([&](pugi::xml_node &node)
+	{	return std::string(node.name()) == "gates";}));
+	pugi::xml_node xmlEmitter(xmlObject.find_node([&](pugi::xml_node &node)
+	{	return std::string(node.name()) == "emitters"; }));
+
+	for (pugi::xml_node rTile = xmlRTile.first_child(); rTile; rTile = rTile.next_sibling())
+		// If it is the reflector
+		if(rTile.attribute("id").as_int() != 0)
+			new ReflectionTile(*this, rTile.attribute("id").as_int(), { rTile.attribute("x").as_float(),rTile.attribute("y").as_float() });
+	for (pugi::xml_node gate = xmlGate.first_child(); gate; gate = gate.next_sibling())
+		new Gate(*this,soundManager, gate.attribute("id").as_int(), sf::Vector2f{ gate.attribute("x").as_float(),gate.attribute("y").as_float() }, gate.attribute("state").as_bool());
+	for (pugi::xml_node emitter = xmlEmitter.first_child(); emitter; emitter = emitter.next_sibling())
+		new Emitter(*this, emitter.attribute("id").as_int(), { emitter.attribute("x").as_float(),emitter.attribute("y").as_float() }, emitter.attribute("state").as_bool());
+
+	return true;
+}
+
+void ObjectManager::setLevelName(const std::string & levelName)
+{
+	m_levelName = levelName;
+}
+
 void ObjectManager::push(Object * const object)
 {
 	m_objects.push_back(object);
+}
+
+void ObjectManager::clear()
+{
+	for (auto &deleter : m_objects)
+		delete deleter;
+	m_objects.clear();
 }
 
 void ObjectManager::input(sf::RenderWindow & window)
@@ -69,7 +157,5 @@ std::vector<std::vector<Tile>>& ObjectManager::getTiles()
 
 ObjectManager::~ObjectManager()
 {
-	for (auto &deleter : m_objects)
-		delete deleter;
-	m_objects.clear(); // I like to be explicit
+	clear();
 }

@@ -15,12 +15,22 @@ private:
 
 	std::vector<Object *> m_objects;
 	std::vector<std::vector<Tile>> m_tiles;
-	
-	virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
+	std::string m_levelName;	
 
+	virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 public:
+	// These functions are used to load and save the object positions
+	void saveObjects();
+	// If objects save data is not found, this returns false 
+	// It also loads all the object so tilemap doesn't have to do it anymore
+	bool loadObjects(SoundManager &soundManager);
+	// The level name is used to save for the correct level
+	void setLevelName(const std::string &levelName);
+
 	// Pushes a new object into the list
 	void push(Object * const object);
+	// Used when loading another level
+	void clear();
 
 	// Updates all objects and delete those which are supposed to be killed
 	void input(sf::RenderWindow &window);

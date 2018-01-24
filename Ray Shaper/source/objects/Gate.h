@@ -7,6 +7,7 @@
 class Gate : public Object
 {
 private:
+	// Id is used to keep track of which level gate belongs to
 	const int m_id;
 	sf::RectangleShape m_upperSprite;
 	sf::RectangleShape m_lowerSprite;
@@ -15,8 +16,8 @@ private:
 	SoundManager &m_soundManager;
 	Timeline m_soundTimeline;
 	Sound m_sound;
+	// Makes sure sound is only played once
 	bool m_isPlayed;
-	bool m_soundIsPlayed{ false };
 
 	virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override final;
 
@@ -31,5 +32,7 @@ public:
 
 	virtual sf::FloatRect getHitbox() const override final;
 
-	Gate(ObjectManager &objectManager, SoundManager &soundManager, const int id, sf::Vector2f &position);
+	virtual std::map<std::string, std::string> getSaveData() const;
+
+	Gate(ObjectManager &objectManager, SoundManager &soundManager, const int id, sf::Vector2f &position, bool isOpened = false );
 };

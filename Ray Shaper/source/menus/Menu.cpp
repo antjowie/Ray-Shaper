@@ -87,6 +87,7 @@ void Menu::draw(sf::RenderWindow & window)
 void Menu::gainedFocus(sf::RenderWindow& renderWindow)
 {
 	renderWindow.setTitle(m_title);
+	renderWindow.setMouseCursorGrabbed(false);
 
 	m_soundManager.play(SoundType::Music);
 	returnedFocus = false;
@@ -127,7 +128,10 @@ Menu * const MenuStack::peek()
 void MenuStack::checkPop()
 {
 	if (peek()->shouldPop())
+	{
+		delete m_menuStack.top();
 		m_menuStack.pop();
+	}
 }
 
 MenuStack::~MenuStack()

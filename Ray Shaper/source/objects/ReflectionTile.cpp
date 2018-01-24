@@ -21,7 +21,7 @@ void ReflectionTile::move(const sf::Vector2f & movement)
 		isGrabbed = false;
 	}
 	else
-	m_sprite.move(movement.x, 0);
+		m_sprite.move(movement.x, 0);
 }
 
 const std::vector<sf::Vector2f> ReflectionTile::getVertices() const
@@ -81,9 +81,18 @@ const std::vector<sf::Vector2f> ReflectionTile::getVertices() const
 	return returner;
 }
 
+std::map<std::string, std::string> ReflectionTile::getSaveData() const
+{
+	std::map<std::string, std::string> returner(Object::getSaveData());
+	returner["id"] = std::to_string(m_id);
+
+	return returner;
+}
+
 ReflectionTile::ReflectionTile(ObjectManager &objectManager, const int id, const sf::Vector2f & position) :
 	Object(objectManager),
-	m_direction(static_cast<Direction>(id))
+	m_direction(static_cast<Direction>(id)),
+	m_id(id)
 {
 	m_sprite.setTexture(DataManager::getInstance().getData("reflectionTile").meta.texture);
 	m_sprite.setTextureRect({ 0,17 * (id - Direction::RightUp), 16,16 });

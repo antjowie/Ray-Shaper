@@ -85,11 +85,17 @@ void GameMenu::draw(sf::RenderWindow & window)
 	drawFade(window);
 }
 
+void GameMenu::gainedFocus(sf::RenderWindow & window)
+{
+	Menu::gainedFocus(window);
+	window.setMouseCursorGrabbed(true);
+}
+
 GameMenu::GameMenu(MenuStack & menuStack, const std::string &levelPath):
 	Menu(menuStack,"Ray Shaper - In Game"), m_camera(2,{0,0,128,72}),
 	m_music(m_soundManager,"gameMusic",SoundType::Music)
 {
-	m_tilemap.load("test.tmx", m_objectManager.getTiles(), m_objectManager,m_soundManager);
+	m_tilemap.load("test", m_objectManager.getTiles(), m_objectManager,m_soundManager);
 	m_player = new  Player(m_objectManager, m_tilemap.getSpawn(1).spawn);
 
 	m_level = m_tilemap.getCurrentArea(m_player->getHitbox()).id;

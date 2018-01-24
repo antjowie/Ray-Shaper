@@ -28,7 +28,7 @@ public:
 		Reflector(ObjectManager &objectManager);
 	};
 private:
-	Reflector m_reflector;
+	Reflector* m_reflector;
 
 	// If this timeline is completed the player will enter idle state
 	Timeline m_idleTimeline;

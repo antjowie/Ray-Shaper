@@ -3,9 +3,15 @@
 
 class ReflectionTile : public Object
 {
+private:
+	const int m_id;
+
 public:
 	const enum Direction
 	{
+		// Special direction for the reflector, the non direction
+		// Used to omit loading
+		Reflector_Non = 0,
 		RightUp = 2,
 		RightDown,
 		LeftDown,
@@ -23,6 +29,8 @@ public:
 	
 	// Get the edges, used by laser to calculate acurate hitboxes
 	virtual const std::vector<sf::Vector2f> getVertices() const;
+
+	virtual std::map<std::string, std::string> getSaveData() const override;
 
 	ReflectionTile(ObjectManager &objectManager, const int id, const sf::Vector2f &position);
 };

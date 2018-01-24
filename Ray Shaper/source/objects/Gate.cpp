@@ -15,16 +15,15 @@ void Gate::update(const float elapsedTime)
 	float height{ m_upperSprite.getGlobalBounds().height };
 		if(laserHit && !m_isPlayed)
 		{
-			if (!m_soundIsPlayed)
+			if (!m_sound.getSound().Playing)
 			{
 				m_sound.play();
-				m_soundIsPlayed = true;
 			}
 			if (m_soundTimeline.getProgress() == 0)
 			{
 				m_soundManager.setTargetVolume(0, 0.5f, SoundType::Sound);
 				m_soundManager.setTargetVolume(0, 0.5f, SoundType::Music);
-				m_sound.setTargetVolume(Config::getInstance().getData("soundVolume").code,0);
+				m_sound.setTargetVolume(Config::getInstance().getData("soundVolume").code, 0);
 			}
 			else
 			{
@@ -63,10 +62,21 @@ sf::FloatRect Gate::getHitbox() const
 	return sf::FloatRect(m_upperSprite.getGlobalBounds().left, m_upperSprite.getGlobalBounds().top ,16.f,32.f);
 }
 
-Gate::Gate(ObjectManager & objectManager, SoundManager &soundManager, const int id, sf::Vector2f & position):
-	Object(objectManager),m_id(id), laserHit(false),m_sound(soundManager,"sectionFinished",SoundType::Sound,{position.x + 8.f,position.y,0}),
-	m_soundManager(soundManager), m_isPlayed(false)
+std::map<std::string, std::string> Gate::getSaveData() const
 {
+	std::map<std::string, std::string> returner(Object::getSaveData());
+	returner["state"] = m_isPlayed ? '1':'0';
+	returner["id"] = std::to_string(m_id);
+
+	return returner;
+}
+
+Gate::Gate(ObjectManager & objectManager, SoundManager &soundManager, const int id, sf::Vector2f & position, bool isOpened):
+	Object(objectManager),m_id(id), laserHit(false),m_sound(soundManager,"sectionFinished",SoundType::Sound,{position.x + 8.f,position.y,0}),
+	m_soundManager(soundManager), m_isPlayed(isOpened)
+{
+	// Used for postion saving
+	m_sprite.setPosition(position);
 	m_upperSprite.setTexture(&DataManager::getInstance().getData("gate").meta.texture);
 	m_lowerSprite.setTexture(&DataManager::getInstance().getData("gate").meta.texture);
 

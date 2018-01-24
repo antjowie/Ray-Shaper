@@ -33,6 +33,15 @@ void Object::move(const sf::Vector2f & movement)
 	m_sprite.move(movement);
 }
 
+std::map<std::string, std::string> Object::getSaveData() const
+{
+	std::map<std::string, std::string> returner;
+	returner["x"] = std::to_string(getHitbox().left);
+	returner["y"] = std::to_string(getHitbox().top);
+
+	return returner;
+}
+
 Object::Object(ObjectManager &objectManager):
 	m_objectManager(objectManager)
 {

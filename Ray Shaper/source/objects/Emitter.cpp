@@ -159,10 +159,20 @@ sf::VertexArray & Emitter::getVertices()
 	return m_vertices;
 }
 
-Emitter::Emitter(ObjectManager & objectManager, const int id, const sf::Vector2f & position) :
-	Object(objectManager), m_direction(static_cast<Direction>(id)), m_vertices(sf::PrimitiveType::LinesStrip)
+Emitter::Emitter(ObjectManager & objectManager, const int id, const sf::Vector2f & position, const bool activated) :
+	Object(objectManager), m_direction(static_cast<Direction>(id)), m_vertices(sf::PrimitiveType::LinesStrip),
+	m_active(activated)
 {
 	m_sprite.setTexture(DataManager::getInstance().getData("emitter").meta.texture);
 	m_sprite.setTextureRect({ m_active ? 16 : 0,(id - Direction::Up) * 16,16,16 });
 	m_sprite.setPosition(position);
+}
+
+std::map<std::string, std::string> Emitter::getSaveData() const
+{
+	std::map<std::string, std::string> returner (Object::getSaveData());
+	returner["state"] = m_active ? '1': '0';
+	returner["id"] = std::to_string(m_direction);
+
+	return returner;
 }

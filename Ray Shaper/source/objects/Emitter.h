@@ -50,7 +50,9 @@ public:
 
 	// This has to be loaded into the game menu class
 	sf::VertexArray &getVertices();
-	Emitter(ObjectManager &objectManager, const int id, const sf::Vector2f &position);
+	Emitter(ObjectManager &objectManager, const int id, const sf::Vector2f &position, const bool activated = false );
+
+	virtual std::map<std::string, std::string> getSaveData() const;
 };
 
 template<class T>
