@@ -127,7 +127,8 @@ inline Emitter::Collided Emitter::raycastIntersection(const sf::Vector2f & begin
 
 			// Because off float not being accurate, we use rounded values, values cant be out of these bounds by level design
 			// Offset is needed because else ray will calculate in itself
-			if (t1 > 0.01 && t2 > 0. && t2 < 1. && t1 < collided.percentage)
+			// Another solution would be to make is not compare to its last collided
+			if (t1 > 1.e-5 && t2 > 0. && t2 < 1. && t1 < collided.percentage)
 			{
 				collided.percentage = t1;
 				collided.object = object;
@@ -167,7 +168,7 @@ inline Emitter::Collided Emitter::raycastIntersection(const sf::Vector2f & begin
 			if (t1 != t1)
 				t1 = (begin2.y + movement2.y*t2 - begin.y) / movement.y;
 
-			if ((t1 > 0.001 && t2 > 0.001 && t2 < 0.999 && t1 < collided.percentage))
+			if ((t1 > 0.&& t2 > 0. && t2 < 1. && t1 < collided.percentage))
 			{
 				collided.percentage = t1;
 				collided.point = sf::Vector2f(begin.x + movement.x * static_cast<float>(t1), begin.y + movement.y * static_cast<float>(t1));

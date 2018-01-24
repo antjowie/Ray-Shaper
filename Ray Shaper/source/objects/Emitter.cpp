@@ -105,9 +105,11 @@ void Emitter::update(const float elapsedTime)
 		Collided tile(raycastIntersection<>(spawnPos, spawnPos + movement, true, false));
 		Collided gate(raycastIntersection<Gate*>(spawnPos, spawnPos + movement, false, true));
 
+		std::cout << rtile.percentage << '\n';
+
 		closestCollision = rtile.percentage < tile.percentage ? &rtile : &tile;
 		closestCollision = closestCollision->percentage < gate.percentage ? closestCollision : &gate;
-	
+
 		// If it is gate
 		if (dynamic_cast<Gate*>(closestCollision->object))
 		{
@@ -128,14 +130,18 @@ void Emitter::update(const float elapsedTime)
 			sf::Vector2f a{ spawnPos - closestCollision->point };
 			sf::Vector2f ra{ closestCollision->point - spawnPos };
 
+			// Get correct projection
 			sf::Vector2f normal{ Math::projectionUnit(a, closestCollision->normal1) };
 			if (normal == sf::Vector2f{ 0, 0 })
 				normal = Math::projectionUnit(a, closestCollision->normal2);
 
+			// Duplicate projection
 			normal *= 2.f;
 
+			// Add first vector to projection
 			spawnPos = normal + closestCollision->point + ra;
 
+			// Update the direction in the new direction
 			direction = spawnPos - closestCollision->point;
 			Math::normalizeVector(direction);
 		}
