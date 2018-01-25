@@ -25,7 +25,10 @@ struct Spawn
 
 struct Area
 {
+	// Used for camera
 	sf::FloatRect area;
+	// Used for tiles
+	sf::FloatRect tileArea;
 	int id;
 	
 	Area(const int id, const sf::FloatRect &area);
@@ -38,7 +41,6 @@ private:
 	bool m_shouldDraw;
 
 	virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override final;
-
 public:
 	bool m_isSolid{ false };
 
@@ -58,6 +60,8 @@ class Tilemap
 private:
 	std::vector<Spawn> m_spawns;
 	std::vector<Area>  m_areas;
+	// If not found returns nullptr
+	Area * findAreaById(const int id);
 
 public:
 	// Error codes

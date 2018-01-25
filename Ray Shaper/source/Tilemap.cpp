@@ -49,6 +49,14 @@ Tile Tile::getTile(const int id, const sf::Vector2f & position)
 	return  Tile(position, false, false);
 }
 
+Area * Tilemap::findAreaById(const int id)
+{
+	for (auto &iter : m_areas)
+		if (iter.id == id)
+			return &iter;
+	return nullptr;
+}
+
 int Tilemap::load(const std::string &levelName, std::vector<std::vector<Tile>> &tilemap, ObjectManager &objectManager, SoundManager &soundManager, bool lookForSave)
 {
 	pugi::xml_document doc;
@@ -131,7 +139,21 @@ int Tilemap::load(const std::string &levelName, std::vector<std::vector<Tile>> &
 		if (type == "spawn")
 			m_spawns.push_back(Spawn(object.first_child().first_child().attribute("value").as_int(), { object.attribute("x").as_float(), object.attribute("y").as_float() }));
 		else if (type == "area")
-			m_areas.push_back(Area(object.first_child().first_child().attribute("value").as_int(), { object.attribute("x").as_float() ,object.attribute("y").as_float() ,object.attribute("width").as_float() ,object.attribute("height").as_float() }));
+		{
+			Area * temp{ findAreaById(object.first_child().first_child().attribute("value").as_int()) };
+			if (temp)
+				temp->area = { object.attribute("x").as_float() ,object.attribute("y").as_float() ,object.attribute("width").as_float() ,object.attribute("height").as_float() };
+			else
+				m_areas.push_back(Area(object.first_child().first_child().attribute("value").as_int(), { object.attribute("x").as_float() ,object.attribute("y").as_float() ,object.attribute("width").as_float() ,object.attribute("height").as_float() }));
+		}
+		else if (type == "tileArea")
+		{
+			Area * temp{ findAreaById(object.first_child().first_child().attribute("value").as_int()) };
+			if (temp)
+				temp->tileArea= { object.attribute("x").as_float() ,object.attribute("y").as_float() ,object.attribute("width").as_float() ,object.attribute("height").as_float() };
+			else
+				m_areas.push_back(Area(object.first_child().first_child().attribute("value").as_int(), { object.attribute("x").as_float() ,object.attribute("y").as_float() ,object.attribute("width").as_float() ,object.attribute("height").as_float() }));
+		}
 		// If objects were already loaded by objectManager
 		else if (!save && type == "gate")
 			new Gate(objectManager,soundManager, object.first_child().first_child().attribute("value").as_int(), sf::Vector2f{ object.attribute("x").as_float(), object.attribute("y").as_float() });
@@ -170,6 +192,6 @@ Spawn::Spawn(const int id, const sf::Vector2f & position):
 }
 
 Area::Area(const int id, const sf::FloatRect & area):
-	id(id),area(area)
+	id(id),area(area),tileArea(area)
 {
 }

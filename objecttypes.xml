@@ -9,4 +9,7 @@
  <objecttype name="gate" color="#aa0000">
   <property name="id" type="int" default="-1"/>
  </objecttype>
+ <objecttype name="tileArea" color="#a0a0a4">
+  <property name="id" type="int" default="-1"/>
+ </objecttype>
 </objecttypes>

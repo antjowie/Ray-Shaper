@@ -139,7 +139,7 @@ void Player::update(const float elapsedTime)
 	// Fix movement to not collide
 	oldMovement = movement = m_acceleration * m_speed * elapsedTime;
 	m_objectManager.fixMovement<ReflectionTile*>(this, movement,true,true);
-
+	
 	// Check if player walked into wall and slow them down if that happens
 	if ((oldMovement.x > 0 && movement.x <= 0) || (oldMovement.x < 0 && movement.x >= 0))
 		m_acceleration.x = 0;
@@ -185,10 +185,12 @@ void Player::update(const float elapsedTime)
 			m_idleTimeline.setTimeline(0);
 	}
 
+	// NOTE: This is now handled after movement value but not tested yet so this will stay for a while
 	// Update accelerations based on collision snapping
-	if (movement.x != oldMovement.x);
-		// This makes player move back to force him out of corners
-		//m_acceleration.x = (oldMovement.x > 0 ? -m_decel - m_accel : m_accel + m_decel)* elapsedTime;
+	//if (movement.x != oldMovement.x);
+	// This makes player move back to force him out of corners
+	//m_acceleration.x = (oldMovement.x > 0 ? -m_decel - m_accel : m_accel + m_decel)* elapsedTime;
+		
 	// Player is on ground
 	if (oldMovement.y > 0 && movement.y == 0)
 	{

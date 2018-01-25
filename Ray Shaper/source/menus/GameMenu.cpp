@@ -102,7 +102,7 @@ void GameMenu::update(const float elapsedTime)
 		gate.update(elapsedTime);
 		for (auto &vertic : m_objectManager.getTiles())
 			for (auto &horiz : vertic)
-				if(m_tilemap.getArea(gate.id).area.intersects(horiz.getHitbox()))
+				if(m_tilemap.getArea(gate.id).tileArea.intersects(horiz.getHitbox()))
 					gate.checkCollision(horiz);
 	}
 }
