@@ -20,6 +20,8 @@ public:
 		virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override final;
 
 	public:
+		// Only if player is holding it should be drawn
+		// Public to check animation and max movement
 		virtual const std::vector<sf::Vector2f> getVertices() const override final;
 
 		virtual void input(sf::RenderWindow &window) override final;
@@ -28,20 +30,22 @@ public:
 		Reflector(ObjectManager &objectManager);
 	};
 private:
-	Reflector* m_reflector;
+	Reflector * m_reflector;
 
 	// If this timeline is completed the player will enter idle state
 	Timeline m_idleTimeline;
-	
+
 	// This enumerator is used to keep track of the animation sheet
 	enum AnimationId
 	{
 		InSleep,
 		Idle,
 		fRight,
-		sRight,
 		fLeft,
-		sLeft
+		sRight,
+		sLeft,
+		jRight,
+		jLeft
 	};
 
 	// Used for direction vector
@@ -67,7 +71,7 @@ private:
 	float m_maxAcceleration;
 	// The amount of pixels to travel per accelartion
 	float m_speed;
-	
+
 	// Amount of fall acceleration to increase per second
 	float m_fallAcceleration;
 	// Max fall acceleration
@@ -90,6 +94,8 @@ private:
 	Timeline m_grabCooldown;
 	bool m_wantToGrab{ false };
 	ReflectionTile * m_grabbed{ nullptr };
+
+	bool m_isCrouching{ false };
 
 	virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override final;
 

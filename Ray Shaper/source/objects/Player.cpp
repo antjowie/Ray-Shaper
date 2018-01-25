@@ -7,7 +7,7 @@
 #include "Config.h"
 #include "MathHelper.h"
 
-#include <SFML\Graphics.hpp>
+#include <iostream>
 
 void Player::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
@@ -40,9 +40,12 @@ void Player::input(sf::RenderWindow & window)
 	if (sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Key>(Config::getInstance().getData("right").code)))
 		m_direction[Direction::Right] = true;
 
+	m_isCrouching = (sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Key>(Config::getInstance().getData("crouch").code)));
+
 	m_wantToGrab = false;
 	if (m_grabCooldown.getProgress() == 100 && sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Key>(Config::getInstance().getData("grab").code)))
 	{
+		m_idleTimeline.setTimeline(0);
 		m_grabCooldown.setTimeline(0);
 		m_wantToGrab = true;
 	}
@@ -123,30 +126,47 @@ void Player::update(const float elapsedTime)
 				m_acceleration.x = 0;
 		}
 	}
-
+	
 	// Check movement bounds
 	if (m_acceleration.y > m_maxFallAcceleration)
 		m_acceleration.y = m_maxFallAcceleration;
-	if (m_acceleration.x > m_maxAcceleration)
-		m_acceleration.x = m_maxAcceleration;
-	else if (m_acceleration.x < -m_maxAcceleration)
-		m_acceleration.x = -m_maxAcceleration;
-
+	// This way crouching will not happen mid air
+	if (m_acceleration.x > (m_isCrouching && m_acceleration.y == m_fallAcceleration * elapsedTime? m_maxAcceleration *0.25f: m_maxAcceleration))
+		m_acceleration.x = (m_isCrouching && m_acceleration.y == m_fallAcceleration * elapsedTime? m_maxAcceleration * 0.25f : m_maxAcceleration);
+	else if (m_acceleration.x < -(m_isCrouching && m_acceleration.y == m_fallAcceleration * elapsedTime ? m_maxAcceleration * 0.25f : m_maxAcceleration))
+		m_acceleration.x = -(m_isCrouching && m_acceleration.y == m_fallAcceleration * elapsedTime ? m_maxAcceleration * 0.25f : m_maxAcceleration);
+	
 	// Fix movement to not collide
 	oldMovement = movement = m_acceleration * m_speed * elapsedTime;
-	sf::Vector2f tileMovement{ oldMovement };
 	m_objectManager.fixMovement<ReflectionTile*>(this, movement,true,true);
+
+	// Check if player walked into wall and slow them down if that happens
+	if ((oldMovement.x > 0 && movement.x <= 0) || (oldMovement.x < 0 && movement.x >= 0))
+		m_acceleration.x = 0;
+
+	// This results into a damped movement when crouching in wall, but because the player is very slow, it will be barely noticeable
+	if (m_isCrouching && movement.y == 0)
+	{
+	if (m_acceleration.x >m_maxAcceleration * 0.25f)
+		m_acceleration.x = m_maxAcceleration * 0.25f;
+	else if (m_acceleration.x < -m_maxAcceleration * 0.25f)
+		m_acceleration.x = -m_maxAcceleration * 0.25f;
+	}
 
 	// These can be handled with the new movement value
 	if (m_direction[Direction::Right])
 	{
 		m_idleTimeline.setTimeline(0);
 		m_animHandler.setAnimation(AnimationId::fRight);
+		if (m_isCrouching && m_acceleration.x < m_maxAcceleration)
+			m_animHandler.setAnimation(AnimationId::sRight);
 	}
 	else if (m_direction[Direction::Left])
 	{
 		m_idleTimeline.setTimeline(0);
 		m_animHandler.setAnimation(AnimationId::fLeft);
+		if (m_isCrouching && m_maxAcceleration > -m_maxAcceleration)
+			m_animHandler.setAnimation(AnimationId::sLeft);
 	}
 	else
 	{
@@ -166,9 +186,9 @@ void Player::update(const float elapsedTime)
 	}
 
 	// Update accelerations based on collision snapping
-	if (movement.x != oldMovement.x)
+	if (movement.x != oldMovement.x);
 		// This makes player move back to force him out of corners
-		m_acceleration.x = (oldMovement.x > 0 ? -m_decel - m_accel : m_accel + m_decel)* elapsedTime;
+		//m_acceleration.x = (oldMovement.x > 0 ? -m_decel - m_accel : m_accel + m_decel)* elapsedTime;
 	// Player is on ground
 	if (oldMovement.y > 0 && movement.y == 0)
 	{
@@ -185,10 +205,15 @@ void Player::update(const float elapsedTime)
 	if (movement.y != 0)
 	{
 		m_canJump = false;
+		// Player should be jumping, jumping animation is prioritezed
+		if (oldMovement.x < 0)
+			m_animHandler.setAnimation(AnimationId::jLeft);
+		else
+			m_animHandler.setAnimation(AnimationId::jRight);
 	}
 
 	// Update animation speed
-	if (m_animHandler.getAnimation() != AnimationId::Idle)
+	if (m_animHandler.getAnimation() != AnimationId::Idle || m_animHandler.getAnimation() != AnimationId::sLeft || m_animHandler.getAnimation() !=  AnimationId::sRight)
 	{
 		float m_rate{ std::fabs(m_acceleration.x) / m_maxAcceleration };
 		if (m_rate != 0 && m_rate < 0.25f)
@@ -264,12 +289,21 @@ Player::Player(ObjectManager & objectManager, const sf::Vector2f & pos) :
 	m_sprite.setTexture(DataManager::getInstance().getData("playerBody").meta.texture);
 	m_eyes.setTexture(DataManager::getInstance().getData("playerEyes").meta.texture);
 	
+	// Stationary
 	m_animHandler.pushAnimation(Animation(4, 0.75f, false, false));
 	m_animHandler.pushAnimation(Animation(4, 0.75f, false, false));
-	for (int i{ 0 }; i < 4; i++)
+	// Walk animation
+	for (int i{ 0 }; i < 2; i++)
 		m_animHandler.pushAnimation(Animation(4, 1 / 8.f, true, true));
-
+	// Crouch animation
+	for (int i{ 0 }; i < 2; i++)
+		m_animHandler.pushAnimation(Animation(3, 0.05f, true, true));
+	// Jump animation
+	for (int i{ 0 }; i < 2; i++)
+		m_animHandler.pushAnimation(Animation(1, 1, false, false));
+	
 	m_animHandler.setAnimation(0);
+	m_animHandler.setAnimation(m_animHandler.getLastFrame());
 
 	m_sprite.setTextureRect(m_animHandler.getFrame());
 	m_eyes.setTextureRect(m_animHandler.getFrame());

@@ -69,23 +69,26 @@ void Emitter::update(const float elapsedTime)
 	// Lookup initial direction
 	switch (m_direction)
 	{
+	// Modifying spawnpos allows player to stand inside of the inital ray resulting in a huge delay
 	case Up:
-		spawnPos += {8, 0};
+		//spawnPos += {8, 0};
 		direction = { 0,-1 };
 		break;
 	case Down:
-		spawnPos += {8, 16};
+		//spawnPos += {8, 16};
 		direction = { 0,1 };
 		break;
 	case Left:
-		spawnPos += {0, 8};
+		//spawnPos += {0, 8};
 		direction = { -1,0 };
 		break;
 	case Right:
-		spawnPos += {16, 8};
+		//spawnPos += {16, 8};
 		direction = { 1,0 };
 		break;
 	}
+	spawnPos += {8, 8};
+
 
 	m_vertices.clear();
 	m_vertices.append(sf::Vertex(spawnPos, sf::Color(58, 166, 62,0)));

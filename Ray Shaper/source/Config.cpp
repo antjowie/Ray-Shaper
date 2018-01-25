@@ -12,6 +12,7 @@ Config::Config()
 	pushData("right", Config::Data(sf::Keyboard::Key::D, Data::Type::Keyboard));
 	pushData("jump", Config::Data(sf::Keyboard::Key::Space, Data::Type::Keyboard));
 
+	pushData("crouch", Config::Data(sf::Keyboard::Key::LShift, Data::Type::Keyboard));
 	pushData("grab", Config::Data(sf::Keyboard::Key::F, Data::Type::Keyboard));
 	pushData("toggleReflector", Config::Data(sf::Mouse::Left, Data::Type::Mouse));
 }
