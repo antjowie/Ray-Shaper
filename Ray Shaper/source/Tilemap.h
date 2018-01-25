@@ -65,7 +65,7 @@ public:
 	// -2 Tile layer not found
 	// -3 Object layer not found
 	// -4 PCData not added
-	int load(const std::string &levelName, std::vector<std::vector<Tile>> &tilemap, ObjectManager &objectManager, SoundManager &soundManager);
+	int load(const std::string &levelName, std::vector<std::vector<Tile>> &tilemap, ObjectManager &objectManager, SoundManager &soundManager, bool lookForSave);
 
 	// id == -1 means not found
 	const Spawn getSpawn(const int id) const;

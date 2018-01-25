@@ -4,9 +4,6 @@
 #include "objects\Player.h"
 #include "objects\Gate.h"
 
-#include <iostream>
-
-
 bool Emitter::intersects(const double l1, const double r1, const double l2, const double r2) const
 {
 	return 
@@ -118,30 +115,59 @@ void Emitter::update(const float elapsedTime)
 			gateHit = true;
 			closestCollision->object = nullptr;
 		}
-		// If it is reflection tile
-		//else if(!closestCollision->tile)
+		// If it is reflection tile of player reflector
 		else if (dynamic_cast<ReflectionTile*>(closestCollision->object))
 		{
-			// Update direction
-			// Get vectors relative to collision point
-			sf::Vector2f b{ closestCollision->endVertex - closestCollision->point };
-			sf::Vector2f a{ spawnPos - closestCollision->point };
-			sf::Vector2f ra{ closestCollision->point - spawnPos };
+			// Check if correct side of reflection tile is hit
+			// These are all the cube reflections
+			if (static_cast<ReflectionTile*>(closestCollision->object)->m_direction >= ReflectionTile::Direction::Up)
+				switch (static_cast<ReflectionTile*>(closestCollision->object)->m_direction)
+				{
+				case ReflectionTile::Direction::Up:
+					if (closestCollision->point.y != closestCollision->object->getHitbox().top)
+						closestCollision->object = nullptr;
+					break;
+				case ReflectionTile::Direction::Down:
+					if (closestCollision->point.y != closestCollision->object->getHitbox().top + closestCollision->object->getHitbox().height)
+						closestCollision->object = nullptr;
+					break;
+				case ReflectionTile::Direction::Left:
+					if (closestCollision->point.x != closestCollision->object->getHitbox().left)
+						closestCollision->object = nullptr;
+					break;
+				case ReflectionTile::Direction::Right:
+					if (closestCollision->point.x != closestCollision->object->getHitbox().left + closestCollision->object->getHitbox().width)
+						closestCollision->object = nullptr;
+					break;
+				}
+			// These are all the triangle reflections
+			// The offset values have to (-0.5:0.5)
+			else if (((closestCollision->normal1.x > -0.1 && closestCollision->normal1.x < 0.1 ) || (closestCollision->normal1.y > -0.1 && closestCollision->normal1.y < 0.1)) && 
+				!dynamic_cast<Player::Reflector*>(closestCollision->object))
+				closestCollision->object = nullptr;
+			
+			if (closestCollision->object != nullptr)
+			{
+				// Update direction
+				// Get vectors relative to collision point
+				sf::Vector2f a{ spawnPos - closestCollision->point };
+				sf::Vector2f ra{ closestCollision->point - spawnPos };
 
-			// Get correct projection
-			sf::Vector2f normal{ Math::projectionUnit(a, closestCollision->normal1) };
-			if (normal == sf::Vector2f{ 0, 0 })
-				normal = Math::projectionUnit(a, closestCollision->normal2);
+				// Get correct projection
+				sf::Vector2f normal{ Math::projectionUnit(a, closestCollision->normal1) };
+				if (normal == sf::Vector2f{ 0, 0 })
+					normal = Math::projectionUnit(a, closestCollision->normal2);
 
-			// Duplicate projection
-			normal *= 2.f;
+				// Duplicate projection
+				normal *= 2.f;
 
-			// Add first vector to projection
-			spawnPos = normal + closestCollision->point + ra;
+				// Add first vector to projection
+				spawnPos = normal + closestCollision->point + ra;
 
-			// Update the direction in the new direction
-			direction = spawnPos - closestCollision->point;
-			Math::normalizeVector(direction);
+				// Update the direction in the new direction
+				direction = spawnPos - closestCollision->point;
+				Math::normalizeVector(direction);
+			}
 		}
 		else if(!closestCollision->tile)
 		{

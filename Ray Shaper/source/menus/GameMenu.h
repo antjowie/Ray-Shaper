@@ -35,6 +35,6 @@ public:
 
 	virtual void gainedFocus(sf::RenderWindow &window) override final;
 
-	GameMenu(MenuStack &menuStack,const std::string &levelPath);
+	GameMenu(MenuStack &menuStack,const std::string &levelPath, bool newGame);
 	virtual ~GameMenu();
 };

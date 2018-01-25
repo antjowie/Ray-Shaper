@@ -93,11 +93,11 @@ void GameMenu::gainedFocus(sf::RenderWindow & window)
 	window.setMouseCursorGrabbed(true);
 }
 
-GameMenu::GameMenu(MenuStack & menuStack, const std::string &levelPath):
+GameMenu::GameMenu(MenuStack & menuStack, const std::string &levelPath, bool newGame):
 	Menu(menuStack,"Ray Shaper - In Game"), m_camera(2,{0,0,128,72}),
 	m_music(m_soundManager,"gameMusic",SoundType::Music)
 {
-	m_tilemap.load("test", m_objectManager.getTiles(), m_objectManager,m_soundManager);
+	m_tilemap.load("test", m_objectManager.getTiles(), m_objectManager,m_soundManager,!newGame);
 	if (!m_objectManager.getObjects<Player*>().empty())
 		m_player = m_objectManager.getObjects<Player*>().front();
 	else

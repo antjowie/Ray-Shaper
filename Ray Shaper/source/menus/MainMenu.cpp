@@ -23,10 +23,10 @@ void MainMenu::input(sf::RenderWindow & window)
 				switch (iter->getAction())
 				{
 				case NewGame:
-					push(new GameMenu(m_menuStack,"test.tmx"));
+					push(new GameMenu(m_menuStack,"test.tmx",true));
 					break;
 				case Continue:
-					// TODO
+					push(new GameMenu(m_menuStack, "test.tmx",false));
 					break;
 				case Options:
 					// TODO

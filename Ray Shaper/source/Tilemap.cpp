@@ -49,7 +49,7 @@ Tile Tile::getTile(const int id, const sf::Vector2f & position)
 	return  Tile(position, false, false);
 }
 
-int Tilemap::load(const std::string &levelName, std::vector<std::vector<Tile>> &tilemap, ObjectManager &objectManager, SoundManager &soundManager)
+int Tilemap::load(const std::string &levelName, std::vector<std::vector<Tile>> &tilemap, ObjectManager &objectManager, SoundManager &soundManager, bool lookForSave)
 {
 	pugi::xml_document doc;
 	pugi::xml_parse_result result = doc.load_file(std::string(levelName + ".tmx").c_str());
@@ -87,8 +87,10 @@ int Tilemap::load(const std::string &levelName, std::vector<std::vector<Tile>> &
 	}
 	
 	// Check if there exists an object save data
+	bool save{ false };
 	objectManager.setLevelName(levelName);
-	bool save{ objectManager.loadObjects(soundManager) };
+	if(lookForSave)
+	save = objectManager.loadObjects(soundManager);
 
 	// Some tiles are loaded as objects, this map converts them
 	tilemap.resize(tilemapHeight);
