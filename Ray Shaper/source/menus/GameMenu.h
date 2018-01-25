@@ -8,6 +8,8 @@
 //////////////////////////////////
 
 #pragma once
+#include <SFML\Graphics\CircleShape.hpp>
+
 #include "Menu.h"
 #include "Tilemap.h"
 #include "Camera.h"
@@ -16,6 +18,22 @@
 class GameMenu : public Menu
 {
 private:
+	struct HitCircle
+	{
+		const int id;
+		const int maxRadius;
+		sf::RectangleShape shape;
+
+		void update(const float elapsedTime);
+		// Does a more precise calculation and updates the tile color if needed
+		void checkCollision(Tile &tile);
+
+		// maxRadius can also be calculated with tilemap 
+		HitCircle(const sf::Vector2f &position, const int id, const int maxRadius = 1600.f);
+	};
+	// Used for the transistion to green effect
+	std::vector<HitCircle> m_hitCircles;
+	
 	sf::Sprite m_background;
 	
 	Tilemap m_tilemap;

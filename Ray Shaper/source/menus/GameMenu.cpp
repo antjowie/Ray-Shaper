@@ -41,7 +41,6 @@ void GameMenu::update(const float elapsedTime)
 		for (auto &j : i)
 			j.setState(j.getHitbox().intersects(surrTiles));
 
-
 	// If gates is hit with laser, this will open them when they are near
 	sf::FloatRect playerHitbox{ m_player->getHitbox() };
 	playerHitbox = { playerHitbox.left - 1, playerHitbox.top, playerHitbox.width + 2, playerHitbox.height };
@@ -53,9 +52,8 @@ void GameMenu::update(const float elapsedTime)
 			iter->isCollided = false;
 	}
 
-	// Camera
+	// Update camera 
 	sf::Vector2f cameraMovement{ m_camera.getView().getCenter() };
-	
 	m_camera.update(elapsedTime);
 
 	m_currentLevel = m_tilemap.getCurrentArea(m_player->getHitbox()).id;
@@ -75,6 +73,38 @@ void GameMenu::update(const float elapsedTime)
 
 	// Update scrolling background
 	m_background.move((m_camera.getView().getCenter() - cameraMovement) * 0.25f);
+
+	// Check for new hitcircles
+	for (const auto &gate : m_objectManager.getObjects<Gate*>())
+	{
+		// Check if a gate has been hit
+		// We keep checking this because hitCircles are not saved
+		if (!gate->hasBeenHit().hasBeenHit)
+			continue;
+
+		bool isHit{ false };
+		for (const auto &circle : m_hitCircles)
+			if (circle.id == gate->hasBeenHit().id)
+			{
+				isHit = true;
+				break;
+			}
+
+		if (isHit)
+			continue;
+
+		m_hitCircles.push_back(HitCircle(gate->getPosition(), gate->hasBeenHit().id));
+	}
+
+	// Update tiles color
+	for (auto &gate : m_hitCircles)
+	{
+		gate.update(elapsedTime);
+		for (auto &vertic : m_objectManager.getTiles())
+			for (auto &horiz : vertic)
+				if(m_tilemap.getArea(gate.id).area.intersects(horiz.getHitbox()))
+					gate.checkCollision(horiz);
+	}
 }
 
 void GameMenu::draw(sf::RenderWindow & window)
@@ -130,4 +160,23 @@ GameMenu::GameMenu(MenuStack & menuStack, const std::string &levelPath, bool new
 GameMenu::~GameMenu()
 {
 	m_objectManager.saveObjects();
+}
+
+void GameMenu::HitCircle::update(const float elapsedTime)
+{
+	const float pixelsPerSecond{ 10.f*16.f };
+	if (shape.getSize().x < maxRadius)
+		shape.setSize(shape.getSize() + sf::Vector2f{pixelsPerSecond * elapsedTime, pixelsPerSecond * elapsedTime});
+}
+
+void GameMenu::HitCircle::checkCollision(Tile & tile)
+{
+	tile.setState(Math::magnitude(sf::Vector2f{ tile.getHitbox().left, tile.getHitbox().top } -this->shape.getPosition()) <= this->shape.getGlobalBounds().width);
+}
+
+GameMenu::HitCircle::HitCircle(const sf::Vector2f & position, const int id, const int maxRadius):
+	maxRadius(maxRadius), id(id)
+{
+	shape.setPosition(position);
+	shape.setSize({ 0,0 });
 }
