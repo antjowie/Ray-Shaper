@@ -2,8 +2,6 @@
 #include "DataManager.h"
 #include "Config.h"
 
-#include <iostream>
-
 void Gate::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
 	target.draw(m_upperSprite, states);
@@ -26,7 +24,7 @@ void Gate::update(const float elapsedTime)
 				m_soundManager.setTargetVolume(0, 0.3f, SoundType::Music);
 				m_sound.setTargetVolume(Config::getInstance().getData("soundVolume").code, 0);
 			}
-			else if (m_soundTimeline.getProgress() > 50)
+			else if (m_soundTimeline.getProgress() > 30)
 			{
 				m_soundManager.setTargetVolume(Config::getInstance().getData("soundVolume").code, 5.f, SoundType::Sound);
 				m_soundManager.setTargetVolume(Config::getInstance().getData("musicVolume").code, 5.f, SoundType::Music);
@@ -94,8 +92,13 @@ Gate::Gate(ObjectManager & objectManager, SoundManager &soundManager, const int 
 	//m_lowerSprite.setTextureRect({ 0,0,16,16 });
 
 	// Gate start closed
-	m_upperSprite.setSize({16.f, 16.f});
-	m_lowerSprite.setSize({16.f, 16.f});
+	// NOTE: By starting gates closed player can get stuck between doors
+	// when reloading level so only start gates closed when not opened
+	if (!isOpened)
+	{
+		m_upperSprite.setSize({16.f, 16.f});
+		m_lowerSprite.setSize({16.f, 16.f});
+	}
 
 	// Do some rotation and move origin so that math can stay the same
 	m_lowerSprite.setOrigin(0, 16);

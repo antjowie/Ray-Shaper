@@ -6,8 +6,6 @@
 #include "objects\Emitter.h"
 #include "objects\Player.h"
 
-#include <iostream>
-
 void GameMenu::input(sf::RenderWindow & window)
 {
 	m_objectManager.input(window);
@@ -43,7 +41,6 @@ void GameMenu::update(const float elapsedTime)
 		for (auto &j : i)
 			j.setState(j.getHitbox().intersects(surrTiles));
 
-	m_camera.update(elapsedTime);
 
 	// If gates is hit with laser, this will open them when they are near
 	sf::FloatRect playerHitbox{ m_player->getHitbox() };
@@ -57,8 +54,12 @@ void GameMenu::update(const float elapsedTime)
 	}
 
 	// Camera
-	// If player is not in a playing area
+	sf::Vector2f cameraMovement{ m_camera.getView().getCenter() };
+	
+	m_camera.update(elapsedTime);
+
 	m_currentLevel = m_tilemap.getCurrentArea(m_player->getHitbox()).id;
+	// If player is not in a playing area
 	if (m_currentLevel == -1)
 	{
 		m_camera.setTargetPosition(m_player->getPosition());
@@ -71,12 +72,16 @@ void GameMenu::update(const float elapsedTime)
 		m_camera.setBounds({ m_tilemap.getArea(m_currentLevel).area.left-32.f,m_tilemap.getArea(m_currentLevel).area.top,m_tilemap.getArea(m_currentLevel).area.width + 64.f,m_tilemap.getArea(m_currentLevel).area.height });
 		m_camera.setTargetSize(m_tilemap.getArea(m_currentLevel).area.height,true);
 	}
+
+	// Update scrolling background
+	m_background.move((m_camera.getView().getCenter() - cameraMovement) * 0.25f);
 }
 
 void GameMenu::draw(sf::RenderWindow & window)
 {
 	window.setView(m_camera.getView());
 	
+	window.draw(m_background);
 	window.draw(m_objectManager);
 	for (const auto &iter : m_objectManager.getObjects<ReflectionTile*>())
 		if(!dynamic_cast<Player::Reflector*>(iter))
@@ -97,6 +102,9 @@ GameMenu::GameMenu(MenuStack & menuStack, const std::string &levelPath, bool new
 	Menu(menuStack,"Ray Shaper - In Game"), m_camera(2,{0,0,128,72}),
 	m_music(m_soundManager,"gameMusic",SoundType::Music)
 {
+	m_background.setTexture(DataManager::getInstance().getData("gameBackground").meta.texture);
+	m_background.setColor(sf::Color(200,200,200));
+
 	m_tilemap.load("test", m_objectManager.getTiles(), m_objectManager,m_soundManager,!newGame);
 	if (!m_objectManager.getObjects<Player*>().empty())
 		m_player = m_objectManager.getObjects<Player*>().front();
@@ -113,6 +121,10 @@ GameMenu::GameMenu(MenuStack & menuStack, const std::string &levelPath, bool new
 	// Load all emitter vertices into global vertices
 	for (auto &iter : m_objectManager.getObjects<Emitter*>())
 		m_vertices.push_back(iter->getVertices());
+
+	m_background.setTextureRect({ 0,0, static_cast<int>(m_objectManager.getTiles()[0].size()) * 16, static_cast<int>(m_objectManager.getTiles().size()) * 16});
+	m_background.setOrigin(m_camera.getView().getCenter());
+	m_background.setPosition(m_camera.getView().getCenter());
 }
 
 GameMenu::~GameMenu()

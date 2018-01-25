@@ -16,6 +16,8 @@
 class GameMenu : public Menu
 {
 private:
+	sf::Sprite m_background;
+	
 	Tilemap m_tilemap;
 	Camera m_camera;
 	Player *m_player;
