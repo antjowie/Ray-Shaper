@@ -46,6 +46,9 @@ private:
 	bool intersects(const double left1, const double right1, const double left2, const double right2) const;
 
 public:
+
+	// Only if player is in the zone, emitter should update
+	bool shouldUpdate{ false };
 	virtual void update(const float elapsedTime)override final;
 
 	// This has to be loaded into the game menu class
@@ -63,8 +66,11 @@ inline Emitter::Collided Emitter::raycastIntersection(const sf::Vector2f & begin
 	const sf::Vector2f movement{ end - begin };
 	
 	if(checkObjects)
-	for (const auto &object : m_objectManager.getObjects<T>())
+	for (const auto &object : m_objectManager.getObjects<>())
 	{
+		if (dynamic_cast<Player*>(object) || dynamic_cast<Emitter*>(object))
+			continue;
+
 		std::vector<sf::Vector2f> vertices;
 			if (dynamic_cast<ReflectionTile*>(object))
 			{
@@ -149,35 +155,35 @@ inline Emitter::Collided Emitter::raycastIntersection(const sf::Vector2f & begin
 	}
 
 	if(checkTiles)
-		for (const auto &i: m_objectManager.getTiles())
-			for (const auto &object : i)
-	{
-		const std::vector<sf::Vector2f> vertices{
-			{ object.getHitbox().left,object.getHitbox().top },
-			{ object.getHitbox().left + object.getHitbox().width,object.getHitbox().top },
-			{ object.getHitbox().left + object.getHitbox().width,object.getHitbox().top + object.getHitbox().height },
-			{ object.getHitbox().left,object.getHitbox().top +   object.getHitbox().height }
-		};
-		for (size_t i = 0; i < vertices.size(); ++i)
+		for (const auto &object: m_objectManager.getInnerTiles())
 		{
-			const sf::Vector2f begin2{ vertices[i]}; // Line begin
-			const sf::Vector2f end2{ vertices[(i + 1) % vertices.size()]}; // Movement of the line
-			const sf::Vector2f movement2{ end2 - begin2 };
-
-			const double t2{ (movement.x*(begin2.y - begin.y) + movement.y*(begin.x - begin2.x)) / (movement2.x*movement.y - movement2.y*movement.x) };
-			double t1{ (begin2.x + movement2.x*t2 - begin.x) / movement.x };
+			const std::vector<sf::Vector2f> vertices{ 
+			{ object.get().getHitbox().left,object.get().getHitbox().top },
+			{ object.get().getHitbox().left + object.get().getHitbox().width,object.get().getHitbox().top },
+			{ object.get().getHitbox().left + object.get().getHitbox().width,object.get().getHitbox().top + object.get().getHitbox().height },
+			{ object.get().getHitbox().left,object.get().getHitbox().top + object.get().getHitbox().height }
+			};
 			
-			if (t1 != t1)
-				t1 = (begin2.y + movement2.y*t2 - begin.y) / movement.y;
-
-			if ((t1 > 0.&& t2 > 0. && t2 < 1. && t1 < collided.percentage))
+			for (size_t i = 0; i < vertices.size(); ++i)
 			{
-				collided.percentage = t1;
-				collided.point = sf::Vector2f(begin.x + movement.x * static_cast<float>(t1), begin.y + movement.y * static_cast<float>(t1));
-				collided.object = nullptr;
-				collided.tile = &object;
+				const sf::Vector2f begin2{ vertices[i]}; // Line begin
+				const sf::Vector2f end2{ vertices[(i + 1) % vertices.size()]}; // Movement of the line
+				const sf::Vector2f movement2{ end2 - begin2 };
+
+				const float t2{ (movement.x*(begin2.y - begin.y) + movement.y*(begin.x - begin2.x)) / (movement2.x*movement.y - movement2.y*movement.x) };
+				float t1{ (begin2.x + movement2.x*t2 - begin.x) / movement.x };
+				
+				if (t1 != t1)
+					t1 = (begin2.y + movement2.y*t2 - begin.y) / movement.y;
+
+				if ((t1 > 0.&& t2 > 0. && t2 < 1. && t1 < collided.percentage))
+				{
+					collided.percentage = t1;
+					collided.point = sf::Vector2f(begin.x + movement.x * static_cast<float>(t1), begin.y + movement.y * static_cast<float>(t1));
+					collided.object = nullptr;
+					collided.tile = &object.get();
+				}
 			}
 		}
-	}
 	return collided;
 }

@@ -46,6 +46,21 @@ void ObjectManager::draw(sf::RenderTarget & target, sf::RenderStates states) con
 		pHit.setOutlineColor(sf::Color::Red);
 		target.draw(pHit, states);
 	}
+
+	/*
+	for (auto &iter : m_innerTiles)
+	{
+		
+		sf::RectangleShape pHit;
+		pHit.setSize(sf::Vector2f(iter.get().getHitbox().width, iter.get().getHitbox().height));
+		pHit.setOrigin(0, 0);
+		pHit.setPosition(iter.get().getHitbox().left, iter.get().getHitbox().top);
+		pHit.setFillColor(sf::Color(255, 255, 255, 100));
+		pHit.setOutlineThickness(1);
+		pHit.setOutlineColor(sf::Color::Red);
+		target.draw(pHit, states);
+	}
+	*/
 }
 
 void ObjectManager::saveObjects()
@@ -165,6 +180,56 @@ void ObjectManager::update(const float elapsedTime)
 std::vector<std::vector<Tile>>& ObjectManager::getTiles()
 {
 	return m_tiles;
+}
+
+void ObjectManager::loadInnerTiles()
+{
+	for (size_t y{ 0 }; y < m_tiles.size(); y++)
+		for (size_t x{ 0 }; x < m_tiles[y].size(); x++)
+		{
+			if (!m_tiles[y][x].m_isSolid)
+				continue;
+			bool m_isSurrounded{ true };
+
+			// If it is on the border, skip it
+			if (static_cast<int>(x) - 1 < 0 || 
+				static_cast<int>(x) + 1 > m_tiles[y].size() || 
+				static_cast<int>(y) - 1 < 0 || 
+				static_cast<int>(y) + 1 > m_tiles.size())
+				continue;
+			
+			// Top three tiles
+			if (!m_tiles[y - 1][x - 1].m_isSolid)
+				m_isSurrounded = false;
+			else if (!m_tiles[y - 1][x].m_isSolid)
+				m_isSurrounded = false;
+			else if (!m_tiles[y - 1][x + 1].m_isSolid)
+				m_isSurrounded = false;
+
+			// Middle two tiles
+			else if (!m_tiles[y][x - 1].m_isSolid)
+				m_isSurrounded = false;
+			else if (!m_tiles[y][x + 1].m_isSolid)
+				m_isSurrounded = false;
+
+			// Bottom three tiles
+			else if (!m_tiles[y + 1][x - 1].m_isSolid)
+				m_isSurrounded = false;
+			else if (!m_tiles[y + 1][x].m_isSolid)
+				m_isSurrounded = false;
+			else if (!m_tiles[y + 1][x + 1].m_isSolid)
+				m_isSurrounded = false;
+
+			if (m_isSurrounded)
+				continue;
+
+			m_innerTiles.push_back(m_tiles[y][x]);
+		}
+}
+
+std::vector<std::reference_wrapper<Tile>>& ObjectManager::getInnerTiles()
+{
+	return m_innerTiles;
 }
 
 ObjectManager::~ObjectManager()

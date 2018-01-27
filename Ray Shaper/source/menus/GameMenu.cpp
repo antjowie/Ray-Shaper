@@ -28,8 +28,12 @@ void GameMenu::input(sf::RenderWindow & window)
 void GameMenu::update(const float elapsedTime)
 {
 	// Reset laserHit, this value is updates in object manager update
-	for (auto &iter : m_objectManager.getObjects<Gate*>())
-		iter->laserHit = false;
+	//for (auto &iter : m_objectManager.getObjects<Gate*>())
+	//	iter->laserHit = false;
+	m_currentLevel = m_tilemap.getCurrentArea(m_player->getHitbox()).id;
+	// Update whether emitter should update or not
+	for (const auto &iter : m_objectManager.getObjects<Emitter*>())
+		iter->shouldUpdate = iter->getHitbox().intersects(m_tilemap.getArea(m_currentLevel).area);
 
 	m_objectManager.update(elapsedTime);
 	m_soundManager.update(elapsedTime);
@@ -37,26 +41,13 @@ void GameMenu::update(const float elapsedTime)
 	// Give surrounding tiles a green color
 	sf::FloatRect surrTiles{ m_player->getHitbox() };
 	surrTiles = { surrTiles.left - 16, surrTiles.top - 16, surrTiles.width + 32, surrTiles.height + 32 };
-	for (auto &i : m_objectManager.getTiles())
-		for (auto &j : i)
-			j.setState(j.getHitbox().intersects(surrTiles));
-
-	// If gates is hit with laser, this will open them when they are near
-	sf::FloatRect playerHitbox{ m_player->getHitbox() };
-	playerHitbox = { playerHitbox.left - 1, playerHitbox.top, playerHitbox.width + 2, playerHitbox.height };
-	for (auto &iter : m_objectManager.getObjects<Gate*>())
-	{
-		if (iter->getHitbox().intersects(playerHitbox))
-			iter->isCollided = true;
-		else
-			iter->isCollided = false;
-	}
+	for (auto &i : m_objectManager.getInnerTiles())
+			i.get().setState(i.get().getHitbox().intersects(surrTiles));
 
 	// Update camera 
 	sf::Vector2f cameraMovement{ m_camera.getView().getCenter() };
 	m_camera.update(elapsedTime);
 
-	m_currentLevel = m_tilemap.getCurrentArea(m_player->getHitbox()).id;
 	// If player is not in a playing area
 	if (m_currentLevel == -1)
 	{
@@ -74,9 +65,18 @@ void GameMenu::update(const float elapsedTime)
 	// Update scrolling background
 	m_background.move((m_camera.getView().getCenter() - cameraMovement) * 0.25f);
 
+	// If gates is hit with laser, this will open them when they are near
+	sf::FloatRect playerHitbox{ m_player->getHitbox() };
+	playerHitbox = { playerHitbox.left - 1, playerHitbox.top, playerHitbox.width + 2, playerHitbox.height };
+	
 	// Check for new hitcircles
 	for (const auto &gate : m_objectManager.getObjects<Gate*>())
 	{
+		if (gate->getHitbox().intersects(playerHitbox))
+			gate->isCollided = true;
+		else
+			gate->isCollided = false;
+
 		// Check if a gate has been hit
 		// We keep checking this because hitCircles are not saved
 		if (!gate->hasBeenHit().hasBeenHit)
@@ -99,6 +99,8 @@ void GameMenu::update(const float elapsedTime)
 	// Update tiles color
 	for (auto &gate : m_hitCircles)
 	{
+		//if (gate.shouldNotCheck())
+		//	continue;
 		gate.update(elapsedTime);
 		for (auto &vertic : m_objectManager.getTiles())
 			for (auto &horiz : vertic)
@@ -114,8 +116,7 @@ void GameMenu::draw(sf::RenderWindow & window)
 	window.draw(m_background);
 	window.draw(m_objectManager);
 	for (const auto &iter : m_objectManager.getObjects<ReflectionTile*>())
-		if(!dynamic_cast<Player::Reflector*>(iter))
-			window.draw(*iter);
+		window.draw(*iter);
 	for(const auto &iter:m_vertices)
 		window.draw(iter);
 
@@ -155,6 +156,8 @@ GameMenu::GameMenu(MenuStack & menuStack, const std::string &levelPath, bool new
 	m_background.setTextureRect({ 0,0, static_cast<int>(m_objectManager.getTiles()[0].size()) * 16, static_cast<int>(m_objectManager.getTiles().size()) * 16});
 	m_background.setOrigin(m_camera.getView().getCenter());
 	m_background.setPosition(m_camera.getView().getCenter());
+
+	m_objectManager.loadInnerTiles();
 }
 
 GameMenu::~GameMenu()
@@ -171,7 +174,13 @@ void GameMenu::HitCircle::update(const float elapsedTime)
 
 void GameMenu::HitCircle::checkCollision(Tile & tile)
 {
-	tile.setState(Math::magnitude(sf::Vector2f{ tile.getHitbox().left, tile.getHitbox().top } -this->shape.getPosition()) <= this->shape.getGlobalBounds().width);
+	sf::Vector2f movement{ sf::Vector2f{ tile.getHitbox().left, tile.getHitbox().top } -this->shape.getPosition() };
+	tile.setState(std::powf(movement.x, 2) + std::powf(movement.y,2) <= std::powf(this->shape.getGlobalBounds().width,2));
+}
+
+bool GameMenu::HitCircle::shouldNotCheck() const
+{
+	return shape.getGlobalBounds().width >= maxRadius;
 }
 
 GameMenu::HitCircle::HitCircle(const sf::Vector2f & position, const int id, const int maxRadius):

@@ -4,6 +4,8 @@
 #include "objects\Player.h"
 #include "objects\Gate.h"
 
+#include <iostream>
+
 bool Emitter::intersects(const double l1, const double r1, const double l2, const double r2) const
 {
 	return 
@@ -19,6 +21,8 @@ bool Emitter::intersects(const double l1, const double r1, const double l2, cons
 
 void Emitter::update(const float elapsedTime)
 {
+	if (!shouldUpdate)
+		return;
 	// When emitter is inactive, lasers will not be casted, so we can return out of this function early
 	if (!m_active)
 	{
@@ -35,7 +39,6 @@ void Emitter::update(const float elapsedTime)
 			}
 		return;
 	}
-
 	/*
 	// Check if reflection tiles have been moved, if they have, recalculate laser
 	const std::vector<ReflectionTile*> &newTiles{ m_objectManager.getObjects<ReflectionTile*>() };
@@ -62,7 +65,7 @@ void Emitter::update(const float elapsedTime)
 		return;
 	}
 	*/
-
+	
 	// Postion is top left
 	sf::Vector2f spawnPos{ getPosition()};
 	sf::Vector2f direction{ 0,0 };
@@ -89,7 +92,6 @@ void Emitter::update(const float elapsedTime)
 	}
 	spawnPos += {8, 8};
 
-
 	m_vertices.clear();
 	m_vertices.append(sf::Vertex(spawnPos, sf::Color(58, 166, 62,0)));
 	Collided * closestCollision{ nullptr };
@@ -101,19 +103,22 @@ void Emitter::update(const float elapsedTime)
 		const sf::Vector2f movement{ direction * 100.f * 16.f };
 
 		// Calculate closest of the three tiles
+		closestCollision = &raycastIntersection<>(spawnPos, spawnPos + movement, true, true);
+		/*
 		Collided rtile(raycastIntersection<ReflectionTile*>(spawnPos, spawnPos + movement,false,true));
 		Collided tile(raycastIntersection<>(spawnPos, spawnPos + movement, true, false));
 		Collided gate(raycastIntersection<Gate*>(spawnPos, spawnPos + movement, false, true));
 
 		closestCollision = rtile.percentage < tile.percentage ? &rtile : &tile;
 		closestCollision = closestCollision->percentage < gate.percentage ? closestCollision : &gate;
+		*/
 
 		// If it is gate
 		if (dynamic_cast<Gate*>(closestCollision->object))
 		{
 			// If gate immediatly is hit
 			if (m_vertices.getVertexCount() == 1)
-				m_vertices.append({ spawnPos + ((closestCollision->point - spawnPos) *0.5f), sf::Color(58, 166, 62)});
+				m_vertices.append({ spawnPos + ((closestCollision->point - spawnPos) *0.5f), sf::Color(58, 166, 62) });
 			static_cast<Gate*>(closestCollision->object)->laserHit = true;
 			gateHit = true;
 			closestCollision->object = nullptr;
@@ -145,10 +150,10 @@ void Emitter::update(const float elapsedTime)
 				}
 			// These are all the triangle reflections
 			// The offset values have to (-0.5:0.5)
-			else if (((closestCollision->normal1.x > -0.1 && closestCollision->normal1.x < 0.1 ) || (closestCollision->normal1.y > -0.1 && closestCollision->normal1.y < 0.1)) && 
+			else if (((closestCollision->normal1.x > -0.1 && closestCollision->normal1.x < 0.1) || (closestCollision->normal1.y > -0.1 && closestCollision->normal1.y < 0.1)) &&
 				!dynamic_cast<Player::Reflector*>(closestCollision->object))
 				closestCollision->object = nullptr;
-			
+
 			if (closestCollision->object != nullptr)
 			{
 				// Update direction
@@ -172,9 +177,9 @@ void Emitter::update(const float elapsedTime)
 				Math::normalizeVector(direction);
 			}
 		}
-		else if(!closestCollision->tile)
+		else if (!closestCollision->tile)
 		{
-			closestCollision->point = spawnPos;
+			closestCollision->object = nullptr;
 		}
 		spawnPos = closestCollision->point;
 		m_vertices.append(sf::Vertex(spawnPos, sf::Color(58, 166, 62,gateHit?0:255)));

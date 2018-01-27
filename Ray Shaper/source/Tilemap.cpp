@@ -36,6 +36,7 @@ Tile::Tile(const sf::Vector2f &position, const bool shouldDraw, const bool isGre
 {
 	if (!m_shouldDraw) return;
 
+	m_isSolid = true;
 	m_sprite.setTexture(DataManager::getInstance().getData("tile").meta.texture);
 	m_sprite.setTextureRect({ 0,0,16,16 });
 	m_sprite.setPosition(position);

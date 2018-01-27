@@ -24,8 +24,9 @@ int main()
 	window.close();
 
 	window.create(sf::VideoMode(1280, 720), "Ray Shaper", sf::Style::Default);
-	window.setFramerateLimit(60);
-	
+	//window.setFramerateLimit(60);
+	window.setVerticalSyncEnabled(true);
+
 	menuStack.push(new MainMenu(menuStack));
 	clock.restart();
 
@@ -33,9 +34,9 @@ int main()
 	{
 		elapsedTime = clock.restart().asSeconds();
 
-		// Happens when below 20 fps, game becomes unstable, should actually wait instead of changing the elapsedTime
-		if (elapsedTime > 1.f /20.f)
-			elapsedTime = 1.f / 20.f;
+		// Happens when below 10 fps, game becomes unstable, should actually wait instead of changing the elapsedTime
+		if (elapsedTime > 0.1f)
+			elapsedTime = 0.1f;
 
 		if (!menuStack.peek())
 			break;

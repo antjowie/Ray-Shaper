@@ -27,6 +27,7 @@ private:
 		void update(const float elapsedTime);
 		// Does a more precise calculation and updates the tile color if needed
 		void checkCollision(Tile &tile);
+		bool shouldNotCheck() const;
 
 		// maxRadius can also be calculated with tilemap 
 		HitCircle(const sf::Vector2f &position, const int id, const int maxRadius = 1600.f);

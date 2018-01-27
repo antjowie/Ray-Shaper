@@ -15,6 +15,8 @@ private:
 
 	std::vector<Object *> m_objects;
 	std::vector<std::vector<Tile>> m_tiles;
+	// Used for collision detection
+	std::vector<std::reference_wrapper<Tile>> m_innerTiles;
 	std::string m_levelName;	
 
 	virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
@@ -43,6 +45,10 @@ public:
 	// Used to load tilemap
 	std::vector<std::vector<Tile>> &getTiles();
 	
+	// Used to load inner tiles, has to be called before the get function
+	void loadInnerTiles();
+	std::vector<std::reference_wrapper<Tile>> &getInnerTiles();
+
 	// Template is used to get certain type, leave empty if you want all objects
 	template <class T = Object*> std::vector<T> getObjects();
 	~ObjectManager();
@@ -73,10 +79,9 @@ inline Object* ObjectManager::fixMovement(const Object *const thisObject, sf::Ve
 
 	// Iterate though all tiles and check whether or not they collided
 	if(checkTiles)
-		for (auto &i : m_tiles)
-			for (auto &j : i)
+		for (auto &j : m_innerTiles)
 			{
-				const sf::FloatRect &b{ j.getHitbox() };
+				const sf::FloatRect &b{ j.get().getHitbox() };
 
 				if (hh.intersects(b))
 				{
