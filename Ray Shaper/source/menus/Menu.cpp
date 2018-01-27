@@ -68,7 +68,7 @@ void Menu::input(sf::RenderWindow & window)
 		}
 
 	if (window.hasFocus())
-	m_objectManager.input(window);
+		m_objectManager.input(window);
 }
 
 void Menu::update(const float elapsedTime)

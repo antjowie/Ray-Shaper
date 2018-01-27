@@ -251,7 +251,7 @@ void Player::update(const float elapsedTime)
 			for(auto &iter:m_objectManager.getObjects<ReflectionTile*>())
 				if (iter->getHitbox().intersects(getHitbox()))
 				{
-					if (iter == m_reflector)
+					if (!iter->canMove || iter == m_reflector)
 						continue;
 					iter->isGrabbed = true;
 					m_grabbed = iter;

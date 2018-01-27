@@ -12,17 +12,21 @@ public:
 		// Special direction for the reflector, the non direction
 		// Used to omit loading
 		Reflector_Non = 0,
-		RightUp = 2,
+		RightUp,
 		RightDown,
 		LeftDown,
 		LeftUp,
 		Up,
 		Down,
 		Left,
-		Right
+		Right,
+
+		// Used to loop around
+		Capacity
 	}m_direction;
 
 	bool isGrabbed{ false };
+	const bool canMove{ true };
 
 	virtual void update(const float elapsedTime) override;
 	virtual void move(const sf::Vector2f &movement) override;

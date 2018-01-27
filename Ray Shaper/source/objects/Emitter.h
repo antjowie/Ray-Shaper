@@ -12,7 +12,7 @@ class Emitter : public Object
 private:
 	const enum Direction
 	{
-		Up = 10,
+		Up = 17,
 		Down,
 		Left,
 		Right

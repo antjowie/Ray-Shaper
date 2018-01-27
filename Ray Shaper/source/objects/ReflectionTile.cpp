@@ -1,9 +1,11 @@
 #include "DataManager.h"
-
+#include "ReflectionTile.h"
 #include "Player.h"
 
 void ReflectionTile::update(const float elapsedTime)
 {
+	if (!canMove)
+		return;
 	int left = isGrabbed ? 17 : 0;
 	sf::IntRect textureRect{ m_sprite.getTextureRect() };
 	textureRect.left = left;
@@ -91,11 +93,13 @@ std::map<std::string, std::string> ReflectionTile::getSaveData() const
 
 ReflectionTile::ReflectionTile(ObjectManager &objectManager, const int id, const sf::Vector2f & position) :
 	Object(objectManager),
-	m_direction(static_cast<Direction>(id)),
-	m_id(id)
+	m_id(id),
+	canMove(id < 9 ? true:false),
+	// Loop around texture and add one if looping
+	m_direction(static_cast<Direction>(id% static_cast<int>(Direction::Capacity) + (id >= static_cast<int>(Direction::Capacity) ? 1:0)))
 {
 	m_sprite.setTexture(DataManager::getInstance().getData("reflectionTile").meta.texture);
-	m_sprite.setTextureRect({ 0,17 * (id - Direction::RightUp), 16,16 });
+	m_sprite.setTextureRect({ canMove ? 0 : 17,17 * (static_cast<int>(m_direction) - 1), 16,16 });
 	m_sprite.setPosition(position + sf::Vector2f{8, 8});
 	m_sprite.setOrigin(8, 8);
 }

@@ -45,7 +45,7 @@ Tile::Tile(const sf::Vector2f &position, const bool shouldDraw, const bool isGre
 
 Tile Tile::getTile(const int id, const sf::Vector2f & position)
 {
-	if(id == 1)
+	if(id == 21)
 		return  Tile(position, true, false);
 	return  Tile(position, false, false);
 }
@@ -112,14 +112,15 @@ int Tilemap::load(const std::string &levelName, std::vector<std::vector<Tile>> &
 			fixedBuffer.pop();
 			
 			// Load into object 
-			if (id > 1)
+			// Everything below id 21 are objects
+			if (id < 21)
 			{
-				// If objects were already loaded by objectManager
+				// If objects are not loaded by the objectManager
 				if (!save)
 				{
-					if (id >= 2 && id <= 9)
+					if (id >= 1 && id <= 16)
 						new ReflectionTile(objectManager, id, { horiz*16.f, vertic*16.f });
-					else if (id >= 9 && id <= 13)
+					else if (id >= 17 && id <= 20)
 						new Emitter(objectManager, id, { horiz*16.f,vertic*16.f });
 				}
 				id = 0;
