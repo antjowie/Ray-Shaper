@@ -16,12 +16,18 @@ private:
 	SoundManager &m_soundManager;
 	Timeline m_soundTimeline;
 	Sound m_sound;
+	Sound m_hitSound1;
+	Sound m_hitSound2;
 	// Makes sure sound is only played once
 	bool m_isPlayed;
 
 	virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override final;
+	
+	// Used to check if gate is hit enough times
 	const int m_maxHit;
 	int m_hitCounter;
+	// Checks if hit sound should be played
+	int m_previousHitCounter{ 0 };
 
 public:
 	// Used when player is near

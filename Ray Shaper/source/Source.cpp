@@ -5,6 +5,9 @@
 
 int main()
 {
+	std::srand(static_cast<unsigned int>(std::time(NULL)));
+	std::rand();
+
 	sf::RenderWindow window;
 	MenuStack menuStack;
 	sf::Clock clock;

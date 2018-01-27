@@ -16,6 +16,8 @@ void Gate::hit()
 void Gate::update(const float elapsedTime)
 {
 	float height{ m_upperSprite.getGlobalBounds().height };
+
+	// Checks whether gate should be unlocked
 	if(m_isPlayed || (m_hitCounter <= 0 && !m_isPlayed))
 		{
 		// Only play sound once
@@ -38,6 +40,7 @@ void Gate::update(const float elapsedTime)
 			m_isPlayed = true;
 		}
 
+	// Open or closes gate
 	if (isCollided && m_isPlayed)
 		height -= 16.f * elapsedTime;
 	else
@@ -54,11 +57,17 @@ void Gate::update(const float elapsedTime)
 	m_upperSprite.setTextureRect(newSize);
 	m_lowerSprite.setTextureRect(newSize);
 
+	// Check if gate should be solid, because we don't move hitbounds
 	if (newSize.height < 5)
 		isSolid = false;
 	else
 		isSolid = true;
 
+	// Check if hit sound should be played
+	if (m_hitCounter != m_maxHit && m_hitCounter < m_previousHitCounter)
+		std::rand() % 2 == 0 ? m_hitSound1.play() : m_hitSound2.play();
+
+	m_previousHitCounter = m_hitCounter;
 	m_hitCounter = m_maxHit;
 }
 
@@ -70,7 +79,8 @@ sf::FloatRect Gate::getHitbox() const
 std::map<std::string, std::string> Gate::getSaveData() const
 {
 	std::map<std::string, std::string> returner(Object::getSaveData());
-	returner["state"] = m_isPlayed ? '1':'0';
+	returner["state"] = m_isPlayed ? '1' : '0';
+	returner["hit"] = std::to_string(m_maxHit);
 	returner["id"] = std::to_string(m_id);
 	returner["y"] = std::to_string(getHitbox().top+getHitbox().height*0.5f);
 	
@@ -87,7 +97,9 @@ Gate::Meta Gate::hasBeenHit() const
 
 Gate::Gate(ObjectManager & objectManager, SoundManager &soundManager, const int id, const int hits, sf::Vector2f & position, bool isOpened) :
 	Object(objectManager), m_id(id), m_maxHit(hits == 0 ? 1 : hits), m_sound(soundManager, "sectionFinished", SoundType::Sound, { position.x + 8.f,position.y,0 }),
-	m_soundManager(soundManager), m_isPlayed(isOpened)
+	m_soundManager(soundManager), m_isPlayed(isOpened),
+	m_hitSound1(soundManager, "hit1", SoundType::Sound, { position.x + 8.f,position.y,0 }),
+	m_hitSound2(soundManager, "hit2", SoundType::Sound, { position.x + 8.f,position.y,0 })
 {
 	// Used for postion saving
 	m_sprite.setPosition(position);
@@ -117,4 +129,10 @@ Gate::Gate(ObjectManager & objectManager, SoundManager &soundManager, const int 
 	m_soundTimeline.setCap(5);
 	m_sound.getSound().setAttenuation(0.05f);
 	m_sound.getSound().setMinDistance(16.f);
+
+	m_hitSound1.getSound().setAttenuation(0.05f);
+	m_hitSound1.getSound().setMinDistance(16.f);
+
+	m_hitSound2.getSound().setAttenuation(0.05f);
+	m_hitSound2.getSound().setMinDistance(16.f);
 }

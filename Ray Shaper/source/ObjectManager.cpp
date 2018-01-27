@@ -97,6 +97,7 @@ void ObjectManager::saveObjects()
 		object.append_attribute("y") = std::stoi(iter->getSaveData()["y"]);
 		object.append_attribute("state") = std::stoi(iter->getSaveData()["state"]);
 		object.append_attribute("id") = std::stoi(iter->getSaveData()["id"]);
+		object.append_attribute("hit") = std::stoi(iter->getSaveData()["maxHit"]);
 	}
 	for (const auto &iter : getObjects<Emitter*>())
 	{

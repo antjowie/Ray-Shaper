@@ -6,9 +6,9 @@
 	</gates>
 	<emitters>
 		<emitter x="496" y="240" state="1" id="20" />
-		<emitter x="496" y="256" state="1" id="20" />
+		<emitter x="496" y="256" state="0" id="20" />
 	</emitters>
 	<players>
-		<player x="613" y="264" />
+		<player x="545" y="264" />
 	</players>
 </objects>
