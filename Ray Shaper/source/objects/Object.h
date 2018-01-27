@@ -32,7 +32,7 @@ protected:
 	sf::Sprite m_sprite;
 
 	ObjectManager &m_objectManager;
-
+	
 public:
 	// Checks whether object should be checked for collision
 	bool isSolid{ true };

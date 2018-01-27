@@ -119,7 +119,7 @@ void Emitter::update(const float elapsedTime)
 			// If gate immediatly is hit
 			if (m_vertices.getVertexCount() == 1)
 				m_vertices.append({ spawnPos + ((closestCollision->point - spawnPos) *0.5f), sf::Color(58, 166, 62) });
-			static_cast<Gate*>(closestCollision->object)->laserHit = true;
+			static_cast<Gate*>(closestCollision->object)->hit();
 			gateHit = true;
 			closestCollision->object = nullptr;
 		}

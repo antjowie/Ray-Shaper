@@ -12,9 +12,12 @@ void GameMenu::update(const float elapsedTime)
 	//for (auto &iter : m_objectManager.getObjects<Gate*>())
 	//	iter->laserHit = false;
 	m_currentSection = m_tilemap.getCurrentArea(m_player->getHitbox()).id;
-	// Checks whether emitter should update or not
+	if (m_currentSection != -1)
+		m_lastSection = m_currentSection;
+
+	// Checks whether emitter should update or not, only if it's in the right section
 	for (const auto &iter : m_objectManager.getObjects<Emitter*>())
-		iter->shouldUpdate = iter->getHitbox().intersects(m_tilemap.getArea(m_currentSection).area);
+		iter->shouldUpdate = iter->getHitbox().intersects(m_tilemap.getArea(m_lastSection).area);
 
 	m_objectManager.update(elapsedTime);
 	m_soundManager.update(elapsedTime);
@@ -28,7 +31,7 @@ void GameMenu::update(const float elapsedTime)
 	// Update camera 
 	sf::Vector2f cameraMovement{ m_camera.getView().getCenter() };
 	m_camera.update(elapsedTime);
-
+		
 	// If player is not in a playing area
 	if (m_currentSection == -1)
 	{
@@ -117,14 +120,15 @@ GameMenu::GameMenu(MenuStack & menuStack, const std::string &levelPath, bool new
 	m_background.setTexture(DataManager::getInstance().getData("gameBackground").meta.texture);
 	m_background.setColor(sf::Color(200,200,200));
 
-	m_tilemap.load("test", m_objectManager.getTiles(), m_objectManager,m_soundManager,!newGame);
+	m_tilemap.load("world", m_objectManager.getTiles(), m_objectManager,m_soundManager,!newGame);
 	if (!m_objectManager.getObjects<Player*>().empty())
 		m_player = m_objectManager.getObjects<Player*>().front();
 	else
 		m_player = new Player(m_objectManager, m_tilemap.getSpawn(1).spawn);
 	
 	m_currentSection = m_tilemap.getCurrentArea(m_player->getHitbox()).id;
-	
+	m_lastSection = m_currentSection;
+
 	m_camera.setCenter(m_player->getPosition());
 	m_camera.setTargetSize(m_tilemap.getArea(m_currentSection).area.height, true);
 	m_camera.setBounds(m_tilemap.getArea(m_currentSection).area);

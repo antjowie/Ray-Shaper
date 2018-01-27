@@ -20,13 +20,15 @@ private:
 	bool m_isPlayed;
 
 	virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override final;
+	const int m_maxHit;
+	int m_hitCounter;
 
 public:
 	// Used when player is near
 	bool isCollided{ false };
 	// Used when laser hits
-	bool laserHit{ false };
-	
+	void hit();
+
 	virtual void update(const float elapsedTime) override final;
 
 	virtual sf::FloatRect getHitbox() const override final;
@@ -40,5 +42,5 @@ public:
 	}; 
 	Meta hasBeenHit() const;
 
-	Gate(ObjectManager &objectManager, SoundManager &soundManager, const int id, sf::Vector2f &position, bool isOpened = false );
+	Gate(ObjectManager &objectManager, SoundManager &soundManager, const int id, const int hits, sf::Vector2f &position, bool isOpened = false );
 };

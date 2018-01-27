@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects>
+	<reflectionTiles />
+	<gates>
+		<gate x="640" y="256" state="1" id="1" />
+	</gates>
+	<emitters>
+		<emitter x="496" y="240" state="1" id="20" />
+		<emitter x="496" y="256" state="1" id="20" />
+	</emitters>
+	<players>
+		<player x="613" y="264" />
+	</players>
+</objects>

@@ -149,7 +149,7 @@ int Tilemap::load(const std::string &levelName, std::vector<std::vector<Tile>> &
 				m_areas.push_back(Area(object.first_child().first_child().attribute("value").as_int(), { object.attribute("x").as_float() ,object.attribute("y").as_float() ,object.attribute("width").as_float() ,object.attribute("height").as_float() }));
 		}
 		else if (type == "tileArea")
-		{
+		{ 
 			Area * temp{ findAreaById(object.first_child().first_child().attribute("value").as_int()) };
 			if (temp)
 				temp->tileArea= { object.attribute("x").as_float() ,object.attribute("y").as_float() ,object.attribute("width").as_float() ,object.attribute("height").as_float() };
@@ -158,7 +158,12 @@ int Tilemap::load(const std::string &levelName, std::vector<std::vector<Tile>> &
 		}
 		// If objects were already loaded by objectManager
 		else if (!save && type == "gate")
-			new Gate(objectManager,soundManager, object.first_child().first_child().attribute("value").as_int(), sf::Vector2f{ object.attribute("x").as_float(), object.attribute("y").as_float() });
+		{
+			new Gate(objectManager,soundManager, 
+				object.first_child().find_child_by_attribute("name","id").attribute("value").as_int(), 
+				object.first_child().find_child_by_attribute("name","hit").attribute("value").as_int(),
+				sf::Vector2f{ object.attribute("x").as_float(), object.attribute("y").as_float() });
+		}
 	}
 
 	return 0;

@@ -8,10 +8,15 @@ void Gate::draw(sf::RenderTarget & target, sf::RenderStates states) const
 	target.draw(m_lowerSprite, states);
 }
 
+void Gate::hit()
+{
+	m_hitCounter--;
+}
+
 void Gate::update(const float elapsedTime)
 {
 	float height{ m_upperSprite.getGlobalBounds().height };
-	if(m_isPlayed || (laserHit && !m_isPlayed))
+	if(m_isPlayed || (m_hitCounter <= 0 && !m_isPlayed))
 		{
 		// Only play sound once
 			if (!m_isPlayed)
@@ -53,6 +58,8 @@ void Gate::update(const float elapsedTime)
 		isSolid = false;
 	else
 		isSolid = true;
+
+	m_hitCounter = m_maxHit;
 }
 
 sf::FloatRect Gate::getHitbox() const
@@ -78,8 +85,8 @@ Gate::Meta Gate::hasBeenHit() const
 	return meta;
 }
 
-Gate::Gate(ObjectManager & objectManager, SoundManager &soundManager, const int id, sf::Vector2f & position, bool isOpened) :
-	Object(objectManager), m_id(id), laserHit(false), m_sound(soundManager, "sectionFinished", SoundType::Sound, { position.x + 8.f,position.y,0 }),
+Gate::Gate(ObjectManager & objectManager, SoundManager &soundManager, const int id, const int hits, sf::Vector2f & position, bool isOpened) :
+	Object(objectManager), m_id(id), m_maxHit(hits == 0 ? 1 : hits), m_sound(soundManager, "sectionFinished", SoundType::Sound, { position.x + 8.f,position.y,0 }),
 	m_soundManager(soundManager), m_isPlayed(isOpened)
 {
 	// Used for postion saving

@@ -1,34 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <objects>
 	<reflectionTiles>
-		<rtile x="281" y="304" id="1" />
-		<rtile x="304" y="304" id="2" />
-		<rtile x="320" y="304" id="3" />
-		<rtile x="336" y="304" id="4" />
-		<rtile x="368" y="304" id="5" />
-		<rtile x="384" y="304" id="6" />
-		<rtile x="400" y="304" id="7" />
-		<rtile x="416" y="304" id="8" />
-		<rtile x="448" y="304" id="9" />
-		<rtile x="464" y="304" id="10" />
-		<rtile x="480" y="304" id="11" />
-		<rtile x="496" y="304" id="12" />
-		<rtile x="528" y="304" id="13" />
-		<rtile x="544" y="304" id="14" />
-		<rtile x="560" y="304" id="15" />
-		<rtile x="576" y="304" id="16" />
+		<rtile x="352" y="160" id="10" />
+		<rtile x="624" y="160" id="11" />
+		<rtile x="368" y="176" id="10" />
+		<rtile x="608" y="176" id="11" />
+		<rtile x="384" y="192" id="10" />
+		<rtile x="592" y="192" id="11" />
+		<rtile x="400" y="208" id="10" />
+		<rtile x="576" y="208" id="11" />
+		<rtile x="400" y="240" id="1" />
+		<rtile x="384" y="256" id="1" />
+		<rtile x="576" y="256" id="4" />
+		<rtile x="368" y="272" id="1" />
+		<rtile x="592" y="272" id="4" />
+		<rtile x="352" y="288" id="1" />
+		<rtile x="608" y="288" id="4" />
+		<rtile x="624" y="304" id="4" />
 	</reflectionTiles>
 	<gates>
-		<gate x="832" y="304" state="0" id="1" />
-		<gate x="1104" y="288" state="0" id="2" />
+		<gate x="688" y="240" state="0" id="1" />
+		<gate x="1104" y="288" state="1" id="2" />
 	</gates>
 	<emitters>
-		<emitter x="624" y="304" state="0" id="17" />
-		<emitter x="640" y="304" state="0" id="18" />
-		<emitter x="656" y="304" state="0" id="19" />
-		<emitter x="672" y="304" state="0" id="20" />
+		<emitter x="240" y="304" state="0" id="20" />
 	</emitters>
 	<players>
-		<player x="527" y="312" />
+		<player x="231" y="264" />
 	</players>
 </objects>

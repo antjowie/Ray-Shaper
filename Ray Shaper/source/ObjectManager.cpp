@@ -139,7 +139,7 @@ bool ObjectManager::loadObjects(SoundManager &soundManager)
 		if(rTile.attribute("id").as_int() != 0)
 			new ReflectionTile(*this, rTile.attribute("id").as_int(), { rTile.attribute("x").as_float(),rTile.attribute("y").as_float() });
 	for (pugi::xml_node gate = xmlGate.first_child(); gate; gate = gate.next_sibling())
-		new Gate(*this,soundManager, gate.attribute("id").as_int(), sf::Vector2f{ gate.attribute("x").as_float(),gate.attribute("y").as_float() }, gate.attribute("state").as_bool());
+		new Gate(*this,soundManager, gate.attribute("id").as_int(), gate.attribute("hit").as_int(), sf::Vector2f{ gate.attribute("x").as_float(),gate.attribute("y").as_float() }, gate.attribute("state").as_bool());
 	for (pugi::xml_node emitter = xmlEmitter.first_child(); emitter; emitter = emitter.next_sibling())
 		new Emitter(*this, emitter.attribute("id").as_int(), { emitter.attribute("x").as_float(),emitter.attribute("y").as_float() }, emitter.attribute("state").as_bool());
 	for (pugi::xml_node player = xmlPlayer.first_child(); player; player = player.next_sibling())
