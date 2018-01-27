@@ -24,8 +24,8 @@ int main()
 	window.close();
 
 	window.create(sf::VideoMode(1280, 720), "Ray Shaper", sf::Style::Default);
-	//window.setFramerateLimit(60);
-	window.setVerticalSyncEnabled(true);
+	window.setFramerateLimit(60);
+	//window.setVerticalSyncEnabled(true);
 
 	menuStack.push(new MainMenu(menuStack));
 	clock.restart();
@@ -44,7 +44,7 @@ int main()
 		if (menuStack.peek()->returnedFocus)
 			menuStack.peek()->gainedFocus(window);
 
-		// Unsure but apperantly this line has a bug where the buttons in the main menu wont appear
+		// NOTE: Unsure but apperantly this line has a bug where the buttons in the main menu wont appear
 		// if the window does not have focus
 		//if(window.hasFocus())
 		menuStack.peek()->input(window);

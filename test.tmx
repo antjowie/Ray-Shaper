@@ -116,7 +116,7 @@
     <property name="id" type="int" value="1"/>
    </properties>
   </object>
-  <object id="7" name="area2" type="area" x="864" y="80" width="224" height="320">
+  <object id="7" name="area2" type="area" x="864" y="160" width="224" height="240">
    <properties>
     <property name="id" type="int" value="2"/>
    </properties>

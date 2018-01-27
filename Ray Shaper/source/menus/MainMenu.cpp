@@ -9,6 +9,8 @@
 
 void MainMenu::input(sf::RenderWindow & window)
 {
+	if (!window.hasFocus())
+		return;
 	m_objectManager.input(window);
 
 	sf::Event event;

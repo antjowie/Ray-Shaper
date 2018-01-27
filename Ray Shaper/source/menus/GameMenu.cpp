@@ -6,34 +6,15 @@
 #include "objects\Emitter.h"
 #include "objects\Player.h"
 
-void GameMenu::input(sf::RenderWindow & window)
-{
-	m_objectManager.input(window);
-
-	sf::Event event;
-
-	while(window.pollEvent(event))
-		switch (event.type)
-		{
-		case sf::Event::Closed:
-			window.close();
-			break;
-
-		case sf::Event::KeyPressed:
-			if (event.key.code == sf::Keyboard::Escape)
-				pop();
-		}
-}
-
 void GameMenu::update(const float elapsedTime)
 {
 	// Reset laserHit, this value is updates in object manager update
 	//for (auto &iter : m_objectManager.getObjects<Gate*>())
 	//	iter->laserHit = false;
-	m_currentLevel = m_tilemap.getCurrentArea(m_player->getHitbox()).id;
-	// Update whether emitter should update or not
+	m_currentSection = m_tilemap.getCurrentArea(m_player->getHitbox()).id;
+	// Checks whether emitter should update or not
 	for (const auto &iter : m_objectManager.getObjects<Emitter*>())
-		iter->shouldUpdate = iter->getHitbox().intersects(m_tilemap.getArea(m_currentLevel).area);
+		iter->shouldUpdate = iter->getHitbox().intersects(m_tilemap.getArea(m_currentSection).area);
 
 	m_objectManager.update(elapsedTime);
 	m_soundManager.update(elapsedTime);
@@ -49,17 +30,17 @@ void GameMenu::update(const float elapsedTime)
 	m_camera.update(elapsedTime);
 
 	// If player is not in a playing area
-	if (m_currentLevel == -1)
+	if (m_currentSection == -1)
 	{
 		m_camera.setTargetPosition(m_player->getPosition());
 		m_camera.setBounds({ 0,0,0,0 });
-		m_camera.setTargetSize(288.f,false);
+		m_camera.setTargetSize(288.f,289.f);
 	}
 	else
 	{
-		m_camera.setTargetPosition({ m_player->getPosition().x,m_tilemap.getArea(m_currentLevel).area.top + m_tilemap.getArea(m_currentLevel).area.height / 2.f });
-		m_camera.setBounds({ m_tilemap.getArea(m_currentLevel).area.left-32.f,m_tilemap.getArea(m_currentLevel).area.top,m_tilemap.getArea(m_currentLevel).area.width + 64.f,m_tilemap.getArea(m_currentLevel).area.height });
-		m_camera.setTargetSize(m_tilemap.getArea(m_currentLevel).area.height,true);
+		m_camera.setTargetPosition({ m_player->getPosition().x,m_tilemap.getArea(m_currentSection).area.top + m_tilemap.getArea(m_currentSection).area.height / 2.f });
+		m_camera.setBounds({ m_tilemap.getArea(m_currentSection).area.left-32.f,m_tilemap.getArea(m_currentSection).area.top,m_tilemap.getArea(m_currentSection).area.width + 64.f,m_tilemap.getArea(m_currentSection).area.height });
+		m_camera.setTargetSize(m_tilemap.getArea(m_currentSection).area.width,m_tilemap.getArea(m_currentSection).area.height);
 	}
 
 	// Update scrolling background
@@ -142,12 +123,11 @@ GameMenu::GameMenu(MenuStack & menuStack, const std::string &levelPath, bool new
 	else
 		m_player = new Player(m_objectManager, m_tilemap.getSpawn(1).spawn);
 	
-	m_level = m_tilemap.getCurrentArea(m_player->getHitbox()).id;
-	m_currentLevel = m_tilemap.getCurrentArea(m_player->getHitbox()).id;
+	m_currentSection = m_tilemap.getCurrentArea(m_player->getHitbox()).id;
 	
 	m_camera.setCenter(m_player->getPosition());
-	m_camera.setTargetSize(m_tilemap.getArea(m_currentLevel).area.height, true);
-	m_camera.setBounds(m_tilemap.getArea(m_currentLevel).area);
+	m_camera.setTargetSize(m_tilemap.getArea(m_currentSection).area.height, true);
+	m_camera.setBounds(m_tilemap.getArea(m_currentSection).area);
 
 	// Load all emitter vertices into global vertices
 	for (auto &iter : m_objectManager.getObjects<Emitter*>())

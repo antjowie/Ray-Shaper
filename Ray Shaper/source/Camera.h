@@ -40,8 +40,8 @@ public:
 	void shake(const float duration, const float offset, const float intensity);
 	
 	void setTargetPosition(const sf::Vector2f &targetPosition);
-	// Use height or width as new size, to always have good aspect ratio
-	void setTargetSize(const float side, const bool height);
+	// Use height or width as new size (always the smallest), to always have good aspect ratio
+	void setTargetSize(const float width, const float height);
 	void setCenter(const sf::Vector2f &center);
 	// The speed value affects how long it will take to get to target position
 	void setSpeed(const float speed);

@@ -1,5 +1,7 @@
 #include "Camera.h"
 
+#include <iostream>
+
 const sf::View & Camera::getView() const
 {
 	return m_view;
@@ -19,22 +21,24 @@ void Camera::setTargetPosition(const sf::Vector2f & targetPosition)
 	m_targetPos = targetPosition;
 }
 
-void Camera::setTargetSize(const float side, const bool height)
+void Camera::setTargetSize(const float width, const float height)
 {
 	// Use 16:9 ratio
 	// ratio = width/16 or height / 9
 	// width /16 = height / 9
 	// width = height / 9 * 16
 	// height = width / 16 * 9
-	if (height)
+	const bool isHeight{ height < width };
+
+	if (isHeight)
 	{
-		m_targetSize.y = side;
-		m_targetSize.x = side / 9.f * 16.f;
+		m_targetSize.y = height;
+		m_targetSize.x = height / 9.f * 16.f;
 	}
 	else
 	{
-		m_targetSize.x = side;
-		m_targetSize.y = side / 16.f * 9.f;
+		m_targetSize.x = width;
+		m_targetSize.y = width / 16.f * 9.f;
 	}
 }
 

@@ -145,12 +145,17 @@ void Player::update(const float elapsedTime)
 		m_acceleration.x = 0;
 
 	// This results into a damped movement when crouching in wall, but because the player is very slow, it will be barely noticeable
-	if (m_isCrouching && movement.y == 0)
+	if (movement.y == 0)
 	{
-	if (m_acceleration.x >m_maxAcceleration * 0.25f)
-		m_acceleration.x = m_maxAcceleration * 0.25f;
-	else if (m_acceleration.x < -m_maxAcceleration * 0.25f)
-		m_acceleration.x = -m_maxAcceleration * 0.25f;
+		// Else player falls with max acceleration when walking from edge
+		m_acceleration.y = 0;
+		if (m_isCrouching)
+		{
+		if (m_acceleration.x >m_maxAcceleration * 0.25f)
+			m_acceleration.x = m_maxAcceleration * 0.25f;
+		else if (m_acceleration.x < -m_maxAcceleration * 0.25f)
+			m_acceleration.x = -m_maxAcceleration * 0.25f;
+		}
 	}
 
 	// These can be handled with the new movement value

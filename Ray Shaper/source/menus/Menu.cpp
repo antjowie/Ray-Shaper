@@ -67,6 +67,7 @@ void Menu::input(sf::RenderWindow & window)
 				pop();
 		}
 
+	if (window.hasFocus())
 	m_objectManager.input(window);
 }
 

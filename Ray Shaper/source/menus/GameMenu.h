@@ -44,13 +44,14 @@ private:
 	// All the lasers are loaded here
 	std::vector<std::reference_wrapper<sf::VertexArray>> m_vertices;
 
-	// Highest level, the same as progress
-	int m_level{ 1 };
-	// Level the player is in right now, used for camera
-	int m_currentLevel{ 0 };
+	// Section the player is in right now, used for camera
+	int m_currentSection{ 0 };
+	// Section the player was in last
+	// Used for innerTile function 
+	// Used for resapwn location if player were to glitch through the map. Not implemented 
+	int m_lastSection{ 0 };
 
 public:
-	virtual void input(sf::RenderWindow &window) override final;
 	virtual void update(const float elapsedTime) override final;
 	virtual void draw(sf::RenderWindow &window)  override final;
 
