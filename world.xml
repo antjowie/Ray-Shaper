@@ -4,19 +4,18 @@
 		<rtile x="1008" y="176" id="10" />
 		<rtile x="1072" y="176" id="11" />
 		<rtile x="1008" y="320" id="12" />
-		<rtile x="1088" y="320" id="1" />
+		<rtile x="1073" y="320" id="1" />
 	</reflectionTiles>
 	<gates>
-		<gate x="640" y="240" width="16" height="32" state="1" id="1" hit="2" />
-		<gate x="240" y="192" width="32" height="48" state="1" id="1" hit="1" />
-		<gate x="320" y="208" width="48" height="32" state="1" id="0" hit="1" />
+		<gate x="640" y="240" width="16" height="32" state="1" id="1" hit="1" />
+		<gate x="1232" y="288" width="32" height="48" state="0" id="2" hit="2" />
 	</gates>
 	<emitters>
 		<emitter x="352" y="256" state="1" id="17" />
-		<emitter x="496" y="256" state="0" id="20" />
-		<emitter x="976" y="320" state="0" id="20" />
+		<emitter x="496" y="256" state="1" id="20" />
+		<emitter x="976" y="320" state="1" id="20" />
 	</emitters>
 	<players>
-		<player x="698" y="280" />
+		<player x="1206" y="328" />
 	</players>
 </objects>

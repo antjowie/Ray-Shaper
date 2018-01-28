@@ -42,7 +42,7 @@ SoundManager::~SoundManager()
 
 void Sound::setTargetVolume(const float volume, const float fadeTime)
 {
-	m_oldVolume = soundType == SoundType::Sound ? m_sound.getVolume() : m_music.getVolume();
+	m_oldVolume = (soundType == SoundType::Sound ? m_sound.getVolume() : m_music.getVolume());
 	m_targetVolume = volume;
 	m_volumeTimeline.setCap(fadeTime);
 	m_volumeTimeline.setTimeline(0);
@@ -53,7 +53,7 @@ void Sound::update(const float elapsedTime)
 	m_volumeTimeline.update(elapsedTime);
 	const float newVolume{ m_volumeTimeline.lerp(m_oldVolume, m_targetVolume) };
 
-	if(soundType == SoundType::Sound ? m_sound.getVolume() : m_music.getVolume() != m_targetVolume)
+	if((soundType == SoundType::Sound ? m_sound.getVolume() : m_music.getVolume()) != m_targetVolume)
 		soundType == SoundType::Sound ?
 			m_sound.setVolume(newVolume): m_music.setVolume(newVolume);
 }

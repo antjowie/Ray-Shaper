@@ -6,22 +6,6 @@ void Gate::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
 	target.draw(m_upperSprite, states);
 	target.draw(m_lowerSprite, states);
-
-	sf::RectangleShape pHit;
-	pHit.setSize({ 4,4 });
-	pHit.setPosition(m_upperSprite.getPosition());
-	pHit.setFillColor(sf::Color(255, 255, 255, 100));
-	pHit.setOutlineThickness(1);
-	pHit.setOutlineColor(sf::Color::Red);
-	target.draw(pHit, states);
-
-
-	pHit.setSize({ 4,4 });
-	pHit.setPosition(m_lowerSprite.getPosition());
-	pHit.setFillColor(sf::Color(255, 255, 255, 100));
-	pHit.setOutlineThickness(1);
-	pHit.setOutlineColor(sf::Color::Red);
-	target.draw(pHit, states);
 }
 
 void Gate::hit()
@@ -137,8 +121,6 @@ Gate::Gate(ObjectManager & objectManager, SoundManager &soundManager, const int 
 	m_hitSound2(soundManager, "hit2", SoundType::Sound,  { hitbox.left + hitbox.width * 0.5f ,hitbox.top + hitbox.height * 0.5f,0 }),
 	m_isHorizontal(hitbox.width > hitbox.height)
 {
-	m_isPlayed = true;
-
 	// Used for hitbox
 	m_sprite.setPosition({ hitbox.left,hitbox.top });
 	m_sprite.setTextureRect(static_cast<sf::IntRect>(hitbox));
