@@ -29,6 +29,9 @@ private:
 	// Checks if hit sound should be played
 	int m_previousHitCounter{ 0 };
 
+	// When horizontal width = height, so this keeps track for the math
+	const bool m_isHorizontal{ false };
+
 public:
 	// Used when player is near
 	bool isCollided{ false };
@@ -48,5 +51,5 @@ public:
 	}; 
 	Meta hasBeenHit() const;
 
-	Gate(ObjectManager &objectManager, SoundManager &soundManager, const int id, const int hits, sf::Vector2f &position, bool isOpened = false );
+	Gate(ObjectManager &objectManager, SoundManager &soundManager, const int id, const int hits, sf::FloatRect &hitbox, bool isOpened = false );
 };

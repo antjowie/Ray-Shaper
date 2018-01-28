@@ -95,9 +95,12 @@ void ObjectManager::saveObjects()
 		pugi::xml_node object{ xmlGate.append_child("gate") };
 		object.append_attribute("x") = std::stoi(iter->getSaveData()["x"]);
 		object.append_attribute("y") = std::stoi(iter->getSaveData()["y"]);
+		object.append_attribute("width") = std::stoi(iter->getSaveData()["width"]);
+		object.append_attribute("height") = std::stoi(iter->getSaveData()["height"]);
+
 		object.append_attribute("state") = std::stoi(iter->getSaveData()["state"]);
 		object.append_attribute("id") = std::stoi(iter->getSaveData()["id"]);
-		object.append_attribute("hit") = std::stoi(iter->getSaveData()["maxHit"]);
+		object.append_attribute("hit") = std::stoi(iter->getSaveData()["hit"]);
 	}
 	for (const auto &iter : getObjects<Emitter*>())
 	{
@@ -140,7 +143,8 @@ bool ObjectManager::loadObjects(SoundManager &soundManager)
 		if(rTile.attribute("id").as_int() != 0)
 			new ReflectionTile(*this, rTile.attribute("id").as_int(), { rTile.attribute("x").as_float(),rTile.attribute("y").as_float() });
 	for (pugi::xml_node gate = xmlGate.first_child(); gate; gate = gate.next_sibling())
-		new Gate(*this,soundManager, gate.attribute("id").as_int(), gate.attribute("hit").as_int(), sf::Vector2f{ gate.attribute("x").as_float(),gate.attribute("y").as_float() }, gate.attribute("state").as_bool());
+		new Gate(*this,soundManager, gate.attribute("id").as_int(), gate.attribute("hit").as_int(), 
+			sf::FloatRect{ gate.attribute("x").as_float(),gate.attribute("y").as_float(),gate.attribute("width").as_float(),gate.attribute("height").as_float() }, gate.attribute("state").as_bool());
 	for (pugi::xml_node emitter = xmlEmitter.first_child(); emitter; emitter = emitter.next_sibling())
 		new Emitter(*this, emitter.attribute("id").as_int(), { emitter.attribute("x").as_float(),emitter.attribute("y").as_float() }, emitter.attribute("state").as_bool());
 	for (pugi::xml_node player = xmlPlayer.first_child(); player; player = player.next_sibling())

@@ -51,7 +51,7 @@ void GameMenu::update(const float elapsedTime)
 
 	// If gates is hit with laser, this will open them when they are near
 	sf::FloatRect playerHitbox{ m_player->getHitbox() };
-	playerHitbox = { playerHitbox.left - 1, playerHitbox.top, playerHitbox.width + 2, playerHitbox.height };
+	playerHitbox = { playerHitbox.left - 8, playerHitbox.top-8, playerHitbox.width + 16, playerHitbox.height+16 };
 	
 	// Check for new hitcircles
 	for (const auto &gate : m_objectManager.getObjects<Gate*>())

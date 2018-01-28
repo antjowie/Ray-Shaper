@@ -68,7 +68,7 @@ inline Emitter::Collided Emitter::raycastIntersection(const sf::Vector2f & begin
 	if(checkObjects)
 	for (const auto &object : m_objectManager.getObjects<>())
 	{
-		if (dynamic_cast<Player*>(object) || dynamic_cast<Emitter*>(object))
+		if (dynamic_cast<Player*>(object) || object == this)
 			continue;
 
 		std::vector<sf::Vector2f> vertices;

@@ -162,7 +162,7 @@ int Tilemap::load(const std::string &levelName, std::vector<std::vector<Tile>> &
 			new Gate(objectManager,soundManager, 
 				object.first_child().find_child_by_attribute("name","id").attribute("value").as_int(), 
 				object.first_child().find_child_by_attribute("name","hit").attribute("value").as_int(),
-				sf::Vector2f{ object.attribute("x").as_float(), object.attribute("y").as_float() });
+				sf::FloatRect{ object.attribute("x").as_float(),object.attribute("y").as_float(),object.attribute("width").as_float(),object.attribute("height").as_float() });
 		}
 	}
 

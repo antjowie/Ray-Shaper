@@ -33,38 +33,10 @@ void Emitter::update(const float elapsedTime)
 		hitbox = { hitbox.left - 1, hitbox.top - 1, hitbox.width + 2, hitbox.height + 2 };
 		for (auto &iter : m_objectManager.getObjects<Player*>())
 			if (iter->getHitbox().intersects(hitbox))
-			{
 				m_active = true;
-				m_sprite.setTextureRect({ 16, m_sprite.getTextureRect().top, 16, 16 });
-			}
 		return;
 	}
-	/*
-	// Check if reflection tiles have been moved, if they have, recalculate laser
-	const std::vector<ReflectionTile*> &newTiles{ m_objectManager.getObjects<ReflectionTile*>() };
-	bool same{ newTiles.size() == m_oldTiles.size() };
-	if(!same)
-	for(auto &iter: newTiles)
-		m_oldTiles.push_back(iter->getHitbox().left);
-	else 
-		for (size_t i{ 0 }; i < m_oldTiles.size(); i++)
-			if (m_oldTiles[i] != newTiles[i]->getHitbox().left)
-			{
-				same = false;
-				m_oldTiles[i] = newTiles[i]->getHitbox().left;
-			}
-	if (same)
-	{
-		Collided collided;
-		// Update laser if needed
-		sf::Vector2f movement{ m_vertices[m_vertices.getVertexCount() - 1].position - m_vertices[m_vertices.getVertexCount() - 2].position };
-		movement /= std::sqrtf(std::powf(movement.x, 2.f) + std::powf(movement.y, 2.f)); // Make unit vector and add onto the end position (fake collision)
-		collided = raycastIntersection<Gate*>(m_vertices[m_vertices.getVertexCount()-2].position, m_vertices[m_vertices.getVertexCount() - 1].position + movement, false, true);
-		if (collided.object)
-			static_cast<Gate*>(collided.object)->laserHit = true;
-		return;
-	}
-	*/
+	m_sprite.setTextureRect({ 16, m_sprite.getTextureRect().top, 16, 16 });
 	
 	// Postion is top left
 	sf::Vector2f spawnPos{ getPosition()};
@@ -104,14 +76,6 @@ void Emitter::update(const float elapsedTime)
 
 		// Calculate closest of the three tiles
 		closestCollision = &raycastIntersection<>(spawnPos, spawnPos + movement, true, true);
-		/*
-		Collided rtile(raycastIntersection<ReflectionTile*>(spawnPos, spawnPos + movement,false,true));
-		Collided tile(raycastIntersection<>(spawnPos, spawnPos + movement, true, false));
-		Collided gate(raycastIntersection<Gate*>(spawnPos, spawnPos + movement, false, true));
-
-		closestCollision = rtile.percentage < tile.percentage ? &rtile : &tile;
-		closestCollision = closestCollision->percentage < gate.percentage ? closestCollision : &gate;
-		*/
 
 		// If it is gate
 		if (dynamic_cast<Gate*>(closestCollision->object))
@@ -177,6 +141,14 @@ void Emitter::update(const float elapsedTime)
 				Math::normalizeVector(direction);
 			}
 		}
+		// If it is another emitter
+		else if (dynamic_cast<Emitter*>(closestCollision->object))
+		{
+			// Activate that emitter
+			static_cast<Emitter*>(closestCollision->object)->m_active = true;
+			closestCollision->object = nullptr;
+		}
+
 		else if (!closestCollision->tile)
 		{
 			closestCollision->object = nullptr;
