@@ -21,4 +21,8 @@ private:
 
 public:
 	Text(ObjectManager &objectManager, const sf::Vector2f &position, std::string &text, const unsigned int characterSize = 30);
+
+	void setColor(const sf::Color &color);
+	void setString(const std::string &string);
+	void setOrigin(const sf::Vector2f &origin);
 };

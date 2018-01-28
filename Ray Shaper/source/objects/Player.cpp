@@ -8,7 +8,10 @@
 
 bool Player::isConfigPressed(Config::Data & data) const
 {
-	if(data.type == Config::Data::Type::Keyboard)
+	if(data.type == Config::Data::Type::Keyboard && sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Key>(data.code)))
+		return true;
+	if (data.type == Config::Data::Type::Mouse && sf::Mouse::isButtonPressed(static_cast<sf::Mouse::Button>(data.code)))
+		return true;
 	return false;
 }
 
@@ -36,17 +39,17 @@ void Player::input(sf::RenderWindow & window)
 	for (auto &iter : m_direction)
 		iter = false;
 
-	if (sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Key>(Config::getInstance().getData("jump").code)))
+	if (isConfigPressed(Config::getInstance().getData("jump")))
 		m_direction[Direction::Up] = true;
-	if (sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Key>(Config::getInstance().getData("left").code)))
+	if (isConfigPressed(Config::getInstance().getData("left")))
 		m_direction[Direction::Left] = true;
-	if (sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Key>(Config::getInstance().getData("right").code)))
+	if (isConfigPressed(Config::getInstance().getData("right")))
 		m_direction[Direction::Right] = true;
 
-	m_isCrouching = (sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Key>(Config::getInstance().getData("crouch").code)));
+	m_isCrouching = (isConfigPressed(Config::getInstance().getData("crouch")));
 
 	m_wantToGrab = false;
-	if (m_grabCooldown.getProgress() == 100 && sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Key>(Config::getInstance().getData("grab").code)))
+	if (m_grabCooldown.getProgress() == 100 && isConfigPressed(Config::getInstance().getData("grab")))
 	{
 		m_idleTimeline.setTimeline(0);
 		m_grabCooldown.setTimeline(0);

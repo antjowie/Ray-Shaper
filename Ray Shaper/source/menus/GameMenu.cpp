@@ -32,7 +32,7 @@ void GameMenu::update(const float elapsedTime)
 	// Update camera 
 	sf::Vector2f cameraMovement{ m_camera.getView().getCenter() };
 	m_camera.update(elapsedTime);
-		
+	
 	// If player is not in a playing area
 	if (m_currentSection == -1)
 	{

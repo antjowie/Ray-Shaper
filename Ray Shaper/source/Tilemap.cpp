@@ -9,6 +9,7 @@
 #include "objects\ReflectionTile.h"
 #include "objects\Emitter.h"
 #include "objects\Gate.h"
+#include "objects\Text.h"
 
 void Tile::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
@@ -155,6 +156,10 @@ int Tilemap::load(const std::string &levelName, std::vector<std::vector<Tile>> &
 				temp->tileArea= { object.attribute("x").as_float() ,object.attribute("y").as_float() ,object.attribute("width").as_float() ,object.attribute("height").as_float() };
 			else
 				m_areas.push_back(Area(object.first_child().first_child().attribute("value").as_int(), { object.attribute("x").as_float() ,object.attribute("y").as_float() ,object.attribute("width").as_float() ,object.attribute("height").as_float() }));
+		}
+		else if (type == "text")
+		{
+			new Text(objectManager, { object.attribute("x").as_float() ,object.attribute("y").as_float() }, std::string(object.first_child().text().as_string()),10);
 		}
 		// If objects were already loaded by objectManager
 		else if (!save && type == "gate")

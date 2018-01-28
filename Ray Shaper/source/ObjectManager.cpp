@@ -166,7 +166,7 @@ void ObjectManager::push(Object * const object)
 void ObjectManager::clear()
 {
 	for (auto &deleter : m_objects)
-		delete deleter;
+			delete deleter;
 	m_objects.clear();
 }
 

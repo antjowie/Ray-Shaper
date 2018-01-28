@@ -47,8 +47,9 @@ void Button::update(const float elapsedTime)
 {
 	m_button.setOutlineColor(m_hover ? green : red);
 
-	m_button.setPosition(m_currentView.getCenter() + m_offset);
-	m_text.setPosition(m_currentView.getCenter() + m_textOffset);
+	// This caused a bug when window is not focused, is seriously don't know why
+//	m_button.setPosition(m_currentView.getCenter() + m_offset);
+//	m_text.setPosition(m_currentView.getCenter() + m_textOffset);
 }
 
 const int Button::getAction()
@@ -67,6 +68,8 @@ Button::Button(ObjectManager &objectManager, SoundManager &soundManager, Meta & 
 	m_action(meta.action),
 	m_sound(soundManager,"button",SoundType::Sound)
 {
+
+	m_sprite.setPosition({ meta.button.left,meta.button.top});
 	m_button.setFillColor(sf::Color(10,10,10));
 	m_button.setPosition(meta.button.left, meta.button.top);
 	m_button.setSize({ meta.button.width,meta.button.height });

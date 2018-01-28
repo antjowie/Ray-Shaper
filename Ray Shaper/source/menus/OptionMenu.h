@@ -5,20 +5,10 @@ class OptionMenu : public Menu
 {
 private:
 	Sound m_music;
-	Sound m_sound;
 
-	const enum class BType
-	{
-		Up,
-		Left,
-		Right,
-		Crouch,
-		Grab,
-		Reflector,
-		Size
-	};
-
-	Object[]*
 public:
+	virtual void input(sf::RenderWindow &window) override final;
+	virtual void update(const float elapsedTime) override final;
+
 	OptionMenu(MenuStack &menuStack);
 };

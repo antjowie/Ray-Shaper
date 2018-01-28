@@ -84,6 +84,12 @@
     <ClCompile Include="Ray Shaper\source\menus\OptionMenu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Ray Shaper\source\objects\KeyButton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ray Shaper\source\objects\Scroller.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Ray Shaper\source\pugiconfig.hpp">
@@ -156,6 +162,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Ray Shaper\source\menus\OptionMenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ray Shaper\source\InputNames.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ray Shaper\source\objects\KeyButton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ray Shaper\source\objects\Scroller.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

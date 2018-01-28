@@ -36,6 +36,7 @@ DataManager::DataManager()
 	pushData("hit2", DataManager::Data("Ray Shaper/data/sounds/hit2.wav", DataManager::Type::Sound));
 	pushData("sectionFinished", DataManager::Data("Ray Shaper/data/sounds/sectionFinished.wav", DataManager::Type::Sound));
 	
+
 	// Music files shouldn't be loaded into the memory but instead be read while buffering
 	//pushData("gameMusic", DataManager::Data("Ray Shaper/data/sounds/gameMusic.wav", DataManager::Type::Sound));
 	//pushData("mainMenuMusic", DataManager::Data("Ray Shpaer/data/sounds/mainMenuMusic.wav", DataManager::Type::Sound));

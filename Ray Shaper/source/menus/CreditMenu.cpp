@@ -36,4 +36,6 @@ CreditMenu::CreditMenu(MenuStack & menuStack):
 	new Text(m_objectManager, { 640,169 },std::string("Thank you!")				, 80);
 	new Text(m_objectManager, { 640,300 }, std::string("For playing my game")	, 70);
 	new Text(m_objectManager, { 640,550 }, std::string("Press any key to close"), 40);
+
+	m_readTime.setCap(3.f);
 }

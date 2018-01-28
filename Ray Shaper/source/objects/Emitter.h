@@ -2,10 +2,9 @@
 #include <SFML\Graphics\VertexArray.hpp>
 
 #include "Object.h"
+#include "Text.h"
 #include "ReflectionTile.h"
 #include "MathHelper.h"
-
-#include <iostream>
 
 class Emitter : public Object
 {
@@ -68,7 +67,7 @@ inline Emitter::Collided Emitter::raycastIntersection(const sf::Vector2f & begin
 	if(checkObjects)
 	for (const auto &object : m_objectManager.getObjects<>())
 	{
-		if (dynamic_cast<Player*>(object) || object == this)
+		if (dynamic_cast<Player*>(object) || dynamic_cast<Text*>(object) ||  object == this)
 			continue;
 
 		std::vector<sf::Vector2f> vertices;
