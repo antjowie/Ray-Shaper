@@ -1,6 +1,7 @@
 #include <SFML\Window\Event.hpp>
 
 #include "GameMenu.h"
+#include "CreditMenu.h"
 
 #include "objects\Gate.h"
 #include "objects\Emitter.h"
@@ -91,6 +92,10 @@ void GameMenu::update(const float elapsedTime)
 				if(m_tilemap.getArea(gate.id).tileArea.intersects(horiz.getHitbox()))
 					gate.checkCollision(horiz);
 	}
+
+	// When player enters zone with -10 as ID, game will be finished
+	if (m_currentSection == -10)
+		m_menuStack.push(new CreditMenu(m_menuStack));
 }
 
 void GameMenu::draw(sf::RenderWindow & window)

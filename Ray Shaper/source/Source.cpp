@@ -3,6 +3,8 @@
 #include "menus\MainMenu.h"
 #include "Config.h"
 
+#include "menus\CreditMenu.h"
+
 int main()
 {
 	std::srand(static_cast<unsigned int>(std::time(NULL)));
@@ -27,10 +29,11 @@ int main()
 	window.close();
 
 	window.create(sf::VideoMode(1280, 720), "Ray Shaper", sf::Style::Default);
-	window.setFramerateLimit(60);
+	window.setFramerateLimit(Config::getInstance().getData("frameLimit").code);
 	//window.setVerticalSyncEnabled(true);
 
-	menuStack.push(new MainMenu(menuStack));
+	//menuStack.push(new MainMenu(menuStack));
+	menuStack.push(new CreditMenu(menuStack));
 	clock.restart();
 
 	while (window.isOpen())

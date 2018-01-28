@@ -2,6 +2,7 @@
 #include "AnimationHandler.h"
 #include "Object.h"
 #include "Timeline.h"
+#include "Config.h"
 #include "Tilemap.h"
 
 #include "objects\ReflectionTile.h"
@@ -30,6 +31,8 @@ public:
 		Reflector(ObjectManager &objectManager);
 	};
 private:
+	bool isConfigPressed(Config::Data & data) const;
+
 	Reflector * m_reflector;
 
 	// If this timeline is completed the player will enter idle state

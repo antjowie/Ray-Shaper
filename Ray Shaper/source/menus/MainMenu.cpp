@@ -2,6 +2,7 @@
 
 #include "MainMenu.h"
 #include "GameMenu.h"
+#include "OptionMenu.h"
 
 #include "objects\MenuBackground.h"
 #include "objects\Button.h"
@@ -30,7 +31,7 @@ void MainMenu::input(sf::RenderWindow & window)
 					push(new GameMenu(m_menuStack, "test.tmx",false));
 					break;
 				case Options:
-					// TODO
+					push(new OptionMenu(m_menuStack));
 					break;
 				case Exit:
 					pop();

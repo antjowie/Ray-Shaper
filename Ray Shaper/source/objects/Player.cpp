@@ -4,10 +4,13 @@
 
 #include "Player.h"
 #include "DataManager.h"
-#include "Config.h"
 #include "MathHelper.h"
 
-#include <iostream>
+bool Player::isConfigPressed(Config::Data & data) const
+{
+	if(data.type == Config::Data::Type::Keyboard)
+	return false;
+}
 
 void Player::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
