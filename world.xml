@@ -3,12 +3,12 @@
 	<reflectionTiles>
 		<rtile x="1008" y="176" id="10" />
 		<rtile x="1072" y="176" id="11" />
-		<rtile x="1776" y="272" id="6" />
-		<rtile x="1792" y="272" id="6" />
-		<rtile x="1808" y="272" id="6" />
-		<rtile x="1824" y="272" id="6" />
-		<rtile x="1840" y="272" id="6" />
-		<rtile x="1856" y="272" id="6" />
+		<rtile x="1776" y="272" id="14" />
+		<rtile x="1792" y="272" id="14" />
+		<rtile x="1808" y="272" id="14" />
+		<rtile x="1824" y="272" id="14" />
+		<rtile x="1840" y="272" id="14" />
+		<rtile x="1856" y="272" id="14" />
 		<rtile x="1552" y="288" id="3" />
 		<rtile x="2384" y="288" id="10" />
 		<rtile x="2480" y="288" id="11" />
@@ -20,10 +20,10 @@
 		<rtile x="2624" y="336" id="11" />
 		<rtile x="2432" y="368" id="10" />
 		<rtile x="2496" y="368" id="11" />
-		<rtile x="2320" y="432" id="4" />
+		<rtile x="2334" y="432" id="4" />
 		<rtile x="2496" y="432" id="9" />
 		<rtile x="2512" y="432" id="12" />
-		<rtile x="2528" y="432" id="1" />
+		<rtile x="2549" y="432" id="1" />
 		<rtile x="1760" y="784" id="14" />
 		<rtile x="1776" y="784" id="14" />
 		<rtile x="1792" y="784" id="14" />
@@ -33,65 +33,205 @@
 		<rtile x="3040" y="800" id="11" />
 		<rtile x="2928" y="816" id="16" />
 		<rtile x="3104" y="848" id="15" />
+		<rtile x="4032" y="848" id="12" />
+		<rtile x="4048" y="848" id="9" />
+		<rtile x="4144" y="848" id="12" />
+		<rtile x="4160" y="848" id="9" />
 		<rtile x="3104" y="864" id="15" />
+		<rtile x="4032" y="864" id="15" />
+		<rtile x="4048" y="864" id="16" />
+		<rtile x="4144" y="864" id="15" />
+		<rtile x="4160" y="864" id="16" />
+		<rtile x="5056" y="864" id="14" />
+		<rtile x="5072" y="864" id="14" />
+		<rtile x="5088" y="864" id="14" />
+		<rtile x="5104" y="864" id="14" />
+		<rtile x="5120" y="864" id="14" />
+		<rtile x="5136" y="864" id="14" />
+		<rtile x="5152" y="864" id="14" />
+		<rtile x="5168" y="864" id="14" />
+		<rtile x="5184" y="864" id="14" />
+		<rtile x="5200" y="864" id="14" />
+		<rtile x="5216" y="864" id="14" />
+		<rtile x="5232" y="864" id="14" />
+		<rtile x="5248" y="864" id="14" />
+		<rtile x="5264" y="864" id="14" />
+		<rtile x="5280" y="864" id="14" />
+		<rtile x="5296" y="864" id="14" />
+		<rtile x="5312" y="864" id="14" />
+		<rtile x="5328" y="864" id="14" />
+		<rtile x="5344" y="864" id="14" />
 		<rtile x="3104" y="880" id="15" />
+		<rtile x="4032" y="880" id="15" />
+		<rtile x="4048" y="880" id="16" />
+		<rtile x="4144" y="880" id="15" />
+		<rtile x="4160" y="880" id="16" />
+		<rtile x="4560" y="880" id="10" />
+		<rtile x="4688" y="880" id="11" />
+		<rtile x="4848" y="880" id="15" />
+		<rtile x="5040" y="880" id="16" />
+		<rtile x="5360" y="880" id="15" />
+		<rtile x="4032" y="896" id="15" />
+		<rtile x="4048" y="896" id="16" />
+		<rtile x="4144" y="896" id="15" />
+		<rtile x="4160" y="896" id="16" />
+		<rtile x="4848" y="896" id="15" />
+		<rtile x="5040" y="896" id="16" />
+		<rtile x="5360" y="896" id="15" />
+		<rtile x="4032" y="912" id="15" />
+		<rtile x="4048" y="912" id="16" />
+		<rtile x="4064" y="912" id="9" />
+		<rtile x="4128" y="912" id="12" />
+		<rtile x="4144" y="912" id="15" />
+		<rtile x="4160" y="912" id="16" />
+		<rtile x="4848" y="912" id="15" />
+		<rtile x="5040" y="912" id="16" />
+		<rtile x="5360" y="912" id="15" />
+		<rtile x="4032" y="928" id="15" />
+		<rtile x="4048" y="928" id="16" />
+		<rtile x="4064" y="928" id="16" />
+		<rtile x="4128" y="928" id="15" />
+		<rtile x="4144" y="928" id="15" />
+		<rtile x="4160" y="928" id="16" />
+		<rtile x="4848" y="928" id="15" />
+		<rtile x="5040" y="928" id="16" />
+		<rtile x="5360" y="928" id="15" />
 		<rtile x="2752" y="944" id="11" />
 		<rtile x="2832" y="944" id="10" />
+		<rtile x="4032" y="944" id="15" />
+		<rtile x="4048" y="944" id="16" />
+		<rtile x="4064" y="944" id="10" />
+		<rtile x="4128" y="944" id="11" />
+		<rtile x="4144" y="944" id="15" />
+		<rtile x="4160" y="944" id="16" />
+		<rtile x="4848" y="944" id="15" />
+		<rtile x="5040" y="944" id="16" />
+		<rtile x="5360" y="944" id="15" />
+		<rtile x="4032" y="960" id="15" />
+		<rtile x="4048" y="960" id="16" />
+		<rtile x="4144" y="960" id="15" />
+		<rtile x="4160" y="960" id="16" />
+		<rtile x="4848" y="960" id="15" />
+		<rtile x="5040" y="960" id="16" />
+		<rtile x="5360" y="960" id="15" />
+		<rtile x="4032" y="976" id="15" />
+		<rtile x="4048" y="976" id="16" />
+		<rtile x="4144" y="976" id="15" />
+		<rtile x="4160" y="976" id="16" />
+		<rtile x="4848" y="976" id="15" />
+		<rtile x="5040" y="976" id="16" />
+		<rtile x="5360" y="976" id="15" />
 		<rtile x="2944" y="992" id="10" />
-		<rtile x="3456" y="1072" id="2" />
-		<rtile x="3264" y="1088" id="3" />
-		<rtile x="3456" y="1088" id="1" />
+		<rtile x="4032" y="992" id="15" />
+		<rtile x="4048" y="992" id="16" />
+		<rtile x="4144" y="992" id="15" />
+		<rtile x="4160" y="992" id="16" />
+		<rtile x="4848" y="992" id="15" />
+		<rtile x="5040" y="992" id="16" />
+		<rtile x="5200" y="992" id="13" />
+		<rtile x="5216" y="992" id="13" />
+		<rtile x="5232" y="992" id="13" />
+		<rtile x="5248" y="992" id="9" />
+		<rtile x="5360" y="992" id="15" />
+		<rtile x="4032" y="1008" id="11" />
+		<rtile x="4048" y="1008" id="10" />
+		<rtile x="4144" y="1008" id="11" />
+		<rtile x="4160" y="1008" id="10" />
+		<rtile x="4848" y="1008" id="15" />
+		<rtile x="5040" y="1008" id="16" />
+		<rtile x="5248" y="1008" id="16" />
+		<rtile x="5360" y="1008" id="15" />
+		<rtile x="3952" y="1024" id="9" />
+		<rtile x="4848" y="1024" id="15" />
+		<rtile x="5040" y="1024" id="16" />
+		<rtile x="5168" y="1024" id="15" />
+		<rtile x="5408" y="1024" id="11" />
+		<rtile x="4848" y="1040" id="15" />
+		<rtile x="5040" y="1040" id="16" />
+		<rtile x="5168" y="1040" id="11" />
+		<rtile x="5184" y="1040" id="14" />
+		<rtile x="5200" y="1040" id="14" />
+		<rtile x="5216" y="1040" id="14" />
+		<rtile x="5232" y="1040" id="14" />
+		<rtile x="5248" y="1040" id="10" />
+		<rtile x="5360" y="1040" id="15" />
+		<rtile x="4848" y="1056" id="15" />
+		<rtile x="5040" y="1056" id="16" />
+		<rtile x="5360" y="1056" id="15" />
+		<rtile x="4848" y="1072" id="15" />
+		<rtile x="5040" y="1072" id="16" />
+		<rtile x="5360" y="1072" id="15" />
+		<rtile x="3233" y="1088" id="3" />
+		<rtile x="3648" y="1088" id="12" />
+		<rtile x="5040" y="1088" id="16" />
+		<rtile x="5360" y="1088" id="15" />
 		<rtile x="3152" y="1104" id="10" />
 		<rtile x="3232" y="1104" id="12" />
+		<rtile x="5040" y="1104" id="16" />
+		<rtile x="5360" y="1104" id="15" />
 		<rtile x="3136" y="1120" id="10" />
 		<rtile x="3216" y="1120" id="12" />
+		<rtile x="5360" y="1120" id="15" />
 		<rtile x="2752" y="1136" id="9" />
 		<rtile x="2832" y="1136" id="12" />
 		<rtile x="3120" y="1136" id="10" />
-		<rtile x="3664" y="1136" id="7" />
+		<rtile x="3664" y="1136" id="15" />
+		<rtile x="4560" y="1136" id="4" />
+		<rtile x="4704" y="1136" id="15" />
 		<rtile x="3104" y="1152" id="10" />
 		<rtile x="3184" y="1152" id="12" />
-		<rtile x="3664" y="1152" id="7" />
-		<rtile x="3664" y="1168" id="7" />
-		<rtile x="3664" y="1184" id="7" />
-		<rtile x="3664" y="1200" id="7" />
-		<rtile x="3664" y="1216" id="7" />
+		<rtile x="3664" y="1152" id="15" />
+		<rtile x="3664" y="1168" id="15" />
+		<rtile x="3664" y="1184" id="15" />
+		<rtile x="3664" y="1200" id="15" />
+		<rtile x="3664" y="1216" id="15" />
 	</reflectionTiles>
 	<gates>
-		<gate x="640" y="240" width="16" height="32" state="0" id="1" hit="1" />
-		<gate x="1232" y="288" width="32" height="48" state="0" id="2" hit="1" />
-		<gate x="1552" y="384" width="16" height="32" state="0" id="3" hit="2" />
-		<gate x="2048" y="384" width="32" height="48" state="0" id="4" hit="1" />
-		<gate x="2384" y="480" width="64" height="32" state="0" id="5" hit="2" />
-		<gate x="2368" y="928" width="96" height="48" state="0" id="6" hit="2" />
-		<gate x="2992" y="928" width="32" height="16" state="0" id="7" hit="2" />
-		<gate x="1760" y="928" width="48" height="16" state="0" id="8" hit="2" />
-		<gate x="3376" y="1120" width="16" height="48" state="0" id="9" hit="2" />
+		<gate x="640" y="240" width="16" height="32" state="1" id="1" hit="1" />
+		<gate x="1232" y="288" width="32" height="48" state="1" id="2" hit="1" />
+		<gate x="1552" y="384" width="16" height="32" state="1" id="3" hit="2" />
+		<gate x="2048" y="384" width="32" height="48" state="1" id="4" hit="1" />
+		<gate x="2384" y="480" width="64" height="32" state="1" id="5" hit="2" />
+		<gate x="2368" y="928" width="96" height="48" state="1" id="6" hit="2" />
+		<gate x="2992" y="928" width="32" height="16" state="1" id="7" hit="2" />
+		<gate x="1760" y="928" width="48" height="16" state="1" id="8" hit="2" />
+		<gate x="3376" y="1120" width="16" height="48" state="1" id="9" hit="2" />
+		<gate x="3488" y="960" width="32" height="16" state="1" id="10" hit="1" />
+		<gate x="4240" y="992" width="16" height="48" state="1" id="11" hit="2" />
+		<gate x="4736" y="1088" width="32" height="64" state="1" id="12" hit="1" />
+		<gate x="5504" y="1088" width="16" height="48" state="1" id="13" hit="1" />
 	</gates>
 	<emitters>
-		<emitter x="352" y="256" state="0" id="17" />
-		<emitter x="496" y="256" state="0" id="20" />
-		<emitter x="1424" y="288" state="0" id="20" />
-		<emitter x="976" y="320" state="0" id="20" />
-		<emitter x="2544" y="320" state="0" id="18" />
-		<emitter x="1664" y="336" state="0" id="18" />
-		<emitter x="2288" y="336" state="0" id="20" />
-		<emitter x="1424" y="400" state="0" id="17" />
-		<emitter x="2272" y="432" state="0" id="20" />
-		<emitter x="3008" y="784" state="0" id="18" />
-		<emitter x="1904" y="800" state="0" id="18" />
-		<emitter x="1904" y="912" state="0" id="17" />
-		<emitter x="2864" y="912" state="0" id="20" />
-		<emitter x="1808" y="944" state="0" id="20" />
-		<emitter x="2288" y="944" state="0" id="20" />
-		<emitter x="2528" y="944" state="0" id="19" />
-		<emitter x="2976" y="944" state="0" id="19" />
-		<emitter x="3248" y="992" state="0" id="19" />
-		<emitter x="2944" y="1088" state="0" id="20" />
-		<emitter x="3280" y="1200" state="0" id="19" />
+		<emitter x="352" y="256" state="1" id="17" />
+		<emitter x="496" y="256" state="1" id="20" />
+		<emitter x="1424" y="288" state="1" id="20" />
+		<emitter x="976" y="320" state="1" id="20" />
+		<emitter x="2544" y="320" state="1" id="18" />
+		<emitter x="1664" y="336" state="1" id="18" />
+		<emitter x="2288" y="336" state="1" id="20" />
+		<emitter x="1424" y="400" state="1" id="17" />
+		<emitter x="2272" y="432" state="1" id="20" />
+		<emitter x="3008" y="784" state="1" id="18" />
+		<emitter x="3952" y="784" state="1" id="18" />
+		<emitter x="4016" y="784" state="1" id="19" />
+		<emitter x="1904" y="800" state="1" id="18" />
+		<emitter x="1904" y="912" state="1" id="17" />
+		<emitter x="2864" y="912" state="1" id="20" />
+		<emitter x="1808" y="944" state="1" id="20" />
+		<emitter x="2288" y="944" state="1" id="20" />
+		<emitter x="2528" y="944" state="1" id="19" />
+		<emitter x="2976" y="944" state="1" id="19" />
+		<emitter x="3248" y="992" state="1" id="19" />
+		<emitter x="5200" y="1024" state="1" id="20" />
+		<emitter x="3984" y="1056" state="1" id="20" />
+		<emitter x="2944" y="1088" state="1" id="20" />
+		<emitter x="3456" y="1088" state="1" id="20" />
+		<emitter x="5040" y="1120" state="1" id="20" />
+		<emitter x="4544" y="1136" state="1" id="20" />
+		<emitter x="3280" y="1200" state="1" id="19" />
 		<emitter x="3520" y="1280" state="1" id="17" />
 	</emitters>
 	<players>
-		<player x="3567" y="1272" />
+		<player x="5525" y="1128" />
 	</players>
 </objects>

@@ -42,6 +42,7 @@ private:
 
 	virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override final;
 public:
+	bool m_canChangeState{ true };
 	bool m_isSolid{ false };
 
 	// Changes tile color to red or green

@@ -19,6 +19,8 @@ void Tile::draw(sf::RenderTarget & target, sf::RenderStates states) const
 
 void Tile::setState(const bool isGreen)
 {
+	if (!m_canChangeState)
+		return;
 	sf::IntRect textureRect{ m_sprite.getTextureRect() };
 	if (isGreen)
 		textureRect.left = textureRect.width;
@@ -122,7 +124,7 @@ int Tilemap::load(const std::string &levelName, std::vector<std::vector<Tile>> &
 					if (id >= 1 && id <= 16)
 						new ReflectionTile(objectManager, id, { horiz*16.f, vertic*16.f });
 					else if (id >= 17 && id <= 20)
-						new Emitter(objectManager, id, { horiz*16.f,vertic*16.f });
+						new Emitter(objectManager, soundManager, id, { horiz*16.f,vertic*16.f });
 				}
 				id = 0;
 			}

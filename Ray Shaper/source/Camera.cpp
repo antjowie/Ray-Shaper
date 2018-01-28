@@ -18,7 +18,15 @@ void Camera::shake(const float duration, const float offset, const float intensi
 
 void Camera::setTargetPosition(const sf::Vector2f & targetPosition)
 {
-	m_targetPos = targetPosition;
+	if (m_bounds == sf::FloatRect{ 0, 0, 0, 0 })
+		m_targetPos = targetPosition;
+	else
+	{
+		if(m_bounds.width > m_bounds.height)
+			m_targetPos = { targetPosition.x, m_bounds.top + m_bounds.height *.5f};
+		else 
+			m_targetPos = { m_bounds.left + m_bounds.width *.5f , targetPosition.y};
+	}
 }
 
 void Camera::setTargetSize(const float width, const float height)
@@ -53,10 +61,10 @@ void Camera::update(const float elapsedTime)
 	// Check bounds
 	if (m_bounds != sf::FloatRect{ 0, 0, 0, 0 })
 	{
-		if (m_targetPos.x - m_view.getSize().x / 2.f < m_bounds.left)
-			m_targetPos = { m_bounds.left + m_view.getSize().x / 2.f, m_targetPos.y };
-		else if (m_targetPos.x + m_view.getSize().x / 2.f > m_bounds.left + m_bounds.width)
-			m_targetPos = {m_bounds.left + m_bounds.width - m_view.getSize().x / 2.f, m_targetPos.y };
+		if (m_targetPos.x - m_view.getSize().x * .5f < m_bounds.left - 30.f)
+			m_targetPos = { m_bounds.left + m_view.getSize().x * .5f - 30.f, m_targetPos.y };
+		else if (m_targetPos.x + m_view.getSize().x * .5f > m_bounds.left + m_bounds.width + 30.f)
+			m_targetPos = { m_bounds.left + m_bounds.width - m_view.getSize().x * .5f + 30.f, m_targetPos.y };
 	}
 
 	sf::Vector2f movement{ (m_targetPos - m_view.getCenter()) * m_speed};

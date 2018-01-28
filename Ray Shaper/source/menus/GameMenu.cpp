@@ -42,7 +42,7 @@ void GameMenu::update(const float elapsedTime)
 	}
 	else
 	{
-		m_camera.setTargetPosition({ m_player->getPosition().x,m_tilemap.getArea(m_currentSection).area.top + m_tilemap.getArea(m_currentSection).area.height / 2.f });
+		m_camera.setTargetPosition({ m_player->getPosition().x,m_player->getPosition().y });
 		m_camera.setBounds({ m_tilemap.getArea(m_currentSection).area.left-32.f,m_tilemap.getArea(m_currentSection).area.top,m_tilemap.getArea(m_currentSection).area.width + 64.f,m_tilemap.getArea(m_currentSection).area.height });
 		m_camera.setTargetSize(m_tilemap.getArea(m_currentSection).area.width,m_tilemap.getArea(m_currentSection).area.height);
 	}
@@ -84,8 +84,8 @@ void GameMenu::update(const float elapsedTime)
 	// Update tiles color
 	for (auto &gate : m_hitCircles)
 	{
-		//if (gate.shouldNotCheck())
-		//	continue;
+		if (gate.shouldNotCheck())
+			continue;
 		gate.update(elapsedTime);
 		for (auto &vertic : m_objectManager.getTiles())
 			for (auto &horiz : vertic)
@@ -164,7 +164,11 @@ void GameMenu::HitCircle::update(const float elapsedTime)
 void GameMenu::HitCircle::checkCollision(Tile & tile)
 {
 	sf::Vector2f movement{ sf::Vector2f{ tile.getHitbox().left, tile.getHitbox().top } -this->shape.getPosition() };
-	tile.setState(std::powf(movement.x, 2) + std::powf(movement.y,2) <= std::powf(this->shape.getGlobalBounds().width,2));
+	const bool state{ std::powf(movement.x, 2) + std::powf(movement.y,2) <= std::powf(this->shape.getGlobalBounds().width,2) };
+	tile.setState(state);
+	if (state)
+		tile.m_canChangeState = false;
+	
 }
 
 bool GameMenu::HitCircle::shouldNotCheck() const

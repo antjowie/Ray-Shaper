@@ -18,10 +18,13 @@ private:
 	}m_direction;
 
 	bool m_active{ false };
+	bool m_isPlayed{ false };
 
 	// Compares this to the new tiles, if one tile moved, recalculate laser
 	std::vector<float> m_oldTiles;
 	sf::VertexArray m_vertices;
+
+	Sound m_sound;
 
 	struct Collided
 	{
@@ -52,7 +55,7 @@ public:
 
 	// This has to be loaded into the game menu class
 	sf::VertexArray &getVertices();
-	Emitter(ObjectManager &objectManager, const int id, const sf::Vector2f &position, const bool activated = false );
+	Emitter(ObjectManager &objectManager, SoundManager &soundManager, const int id, const sf::Vector2f &position, const bool activated = false );
 
 	virtual std::map<std::string, std::string> getSaveData() const;
 };

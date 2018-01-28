@@ -146,7 +146,7 @@ bool ObjectManager::loadObjects(SoundManager &soundManager)
 		new Gate(*this,soundManager, gate.attribute("id").as_int(), gate.attribute("hit").as_int(), 
 			sf::FloatRect{ gate.attribute("x").as_float(),gate.attribute("y").as_float(),gate.attribute("width").as_float(),gate.attribute("height").as_float() }, gate.attribute("state").as_bool());
 	for (pugi::xml_node emitter = xmlEmitter.first_child(); emitter; emitter = emitter.next_sibling())
-		new Emitter(*this, emitter.attribute("id").as_int(), { emitter.attribute("x").as_float(),emitter.attribute("y").as_float() }, emitter.attribute("state").as_bool());
+		new Emitter(*this,soundManager, emitter.attribute("id").as_int(), { emitter.attribute("x").as_float(),emitter.attribute("y").as_float() }, emitter.attribute("state").as_bool());
 	for (pugi::xml_node player = xmlPlayer.first_child(); player; player = player.next_sibling())
 		new Player(*this, { player.attribute("x").as_float(),player.attribute("y").as_float() });
 

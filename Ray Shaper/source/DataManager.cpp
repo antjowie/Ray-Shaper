@@ -32,6 +32,7 @@ DataManager::DataManager()
 	pushData("playerReflector", DataManager::Data("Ray Shaper/data/textures/player/reflector.png", DataManager::Type::Texture));
 
 	pushData("button", DataManager::Data("Ray Shaper/data/sounds/buttonHover.wav", DataManager::Type::Sound));
+	pushData("activateEmitter", DataManager::Data("Ray Shaper/data/sounds/activateEmitter.wav", DataManager::Type::Sound));
 	pushData("hit1", DataManager::Data("Ray Shaper/data/sounds/hit1.wav", DataManager::Type::Sound));
 	pushData("hit2", DataManager::Data("Ray Shaper/data/sounds/hit2.wav", DataManager::Type::Sound));
 	pushData("sectionFinished", DataManager::Data("Ray Shaper/data/sounds/sectionFinished.wav", DataManager::Type::Sound));
