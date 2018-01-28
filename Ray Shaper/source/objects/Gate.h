@@ -20,6 +20,9 @@ private:
 	Sound m_hitSound2;
 	// Makes sure sound is only played once
 	bool m_isPlayed;
+	// This makes sure that the other sound regain their volume only one
+	// Else all other sounds will be muted
+	bool m_isRegainingVolume{ false };
 
 	virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override final;
 	

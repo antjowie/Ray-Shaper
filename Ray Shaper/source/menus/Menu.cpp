@@ -34,6 +34,10 @@ void Menu::updateFade(sf::RenderWindow &window, const float elapsedTime)
 	sf::Uint8 newColor{ static_cast<sf::Uint8>(255.f / 100.f * m_fade.getProgress()) };
 	m_darkOverlay.setFillColor({ newColor,newColor,newColor });
 
+	// SoundManager should actually only be called one time and the internal timeline should keep track of the time. 
+	// This forces a change in volume. The reason why I did this is to overwrite when user goes to a different screen
+	// while volume is changing, this way, it will be overwritten and the volume will always increase or decrease volume at the
+	// same rate instead of a relative one.
 	m_soundManager.setTargetVolume(static_cast<float>(Config::getInstance().getData("musicVolume").code) / 100.f *  m_fade.getProgress(),0,SoundType::Music);
 	m_soundManager.update(0);
 

@@ -31,10 +31,11 @@ void Gate::update(const float elapsedTime)
 				m_soundManager.setTargetVolume(0, 0.3f, SoundType::Music);
 				m_sound.setTargetVolume(Config::getInstance().getData("soundVolume").code, 0);
 			}
-			else if (m_soundTimeline.getProgress() > 30)
+			else if (!m_isRegainingVolume && m_soundTimeline.getProgress() > 30)
 			{
 				m_soundManager.setTargetVolume(Config::getInstance().getData("soundVolume").code, 5.f, SoundType::Sound);
 				m_soundManager.setTargetVolume(Config::getInstance().getData("musicVolume").code, 5.f, SoundType::Music);
+				m_isRegainingVolume = true;
 			}
 			m_soundTimeline.update(elapsedTime);
 			m_isPlayed = true;

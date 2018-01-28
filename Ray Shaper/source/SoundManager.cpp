@@ -17,7 +17,9 @@ void SoundManager::setTargetVolume(const float volume, const float fadeTime, con
 void SoundManager::update(const float elapsedTime)
 {
 	for (auto &iter : m_sounds)
+	{
 		iter.get().update(elapsedTime);
+	}
 }
 
 void SoundManager::play(const SoundType type)
@@ -54,8 +56,7 @@ void Sound::update(const float elapsedTime)
 	const float newVolume{ m_volumeTimeline.lerp(m_oldVolume, m_targetVolume) };
 
 	if((soundType == SoundType::Sound ? m_sound.getVolume() : m_music.getVolume()) != m_targetVolume)
-		soundType == SoundType::Sound ?
-			m_sound.setVolume(newVolume): m_music.setVolume(newVolume);
+		soundType == SoundType::Sound ? m_sound.setVolume(newVolume): m_music.setVolume(newVolume);
 }
 
 void Sound::play()
