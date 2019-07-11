@@ -1,6 +1,6 @@
 # Ray-Shaper
-A 2D puzzle game based around lasers. Download the game [here](https://drive.google.com/open?id=1HnHZUPI-AYm1g8gb9E_X2jkpqDRxm6OK)  
-![img](https://github.com/antjowie/Ray-Shaper/raw/master/Ray%20Shaper/data/textures/splashscreen.png) or go to the releases[https://github.com/antjowie/Ray-Shaper/releases].
+A 2D puzzle game based around lasers. Download the game [here](https://drive.google.com/open?id=1HnHZUPI-AYm1g8gb9E_X2jkpqDRxm6OK) or go to the releases[https://github.com/antjowie/Ray-Shaper/releases].
+![img](https://github.com/antjowie/Ray-Shaper/raw/master/Ray%20Shaper/data/textures/splashscreen.png)
 
 # Purpose
 This game is the game I made for NHTV. The theme is reflections and therefore this game is based around lasers.
